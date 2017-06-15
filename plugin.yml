@@ -1,0 +1,25 @@
+name: FridayThe13th
+main: com.AustinPilz.FridayThe13th.FridayThe13th
+version: 0.0
+description: Classic Friday The 13th Gameplay
+author: Austin Pilz
+website: http://austinpilz.com
+load: POSTWORLD
+softdepend: [Multiverse-Core, Multiworld]
+commands:
+    f13:
+        description: Friday The 13th commands
+permissions:
+    FridayThe13th.*:
+        description: Gives access to all commands
+        children:
+            FridayThe13th.admin: true
+            FridayThe13th.user: true
+        default: op
+    FridayThe13th.admin:
+        description: Gives admin access to admin commands
+        default: op
+    FridayThe13th.user:
+        description: User level permissions to play Friday The 13th
+        default: true
+
