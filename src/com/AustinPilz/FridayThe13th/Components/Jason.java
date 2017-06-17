@@ -1,7 +1,27 @@
 package com.AustinPilz.FridayThe13th.Components;
 
-/**
- * Created by austinpilz on 6/15/17.
- */
-public class Jason {
+import org.bukkit.entity.Player;
+
+public class Jason
+{
+    //Minecraft Objects
+    private Player player;
+
+    //Game
+    private Arena arena;
+
+
+    public Jason(Player p, Arena a)
+    {
+        arena = a;
+        player = p;
+    }
+
+    /**
+     * Return' the player object of the counselor
+     */
+    public Player getPlayer()
+    {
+        return this.player;
+    }
 }

@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Exceptions;
+package com.AustinPilz.FridayThe13th.Exceptions.Arena;
 
 public class ArenaAlreadyExistsException extends Exception
 {
