@@ -158,7 +158,13 @@ public class PlayerManager
         return counselors.get(player.getUniqueId().toString());
     }
 
+    /**
+     * Returns the jason object
+     * @param player
+     * @return
+     */
 
+    public Jason getJason () { return jason; }
     /**
      * Returns the counselor object for the player
      * @param playerUUID

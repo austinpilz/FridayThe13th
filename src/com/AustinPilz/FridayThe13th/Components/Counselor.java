@@ -288,6 +288,24 @@ public class Counselor
         //Light level goes from 0-15
         Double fearLevel = ((((15-lightHistory.getAverage()) - 0) * (getMaxFearLevel() - 0)) / (15 - 0)) + 0;
 
+        //See how far they are from jason
+        double distanceFromJason = getPlayer().getLocation().distance(arena.getPlayerManager().getJason().getPlayer().getLocation());
+
+        if (distanceFromJason <= 5)
+        {
+            //Increase if within certain distance
+            double increase = getMaxFearLevel() * (distanceFromJason / 10);
+            if (getFearLevel()-fearLevel > 0)
+            {
+                //fear level would be decreasing
+                fearLevel = getFearLevel() + increase;
+            }
+            else
+            {
+                fearLevel += increase;
+            }
+        }
+
         setFearLevel(Math.min(getMaxFearLevel(), fearLevel));
 
         //Update effects
