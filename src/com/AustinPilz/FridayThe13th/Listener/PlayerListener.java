@@ -3,10 +3,13 @@ package com.AustinPilz.FridayThe13th.Listener;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -14,142 +17,170 @@ import org.bukkit.event.player.*;
 
 public class PlayerListener implements Listener {
 
-    public PlayerListener()
-    {
+    public PlayerListener() {
         //
     }
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event)
-    {
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
         //
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        try
-        {
-            FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()).getPlayerManager().playerLeaveGame(event.getPlayer().getUniqueId().toString());
-        }
-        catch (PlayerNotPlayingException exception)
-        {
+        try {
+            FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()).getPlayerManager().onPlayerLogout(event.getPlayer().getUniqueId().toString());
+        } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
         }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        //
+        try {
+            if (event.getEntity() instanceof Player)
+            {
+
+                //This should NEVER happen, it should always look for damage
+
+                Player player = (Player) event.getEntity();
+                FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()).getPlayerManager().onPlayerDeath(player); //See if they're playing
+            }
+        } catch (PlayerNotPlayingException exception) {
+            //Do nothing since in this case, we couldn't care
+        }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         //
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerDamage(EntityDamageEvent e)
-    {
-        //
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerTeleport(PlayerTeleportEvent event)
-    {
-        try
-        {
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
             //TODO: This will have to be changed to allow for game teleports and such.
-            if (arena.getGameManager().isGameWaiting())
-            {
+            if (arena.getGameManager().isGameWaiting()) {
                 //In waiting, only teleporting can be to the waiting location
-                if (!event.getTo().equals(arena.getWaitingLocation()))
-                {
+                if (!event.getTo().equals(arena.getWaitingLocation())) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot teleport while playing.");
+                }
+            } else if (arena.getGameManager().isGameInProgress()) {
+                if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot teleport while playing.");
                 }
             }
-            else if (arena.getGameManager().isGameInProgress())
-            {
-                if (!arena.isLocationWithinArenaBoundaries(event.getTo()))
-                {
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot teleport while playing.");
-                }
-            }
-        }
-        catch (PlayerNotPlayingException exception)
-        {
+        } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerInteract(PlayerInteractEvent event)
-    {
-        //
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        try {
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+
+            if (arena.getGameManager().isGameInProgress()) {
+                if (arena.getPlayerManager().isCounselor(event.getPlayer()))
+                {
+                    if (arena.getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
+                    {
+                        event.setCancelled(true);
+
+                        //Let them know they can't interact in spectating mode
+                        event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot interact while you're in spectating mode.");
+                    }
+                }
+
+            }
+        } catch (PlayerNotPlayingException exception) {
+            //Do nothing since in this case, we couldn't care
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerMove(PlayerMoveEvent event)
-    {
-        try
-        {
+    public void onPlayerMove(PlayerMoveEvent event) {
+        try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
-            if (arena.getGameManager().isGameInProgress())
-            {
-                if (arena.getPlayerManager().isCounselor(event.getPlayer()))
-                {
+            if (arena.getGameManager().isGameInProgress()) {
+                if (arena.getPlayerManager().isCounselor(event.getPlayer())) {
                     //Counselor [has stamina]
-                    if (event.getPlayer().isSprinting())
-                    {
+                    if (event.getPlayer().isSprinting()) {
                         //Sprinting
                         arena.getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
-                    }
-                    else if (event.getPlayer().isSneaking())
-                    {
+                    } else if (event.getPlayer().isSneaking()) {
                         //Sneaking
                         arena.getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
-                    }
-                    else if (event.getPlayer().isFlying())
-                    {
-                        //TODO if spectating mode, allow it?
-                        event.getPlayer().setFlying(false);
-                    }
-                    else
-                    {
+                    } else if (event.getPlayer().isFlying()) {
+                        if (!arena.getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode()) {
+                            event.getPlayer().setFlying(false); //Prevent cheating
+                        }
+                    } else {
                         //Must just be walking
                         arena.getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
                     }
-                }
-                else if (arena.getPlayerManager().isJason(event.getPlayer()))
-                {
+                } else if (arena.getPlayerManager().isJason(event.getPlayer())) {
                     //TODO: Jason
                 }
             }
-        }
-        catch (PlayerNotPlayingException exception)
-        {
+        } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
         }
     }
 
-    @EventHandler
-    public void onHungerDeplete(FoodLevelChangeEvent event)
-    {
-        try
-        {
-            if (event.getEntity() instanceof Player)
-            {
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onHungerDeplete(FoodLevelChangeEvent event) {
+        try {
+            if (event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
                 Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
                 event.setCancelled(true);
             }
-        }
-        catch (PlayerNotPlayingException exception)
-        {
+        } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
         }
     }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer().getUniqueId().toString())) {
+            if (!event.getMessage().toLowerCase().startsWith("/f13")) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "Only Friday the 13th commands are available during gameplay. If you'd like to leave, execute " + ChatColor.AQUA + "/f13 leave");
+            }
+
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerDamage(EntityDamageEvent event)
+    {
+        if(event.getEntity() instanceof Player)
+        {
+            try
+            {
+                Player player = (Player) event.getEntity();
+
+                Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
+
+                if (arena.getPlayerManager().isAlive(player) && player.getHealth() <= event.getDamage())
+                {
+                    //This blow would kill them
+                    event.setCancelled(true);
+                    arena.getPlayerManager().onPlayerDeath(player);
+                }
+
+            }
+            catch (PlayerNotPlayingException exception)
+            {
+                //Do nothing since in this case, we couldn't care
+            }
+        }
+    }
+
 }

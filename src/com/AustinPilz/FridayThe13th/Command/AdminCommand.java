@@ -115,7 +115,7 @@ public class AdminCommand implements CommandExecutor
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The add command can only be executed by an in-game player.");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("play"))
+                else if (args[0].equalsIgnoreCase("play") || args[0].equalsIgnoreCase("join"))
                 {
                     //Setup commands cannot be executed by the console
                     if (sender instanceof Player)
@@ -211,14 +211,14 @@ public class AdminCommand implements CommandExecutor
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You do not currently have a setup session in progress.");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("quit"))
+                else if (args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("leave"))
                 {
                     //Setup commands cannot be executed by the console
                     if (sender instanceof Player)
                     {
                         try
                         {
-                            FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString()).getPlayerManager().playerLeaveGame(((Player) sender).getUniqueId().toString());
+                            FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString()).getPlayerManager().onplayerQuit(((Player) sender));
                         }
                         catch (PlayerNotPlayingException exception)
                         {

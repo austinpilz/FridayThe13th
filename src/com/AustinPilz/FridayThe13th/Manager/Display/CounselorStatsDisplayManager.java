@@ -2,7 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Counselor;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsCheck;
+import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsDisplayUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
@@ -67,7 +67,7 @@ public class CounselorStatsDisplayManager
             endUpdaterTask();
         }
 
-        updaterTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorStatsCheck(counselor), 0, 20);
+        updaterTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorStatsDisplayUpdate(counselor), 0, 20);
 
     }
 

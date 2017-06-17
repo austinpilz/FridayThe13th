@@ -50,29 +50,34 @@ public class SpawnPointSetupSession
 
     private void pointSelected()
     {
-        this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena  " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
-        this.player.sendMessage("");
-        this.player.sendMessage(ChatColor.WHITE + "Spawn point selected " + ChatColor.GREEN + "successfully" + ChatColor.WHITE + ".");
-        this.player.sendMessage(ChatColor.RED + "--------------------------------------");
-        this.state++;
-        spawnLocation = player.getLocation();
+        if (arena.isLocationWithinArenaBoundaries(player.getLocation())) {
+            this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
+            this.player.sendMessage(ChatColor.WHITE + "Arena  " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+            this.player.sendMessage("");
+            this.player.sendMessage(ChatColor.WHITE + "Spawn point selected " + ChatColor.GREEN + "successfully" + ChatColor.WHITE + ".");
+            this.player.sendMessage(ChatColor.RED + "--------------------------------------");
+            this.state++;
+            spawnLocation = player.getLocation();
 
-        //Add to database
-        try
-        {
-            //Add to DB
-            FridayThe13th.inputOutput.storeSpawnPoint(this.arena, spawnLocation);
+            //Add to database
+            try {
+                //Add to DB
+                FridayThe13th.inputOutput.storeSpawnPoint(this.arena, spawnLocation);
 
-            //Add to arena's location manager
-            this.arena.getLocationManager().addStartingPoint(spawnLocation);
+                //Add to arena's location manager
+                this.arena.getLocationManager().addStartingPoint(spawnLocation);
+            } catch (SpawnPointCreationException exception) {
+                player.sendMessage(FridayThe13th.pluginAdminPrefix + "Spawn point setup FAILED due to a database issue.");
+            } finally {
+                //Terminate session
+                FridayThe13th.spawnPointCreationManager.removePlayerSetupSession(player.getUniqueId().toString());
+            }
         }
-        catch (SpawnPointCreationException exception)
+        else
         {
-            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Spawn point setup FAILED due to a database issue.");
-        }
-        finally
-        {
+            //The spawn point is not within the arena
+            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Spawn point setup " + ChatColor.RED + " FAILED" + ChatColor.WHITE + ". The spawn location must be within the arena boundaries.");
+
             //Terminate session
             FridayThe13th.spawnPointCreationManager.removePlayerSetupSession(player.getUniqueId().toString());
         }

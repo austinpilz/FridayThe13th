@@ -2,11 +2,16 @@ package com.AustinPilz.FridayThe13th.Components;
 
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
-import com.AustinPilz.FridayThe13th.Runnable.CounselorFearCheck;
+import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class Counselor
 {
@@ -23,6 +28,7 @@ public class Counselor
     private double staminaRegenerationRate; //Has to be higher since done every second, not every movement
     private double walkSpeed;
     private boolean moving = false;
+    private boolean spectatingMode = false;
 
     //Fear
     private double fearLevel;
@@ -34,7 +40,16 @@ public class Counselor
     private CounselorStatsDisplayManager statsDisplayManager;
 
     //Tasks
-    int fearCheckTask = -1;
+    int statsUpdateTask = -1;
+
+    //Potions
+    private PotionEffect potionOutOfBreath;
+    private PotionEffect potionFearBlind;
+    private PotionEffect potionSpectatingInvisibility;
+
+    //Warnings
+    private boolean shownStaminaWarning = false;
+    private boolean shownFearWarning = false;
 
     /**
      * Creates new counselor object
@@ -60,6 +75,11 @@ public class Counselor
 
         //Fear
         lightHistory = new LightLevelList(20);
+
+        //Potions
+        potionOutOfBreath = new PotionEffect(PotionEffectType.CONFUSION, 300, 1);
+        potionFearBlind = new PotionEffect(PotionEffectType.BLINDNESS, 400, 1);
+        potionSpectatingInvisibility = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
     }
 
     /**
@@ -88,7 +108,7 @@ public class Counselor
         getStatsDisplayManager().startUpdaterTask();
 
         //Fear Check Task
-        fearCheckTask =  Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorFearCheck(this), 0, 20);
+        statsUpdateTask =  Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorStatsUpdate(this), 0, 20);
     }
 
     /**
@@ -100,7 +120,7 @@ public class Counselor
         getStatsDisplayManager().endUpdaterTask();
 
         //Cancel fearLevel check task
-        Bukkit.getScheduler().cancelTask(fearCheckTask);
+        Bukkit.getScheduler().cancelTask(statsUpdateTask);
     }
 
     /**
@@ -130,6 +150,8 @@ public class Counselor
         if (value)
         {
             setStamina(Math.max(0,stamina - (staminaDepletionRate)));
+            setMoving(true);
+            updateStaminaEffects();
         }
     }
 
@@ -143,6 +165,7 @@ public class Counselor
         {
             setStamina(Math.max(0,stamina - (staminaDepletionRate*2)));
             setMoving(true);
+            updateStaminaEffects();
         }
     }
 
@@ -156,6 +179,7 @@ public class Counselor
         {
             setStamina(Math.max(0, stamina - staminaDepletionRate/2));
             setMoving(true);
+            updateStaminaEffects();
         }
     }
 
@@ -169,6 +193,7 @@ public class Counselor
         {
             setStamina(Math.min(getMaxStamina(), stamina + staminaRegenerationRate));
             setMoving(false);
+            updateStaminaEffects();
         }
     }
 
@@ -200,6 +225,38 @@ public class Counselor
     }
 
     /**
+     * Updates the effects of stamina on the player
+     */
+    public void updateStaminaEffects()
+    {
+        //If they're totally out of breath, apply the potion
+        if (getStamina() == 0)
+        {
+            //Add confusion effect
+            getPlayer().addPotionEffect(potionOutOfBreath);
+        }
+
+        if (getStamina() < (getMaxStamina()*.05))
+        {
+            //Stamina is very low
+            getPlayer().setWalkSpeed(0.15f); //Make them walk slow
+
+            //Give them a warning
+            if (!shownStaminaWarning)
+            {
+                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "Warning:" + ChatColor.WHITE + " Stamina low, you're almost out of energy.", 300);
+                shownStaminaWarning = true;
+            }
+        }
+        else
+        {
+            //Stamina is within acceptable limits
+            getPlayer().setWalkSpeed(0.2f);
+            getPlayer().removePotionEffect(PotionEffectType.CONFUSION);
+        }
+    }
+
+    /**
      * Returns the counselor's fearLevel level
      * @return
      */
@@ -222,7 +279,6 @@ public class Counselor
      */
     public void updateFearLevel()
     {
-        //Light level goes from 1 - 15, where lower is higher fear
 
         //Add new light history
         Block block = player.getLocation().getBlock().getRelative(0, 1, 0);
@@ -232,13 +288,36 @@ public class Counselor
         //Light level goes from 0-15
         Double fearLevel = ((((15-lightHistory.getAverage()) - 0) * (getMaxFearLevel() - 0)) / (15 - 0)) + 0;
 
-        if (fearLevel > getFearLevel())
+        setFearLevel(Math.min(getMaxFearLevel(), fearLevel));
+
+        //Update effects
+        updateFearLevelEffects();
+
+    }
+
+    /**
+     * Updates the effects on the counselor as a result of fear
+     */
+    private void updateFearLevelEffects()
+    {
+        if ((fearLevel/getMaxFearLevel()) >= .9)
         {
-            setFearLevel(fearLevel);
+            //They're scared, add some blindness
+            getPlayer().addPotionEffect(potionFearBlind);
+
+            //Reduce stamina since scared
+            setSprinting(true);
+
+            if (!shownFearWarning)
+            {
+                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "Warning:" + ChatColor.WHITE + " You are scared. Find light sources to feel safe again.", 300);
+                shownFearWarning = true;
+            }
         }
         else
         {
-            setFearLevel(fearLevel);
+            //They're not very scared, remove blindness
+            getPlayer().removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }
 
@@ -251,5 +330,55 @@ public class Counselor
         fearLevel = Math.min(getMaxFearLevel(), value); //Can't exceed max or will cause boss bar issues
     }
 
+    /**
+     * Returns if the counselor is in spectating mode
+     * @return
+     */
+    public boolean isInSpectatingMode()
+    {
+        return spectatingMode;
+    }
 
+    /**
+     * Enters the counselor into spectating mode
+     */
+    public void enterSpectatingMode()
+    {
+        spectatingMode = true;
+
+        //Make them invisible
+        getPlayer().addPotionEffect(potionSpectatingInvisibility);
+
+        //Enter flight
+        getPlayer().setAllowFlight(true);
+
+        Location currentLocation = player.getLocation();
+        getPlayer().teleport(new Location(currentLocation.getWorld(), currentLocation.getX(), currentLocation.getY()+10, currentLocation.getZ()));
+        getPlayer().setFlying(true);
+        getPlayer().getInventory().clear();
+
+        //Stop stats since they're dead
+        getStatsDisplayManager().hideStats();
+        cancelTasks();
+
+        //Let them know
+        ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "You died. " + ChatColor.GREEN + "You are now in spectating mode. You are invisible and can fly.", 400);
+    }
+
+    /**
+     * Removes the counselor from spectating mode
+     */
+    public void leaveSpectatingMode()
+    {
+        //removes abilities and stuff
+        getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+        getPlayer().setAllowFlight(false);
+        spectatingMode = false;
+    }
+
+    public void removeAllPotionEffects()
+    {
+        getPlayer().removePotionEffect(PotionEffectType.BLINDNESS); //Scared
+        getPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
+    }
 }

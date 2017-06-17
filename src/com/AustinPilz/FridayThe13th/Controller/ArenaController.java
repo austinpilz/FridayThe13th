@@ -144,7 +144,7 @@ public class ArenaController
      * @param playerUUID
      * @return
      */
-    private boolean isPlayerPlaying(String playerUUID)
+    public boolean isPlayerPlaying(String playerUUID)
     {
         if (players.containsKey(playerUUID))
         {

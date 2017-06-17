@@ -3,7 +3,9 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.GameStatus;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
+import com.AustinPilz.FridayThe13th.Runnable.GameScoreboardUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
 import com.AustinPilz.FridayThe13th.Runnable.WaitingCountdown;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -28,10 +30,12 @@ public class GameManager
     //second countdown (only when in waiting and in progress)
     int gameStatusCheckTask = -1;
     int waitingCountdownTask = -1;
+    int scoreboardTask = -1;
 
 
     //Managers
     protected WaitingCountdownDisplayManager waitingCountdownDisplayManager;
+    protected GameScoreboardManager scoreboardManager;
 
     /**
      * @param arena Arena object
@@ -47,6 +51,7 @@ public class GameManager
 
         //Managers
         waitingCountdownDisplayManager = new WaitingCountdownDisplayManager(arena);
+        scoreboardManager = new GameScoreboardManager(arena);
 
         //Start Tasks
         gameStatusCheckTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameStatusCheck(arena), 60, 20);
@@ -59,6 +64,12 @@ public class GameManager
     {
         return waitingCountdownDisplayManager;
     }
+
+    /**
+     * Returns the game's scoreboard manager
+     * @return
+     */
+    public GameScoreboardManager getScoreboardManager() { return scoreboardManager; }
 
     /**
      * Returns the seconds left in the waiting countdown
@@ -143,9 +154,7 @@ public class GameManager
         {
             if (arena.getPlayerManager().getNumPlayers() < 2)
             {
-                //TODO END GAME COMMAND HERE
-                //TODO KICK ALL PLAYERS, ETC ^^^
-                changeGameStatus(GameStatus.Empty);
+                endGame(); //End the game since there aren't enough players
             }
         }
     }
@@ -207,14 +216,19 @@ public class GameManager
         //Changing to empty
         if (status.equals(GameStatus.Empty))
         {
+            //Cancel tasks
+            Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
+            Bukkit.getScheduler().cancelTask(scoreboardTask);
+
             if (isGameWaiting())
             {
-                Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
                 arena.getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
             }
 
+
             gameStatus = GameStatus.Empty; //Change mode
             resetGameStatistics();
+            arena.getPlayerManager().resetPlayerStorage(); //Resets all data structures with players
 
         }
         else if (status.equals(GameStatus.Waiting)) //Changing to waiting (can only go from empty -> in waiting)
@@ -222,8 +236,9 @@ public class GameManager
             gameStatus = GameStatus.Waiting; //Change mode
             resetGameStatistics();
 
-            //Start the timer task
+            //Start the tasks
             waitingCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new WaitingCountdown(arena), 20, 20);
+            scoreboardTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameScoreboardUpdate(arena), 0, 60);
 
             //Reset players visuals (remove action bars)
             arena.getPlayerManager().resetPlayerActionBars();
@@ -257,12 +272,21 @@ public class GameManager
         arena.getPlayerManager().assignSpawnLocations(); //teleports players to spawn locations
         arena.getPlayerManager().performInProgressActions();
 
+        //Game Stats
+
         //Generate chests and stuff here?!
 
     }
 
-    private void endGame()
+    /**
+     * Ends the game
+     */
+    protected void endGame()
     {
-        //cancel timers and tasks
+        //Remove all players
+        arena.getPlayerManager().performEndGameActions();
+
+        //Don't need to worry about tasks and timers here, handled automatically
+        changeGameStatus(GameStatus.Empty);
     }
 }
