@@ -252,29 +252,13 @@ public class GameManager
         //Reset location manager spawn point availability
         arena.getLocationManager().resetAvailableStartingPoints();
 
-        //Assign all players roles
+        //Assign all players roles (maybe move these into the performInProgressActions() ?
         arena.getPlayerManager().assignGameRoles();
         arena.getPlayerManager().assignSpawnLocations(); //teleports players to spawn locations
         arena.getPlayerManager().performInProgressActions();
 
-        //player begin game actions (teleport to spawn locations, potions, etc)
+        //Generate chests and stuff here?!
 
-        //schedule timers and shit
-
-        /*
-            Task to check each player's stats, and cancels the task when they leave?
-
-                Task checks their fear level on an interval? averages the past X number of light level values?
-                Task regenerates their stamina at a fixed interval?
-
-                Stamina
-                    Walking - minus a little
-                    Sprinting - minus a lot
-                    Flying??? Eventually a perk
-                    Standing still - regenerates stamina
-         */
-
-        Bukkit.broadcastMessage("GAME BEGIN");
     }
 
     private void endGame()

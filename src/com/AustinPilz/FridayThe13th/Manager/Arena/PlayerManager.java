@@ -216,27 +216,48 @@ public class PlayerManager
     /* Player Events */
     public void playerLeaveGame(String playerUUID)
     {
+        //Get OfflinePlayer in case they logged off
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
+
         //Remove player from hash maps (have to remove these first since listeners check to see if player has an arena)
         FridayThe13th.arenaController.removePlayer(playerUUID);
         removePlayer(playerUUID);
 
-        //Clear any displays
-        Counselor counselor = getCounselor(playerUUID);
-
-        //Stop any individual counselor tasks
-        counselor.cancelTasks();
-
-
-        //Actions done only if they're online
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
-        if (offlinePlayer.isOnline())
+        if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty())
         {
-            //Teleport them to the return point
-            Bukkit.getPlayer(UUID.fromString(playerUUID)).teleport(arena.getReturnLocation());
-
-            //Hide the stats bars
-            counselor.getStatsDisplayManager().hideStats();
+            //Waiting mode, so just teleport them out
+            if (offlinePlayer.isOnline())
+            {
+                //Teleport them to the return point
+                Bukkit.getPlayer(UUID.fromString(playerUUID)).teleport(arena.getReturnLocation());
+            }
+            else
+            {
+                //They're no longer online?
+            }
         }
+        else
+        {
+            //In progress game
+            //Clear any displays
+            Counselor counselor = getCounselor(playerUUID);
+
+            //Stop any individual counselor tasks
+            counselor.cancelTasks();
+
+
+            //Actions done only if they're online
+            if (offlinePlayer.isOnline())
+            {
+                //Teleport them to the return point
+                Bukkit.getPlayer(UUID.fromString(playerUUID)).teleport(arena.getReturnLocation());
+
+                //Hide the stats bars
+                counselor.getStatsDisplayManager().hideStats();
+            }
+        }
+
+
 
         //Restore inventory?
     }
