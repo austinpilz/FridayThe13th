@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Command.CommandHandler;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
 import com.AustinPilz.FridayThe13th.IO.InputOutput;
+import com.AustinPilz.FridayThe13th.Listener.BlockListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
@@ -61,6 +62,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
         //Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(), this);
 
         //Register Command Handlers
         getCommand("f13").setExecutor(new CommandHandler());

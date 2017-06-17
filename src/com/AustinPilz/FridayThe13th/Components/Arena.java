@@ -20,9 +20,9 @@ public class Arena
     private Location jasonStartLocation;
 
     //Arena Managers
-    private LocationManager locationManager;
+    private LocationManager locationManager; //Manages important locations such as counselor spawn locations
     private ObjectManager objectManager;
-    private GameManager gameManager;
+    private GameManager gameManager; //Manages the active game, players, etc.
 
     public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation)
     {

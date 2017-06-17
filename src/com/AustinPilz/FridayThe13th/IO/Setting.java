@@ -9,7 +9,9 @@ public enum Setting {
 	NotifyOnAustinPilz("NotifyOnPluginCreatorJoin", true),
 	
 	//GamePlay
-	gameplayMaxStamina("Gameplay.MaxStamina", 30);
+	gameplayMaxStamina("Gameplay.MaxStamina", 30),
+	gameplayWarnOnBreak("Gameplay.Alerts.AlertOnBlockBreakAttempt", true),
+	gameplayWarnOnPlace("Gameplay.Alerts.AlertOnBlockPlaceAttempt", true);
 	
 	
 	
