@@ -100,6 +100,18 @@ public class Counselor
     }
 
     /**
+     * Performs all necessary tasks when the game begins
+     */
+    public void prepareForGameplay()
+    {
+        ///Display Status
+        getStatsDisplayManager().displayStats();
+
+        //Start All Counselor Tasks
+        scheduleTasks();
+    }
+
+    /**
      * Schedules all counselor specific tasks
      */
     public void scheduleTasks()
@@ -289,7 +301,7 @@ public class Counselor
         Double fearLevel = ((((15-lightHistory.getAverage()) - 0) * (getMaxFearLevel() - 0)) / (15 - 0)) + 0;
 
         //See how far they are from jason
-        double distanceFromJason = getPlayer().getLocation().distance(arena.getPlayerManager().getJason().getPlayer().getLocation());
+        double distanceFromJason = getPlayer().getLocation().distance(arena.getGameManager().getPlayerManager().getJason().getPlayer().getLocation());
 
         if (distanceFromJason <= 5)
         {
@@ -306,6 +318,7 @@ public class Counselor
             }
         }
 
+        //Ensure within boundaries
         setFearLevel(Math.min(getMaxFearLevel(), fearLevel));
 
         //Update effects

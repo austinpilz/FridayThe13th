@@ -24,4 +24,13 @@ public class Jason
     {
         return this.player;
     }
+
+    /**
+     * Performs all necessary tasks when the game begins
+     */
+    public void prepapreForGameplay()
+    {
+        //Give jason his sword
+
+    }
 }

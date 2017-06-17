@@ -21,7 +21,8 @@ public class GameManager
     private Arena arena;
 
     //Game Variables
-    public int gameTimeLeftInSeconds;
+    private int gameTimeLeftInSeconds;
+    private int gameTimeMax = 600;
     private int waitingTimeLeftInSeconds;
     private int waitingTimeMax = 5;
     private GameStatus gameStatus;
@@ -34,8 +35,9 @@ public class GameManager
 
 
     //Managers
-    protected WaitingCountdownDisplayManager waitingCountdownDisplayManager;
-    protected GameScoreboardManager scoreboardManager;
+    public PlayerManager playerManager;
+    protected WaitingCountdownDisplayManager waitingCountdownDisplayManager; //Game-wide waiting room countdown
+    protected GameScoreboardManager scoreboardManager; //Game-wide scoreboard with alive/dead players
 
     /**
      * @param arena Arena object
@@ -50,11 +52,21 @@ public class GameManager
         changeGameStatus(GameStatus.Empty);
 
         //Managers
+        playerManager = new PlayerManager(arena);
         waitingCountdownDisplayManager = new WaitingCountdownDisplayManager(arena);
         scoreboardManager = new GameScoreboardManager(arena);
 
         //Start Tasks
         gameStatusCheckTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameStatusCheck(arena), 60, 20);
+    }
+
+    /**
+     * Returns the arena's player manager
+     * @return
+     */
+    public PlayerManager getPlayerManager()
+    {
+        return playerManager;
     }
 
     /**
@@ -115,7 +127,7 @@ public class GameManager
     {
         if (isGameEmpty())
         {
-            if (arena.getPlayerManager().getNumPlayers() >= 2)
+            if (getPlayerManager().getNumPlayers() >= 2)
             {
                 //There are people waiting and we've reached the min, change to waiting
                 changeGameStatus(GameStatus.Waiting);
@@ -123,7 +135,7 @@ public class GameManager
             else
             {
                 //Need more players before waiting countdown will begin
-                Iterator it = arena.getPlayerManager().getPlayers().entrySet().iterator();
+                Iterator it = getPlayerManager().getPlayers().entrySet().iterator();
                 while (it.hasNext())
                 {
                     Map.Entry entry = (Map.Entry) it.next();
@@ -136,7 +148,7 @@ public class GameManager
         }
         else if (isGameWaiting())
         {
-            if (arena.getPlayerManager().getNumPlayers() >= 2)
+            if (getPlayerManager().getNumPlayers() >= 2)
             {
                 if (waitingTimeLeftInSeconds <= 0)
                 {
@@ -152,7 +164,7 @@ public class GameManager
         }
         else if (isGameInProgress())
         {
-            if (arena.getPlayerManager().getNumPlayers() < 2)
+            if (getPlayerManager().getNumPlayers() < 2)
             {
                 endGame(); //End the game since there aren't enough players
             }
@@ -222,13 +234,13 @@ public class GameManager
 
             if (isGameWaiting())
             {
-                arena.getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
+                getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
             }
 
 
             gameStatus = GameStatus.Empty; //Change mode
             resetGameStatistics();
-            arena.getPlayerManager().resetPlayerStorage(); //Resets all data structures with players
+            getPlayerManager().resetPlayerStorage(); //Resets all data structures with players
 
         }
         else if (status.equals(GameStatus.Waiting)) //Changing to waiting (can only go from empty -> in waiting)
@@ -241,18 +253,18 @@ public class GameManager
             scoreboardTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameScoreboardUpdate(arena), 0, 60);
 
             //Reset players visuals (remove action bars)
-            arena.getPlayerManager().resetPlayerActionBars();
+            getPlayerManager().resetPlayerActionBars();
 
             //Display waiting countdown
             getWaitingCountdownDisplayManager().updateCountdownValue();
-            arena.getPlayerManager().displayWaitingCountdown();
+            getPlayerManager().displayWaitingCountdown();
         }
         else if (status.equals(GameStatus.InProgress)) //Changing to in progress (can only go from waiting -> in progress)
         {
             if (isGameWaiting())
             {
                 Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
-                arena.getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
+                getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
             }
 
             gameStatus = GameStatus.InProgress; //Change mode
@@ -268,11 +280,7 @@ public class GameManager
         arena.getLocationManager().resetAvailableStartingPoints();
 
         //Assign all players roles (maybe move these into the performInProgressActions() ?
-        arena.getPlayerManager().assignGameRoles();
-        arena.getPlayerManager().assignSpawnLocations(); //teleports players to spawn locations
-        arena.getPlayerManager().performInProgressActions();
-
-        //Game Stats
+        getPlayerManager().performInProgressActions();
 
         //Generate chests and stuff here?!
 
@@ -284,7 +292,7 @@ public class GameManager
     protected void endGame()
     {
         //Remove all players
-        arena.getPlayerManager().performEndGameActions();
+        getPlayerManager().performEndGameActions();
 
         //Don't need to worry about tasks and timers here, handled automatically
         changeGameStatus(GameStatus.Empty);

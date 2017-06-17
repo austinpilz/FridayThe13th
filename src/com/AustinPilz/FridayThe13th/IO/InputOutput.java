@@ -122,8 +122,7 @@ public class InputOutput
             st = conn.createStatement();
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_arenas\" (\"Name\" VARCHAR PRIMARY KEY NOT NULL, \"B1X\" DOUBLE, \"B1Y\" DOUBLE, \"B1Z\" DOUBLE, \"B2X\" DOUBLE, \"B2Y\" DOUBLE, \"B2Z\" DOUBLE, \"ArenaWorld\" VARCHAR, \"WaitX\" DOUBLE, \"WaitY\" DOUBLE, \"WaitZ\" DOUBLE, \"WaitWorld\" VARCHAR, \"ReturnX\" DOUBLE, \"ReturnY\" DOUBLE, \"ReturnZ\" DOUBLE, \"ReturnWorld\" VARCHAR, \"JasonX\" DOUBLE, \"JasonY\" DOUBLE, \"JasonZ\" DOUBLE)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_spawn_points\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
-            //st.executeUpdate("CREATE TABLE IF NOT EXISTS \"alcatraz_inmates\" (\"UUID\" VARCHAR PRIMARY KEY  NOT NULL, \"MinutesIn\" DOUBLE, \"MinutesLeft\" DOUBLE, \"Strikes\" DOUBLE, \"Kills\" DOUBLE, \"Money\" DOUBLE, \"Prison\" VARCHAR, \"Forced\" DOUBLE)");
-            //st.executeUpdate("CREATE TABLE IF NOT EXISTS \"alcatraz_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" DOUBLE, \"Prison\" VARCHAR, \"Type\" VARCHAR, \"Cell\" VARCHAR)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" DOUBLE, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             //st.executeUpdate("CREATE TABLE IF NOT EXISTS \"alcatraz_cells\" (\"Prison\" VARCHAR, \"CellNumber\" VARCHAR, \"InmateUUID\" VARCHAR)");
 
             conn.commit();
@@ -312,4 +311,24 @@ public class InputOutput
             throw new SpawnPointCreationException();
         }
     }
+
+
+    public void loadChests()
+    {
+        //
+    }
+
+    public void newChest()
+    {
+        //
+    }
+
+    public void deleteChest()
+    {
+        //
+    }
+
+
+
+
 }

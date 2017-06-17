@@ -118,7 +118,7 @@ public class CommandHandler implements CommandExecutor
 
                             //All is good, begin the play process handled by the ArenaCreation manager
                             try {
-                                FridayThe13th.arenaController.getArena(arenaName).getPlayerManager().playerJoinGame(((Player) sender));
+                                FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().playerJoinGame(((Player) sender));
                             } catch (ArenaDoesNotExistException exception) {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
                             } catch (GameFullException exception) {
@@ -201,7 +201,7 @@ public class CommandHandler implements CommandExecutor
                     //Setup commands cannot be executed by the console
                     if (sender instanceof Player) {
                         try {
-                            FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString()).getPlayerManager().onplayerQuit(((Player) sender));
+                            FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString()).getGameManager().getPlayerManager().onplayerQuit(((Player) sender));
                         } catch (PlayerNotPlayingException exception) {
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You are not currently playing.");
                         }

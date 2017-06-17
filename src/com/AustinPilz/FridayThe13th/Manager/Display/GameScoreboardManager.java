@@ -27,10 +27,10 @@ public class GameScoreboardManager
         playerSidebarBoard = new BoardManager("PlayerSidebar", ChatColor.RED + "-- Friday The 13th --", DisplaySlot.SIDEBAR);
 
         //Alive players
-        for (String playerUUID: arena.getPlayerManager().getAlivePlayers())
+        for (String playerUUID: arena.getGameManager().getPlayerManager().getAlivePlayers())
         {
             Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
-            if (arena.getPlayerManager().isJason(player))
+            if (arena.getGameManager().getPlayerManager().isJason(player))
             {
                 playerSidebarBoard.setObjectiveScore(player.getName() + ChatColor.GOLD + " J " + ChatColor.GREEN + " ALIVE", 1);
             }
@@ -43,10 +43,10 @@ public class GameScoreboardManager
         }
 
         //Now the dead ones
-        for (String playerUUID: arena.getPlayerManager().getDeadPlayers())
+        for (String playerUUID: arena.getGameManager().getPlayerManager().getDeadPlayers())
         {
             Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
-            if (arena.getPlayerManager().isJason(player))
+            if (arena.getGameManager().getPlayerManager().isJason(player))
             {
                 playerSidebarBoard.setObjectiveScore(player.getName() + ChatColor.GOLD + " J " + ChatColor.RED + " DEAD", 1);
             }

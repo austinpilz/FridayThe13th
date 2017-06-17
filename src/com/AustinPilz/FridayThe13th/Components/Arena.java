@@ -20,7 +20,6 @@ public class Arena
     private Location jasonStartLocation;
 
     //Arena Managers
-    private PlayerManager playerManager;
     private LocationManager locationManager;
     private ObjectManager objectManager;
     private GameManager gameManager;
@@ -28,7 +27,6 @@ public class Arena
     public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation)
     {
         //Initialize
-        playerManager = new PlayerManager(this);
         locationManager = new LocationManager(this);
         objectManager = new ObjectManager(this);
         gameManager = new GameManager(this);
@@ -110,15 +108,6 @@ public class Arena
      * @return
      */
     public GameManager getGameManager() { return gameManager; }
-
-    /**
-     * Returns the arena's player manager
-     * @return
-     */
-    public PlayerManager getPlayerManager()
-    {
-        return playerManager;
-    }
 
     /**
      * Checks if supplied location is within the arena boundaries

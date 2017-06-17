@@ -33,20 +33,13 @@ public class LocationManager
         startingPoints.add(location);
     }
 
-    /**
-     * Removes starting point location
-     * @param location
-     */
-    public void removeStartingPoint(Location location)
-    {
-        startingPoints.remove(location);
-    }
 
     /**
      * Resets available starting points to original set
      */
     public void resetAvailableStartingPoints()
     {
+        availableStartingPoints.clear(); //Clear just in case
         availableStartingPoints.addAll(startingPoints);
     }
 

@@ -160,7 +160,6 @@ public class PlayerManager
 
     /**
      * Returns the jason object
-     * @param player
      * @return
      */
 
@@ -193,7 +192,24 @@ public class PlayerManager
         players.remove(playerUUID);
     }
 
-    /* Display */
+    /**
+     * Calculates if there is room for the player to join the game
+     * @return
+     */
+    private boolean isRoomForPlayerToJoin()
+    {
+        if ((arena.getLocationManager().getNumberStartingPoints() - getNumPlayers() + 1) > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+   /* Display */
 
     /**
      * Resets the action bars of all players to nothing
@@ -372,67 +388,8 @@ public class PlayerManager
         sendMessageToAllPlayers(ChatColor.GRAY + player.getName() + " was " + ChatColor.RED + "killed" + ChatColor.WHITE + ".");
     }
 
-    /**
-     * Calculates if there is room for the player to join the game
-     * @return
-     */
-    private boolean isRoomForPlayerToJoin()
-    {
-        if ((arena.getLocationManager().getNumberStartingPoints() - getNumPlayers() + 1) > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
-    /**
-     * Assigns all players a role (counselor or jason)
-     */
-    protected void assignGameRoles()
-    {
-        Random generator = new Random();
-        Object[] playerArray = players.values().toArray();
-        int jasonCell = generator.nextInt(playerArray.length);
 
-        //Select Jason
-        Player jasonPlayer = (Player)playerArray[jasonCell];
-        this.jason = new Jason(jasonPlayer, arena);
-
-        //Make everyone else counselors
-        for (int i = 0; i < playerArray.length; i++)
-        {
-            if (i != jasonCell)
-            {
-                Player counselorPlayer = (Player)playerArray[i];
-                this.counselors.put(counselorPlayer.getUniqueId().toString(), new Counselor(counselorPlayer, arena));
-            }
-        }
-    }
-
-    /**
-     * Assigns and teleports players and jason to their spawn locations
-     */
-    protected void assignSpawnLocations()
-    {
-        //Teleport jason to jason start point
-        jason.getPlayer().teleport(arena.getJasonStartLocation());
-
-        //Teleport counselors to starting points
-
-        Location[] counselorLocations = arena.getLocationManager().getAvailableStartingPoints().toArray(new Location[arena.getLocationManager().getAvailableStartingPoints().size()]);
-
-        Iterator it = getCounselors().entrySet().iterator();
-        int i = 0;
-        while (it.hasNext())
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            Counselor counselor = (Counselor) entry.getValue();
-            counselor.getPlayer().teleport(counselorLocations[i++]);
-        }
-    }
 
     /* Player Preparation Actions */
 
@@ -457,6 +414,10 @@ public class PlayerManager
      */
     protected void performInProgressActions()
     {
+        //Assign roles and teleport players there
+        assignGameRoles();
+        assignSpawnLocations();
+
         //Display player bars
         Iterator it = getCounselors().entrySet().iterator();
         while (it.hasNext())
@@ -464,11 +425,57 @@ public class PlayerManager
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
 
-            //Display Status
-            counselor.getStatsDisplayManager().displayStats();
+            counselor.prepareForGameplay();
+        }
 
-            //Start All Counselor Tasks
-            counselor.scheduleTasks();
+        //Jason stuff
+        jason.prepapreForGameplay();
+
+    }
+
+    /**
+     * Assigns all players a role (counselor or jason)
+     */
+    private void assignGameRoles()
+    {
+        Random generator = new Random();
+        Object[] playerArray = players.values().toArray();
+        int jasonCell = generator.nextInt(playerArray.length);
+
+        //Select Jason
+        Player jasonPlayer = (Player)playerArray[jasonCell];
+        this.jason = new Jason(jasonPlayer, arena);
+
+        //Make everyone else counselors
+        for (int i = 0; i < playerArray.length; i++)
+        {
+            if (i != jasonCell)
+            {
+                Player counselorPlayer = (Player)playerArray[i];
+                this.counselors.put(counselorPlayer.getUniqueId().toString(), new Counselor(counselorPlayer, arena));
+            }
+        }
+    }
+
+    /**
+     * Assigns and teleports players and jason to their spawn locations
+     */
+    private void assignSpawnLocations()
+    {
+        //Teleport jason to jason start point
+        jason.getPlayer().teleport(arena.getJasonStartLocation());
+
+        //Teleport counselors to starting points
+
+        Location[] counselorLocations = arena.getLocationManager().getAvailableStartingPoints().toArray(new Location[arena.getLocationManager().getAvailableStartingPoints().size()]);
+
+        Iterator it = getCounselors().entrySet().iterator();
+        int i = 0;
+        while (it.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            Counselor counselor = (Counselor) entry.getValue();
+            counselor.getPlayer().teleport(counselorLocations[i++]);
         }
     }
 
@@ -559,24 +566,12 @@ public class PlayerManager
 
                 //Teleport them to the return point
                 teleportPlayerToReturnPoint(player);
+
+                //Return normal walking speed
+                player.setWalkSpeed(1);
+                player.setFlySpeed(0.1f);
             }
         }
-    }
-
-    /**
-     * Performs actions when counselors win
-     */
-    private void counselorsWin()
-    {
-        sendMessageToAllPlayers("Counselors " + ChatColor.GREEN + "WIN" + ChatColor.WHITE + "! Jason was slain.");
-    }
-
-    /**
-     * Performs actions when jason wins
-     */
-    private void jasonWins()
-    {
-        sendMessageToAllPlayers("Jason " + ChatColor.GREEN + "WINS" + ChatColor.WHITE + "! " + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed.");
     }
 
 
@@ -622,4 +617,21 @@ public class PlayerManager
             player.sendMessage(FridayThe13th.pluginPrefix + message);
         }
     }
+
+    /**
+     * Performs actions when counselors win
+     */
+    private void counselorsWin()
+    {
+        sendMessageToAllPlayers("Counselors " + ChatColor.GREEN + "WIN" + ChatColor.WHITE + "! Jason was slain.");
+    }
+
+    /**
+     * Performs actions when jason wins
+     */
+    private void jasonWins()
+    {
+        sendMessageToAllPlayers("Jason " + ChatColor.GREEN + "WINS" + ChatColor.WHITE + "! " + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed.");
+    }
+
 }

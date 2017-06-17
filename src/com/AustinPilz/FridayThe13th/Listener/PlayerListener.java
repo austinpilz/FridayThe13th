@@ -29,7 +29,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         try {
-            FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()).getPlayerManager().onPlayerLogout(event.getPlayer().getUniqueId().toString());
+            FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()).getGameManager().getPlayerManager().onPlayerLogout(event.getPlayer().getUniqueId().toString());
         } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
         }
@@ -44,7 +44,7 @@ public class PlayerListener implements Listener {
                 //This should NEVER happen, it should always look for damage
 
                 Player player = (Player) event.getEntity();
-                FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()).getPlayerManager().onPlayerDeath(player); //See if they're playing
+                FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()).getGameManager().getPlayerManager().onPlayerDeath(player); //See if they're playing
             }
         } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
@@ -85,9 +85,9 @@ public class PlayerListener implements Listener {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
             if (arena.getGameManager().isGameInProgress()) {
-                if (arena.getPlayerManager().isCounselor(event.getPlayer()))
+                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
                 {
-                    if (arena.getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
+                    if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
                     {
                         event.setCancelled(true);
 
@@ -108,23 +108,23 @@ public class PlayerListener implements Listener {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
             if (arena.getGameManager().isGameInProgress()) {
-                if (arena.getPlayerManager().isCounselor(event.getPlayer())) {
+                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer())) {
                     //Counselor [has stamina]
                     if (event.getPlayer().isSprinting()) {
                         //Sprinting
-                        arena.getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
+                        arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
                     } else if (event.getPlayer().isSneaking()) {
                         //Sneaking
-                        arena.getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
+                        arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
                     } else if (event.getPlayer().isFlying()) {
-                        if (!arena.getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode()) {
+                        if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode()) {
                             event.getPlayer().setFlying(false); //Prevent cheating
                         }
                     } else {
                         //Must just be walking
-                        arena.getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
+                        arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
                     }
-                } else if (arena.getPlayerManager().isJason(event.getPlayer())) {
+                } else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer())) {
                     //TODO: Jason
                 }
             }
@@ -172,7 +172,7 @@ public class PlayerListener implements Listener {
                 {
                     //This blow would kill them
                     event.setCancelled(true);
-                    arena.getPlayerManager().onPlayerDeath(player);
+                    arena.getGameManager().getPlayerManager().onPlayerDeath(player);
                 }
 
             }
