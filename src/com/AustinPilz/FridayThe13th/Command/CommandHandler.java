@@ -18,74 +18,66 @@ import org.bukkit.entity.Player;
 import java.util.Iterator;
 import java.util.Map;
 
-public class AdminCommand implements CommandExecutor
+public class CommandHandler implements CommandExecutor
 {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
-        if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*"))
+
+        if (args.length < 1)
         {
-            if (args.length < 1)
+            //f13
+            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.pluginName + " v" + ChatColor.GREEN + FridayThe13th.pluginVersion);
+        }
+        else
+        {
+            if (args[0].equalsIgnoreCase("setup"))
             {
-                //f13
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.pluginName + " v" + ChatColor.GREEN + FridayThe13th.pluginVersion);
-            }
-            else
-            {
-                if (args[0].equalsIgnoreCase("setup"))
-                {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     //Setup commands cannot be executed by the console
-                    if (sender instanceof Player)
-                    {
+                    if (sender instanceof Player) {
                         //Correct Syntax: /f13 setup [arenaName]
-                        if (args.length == 2)
-                        {
+                        if (args.length == 2) {
                             String arenaName = args[1];
 
                             //Check to see if the arena with that name already exists
-                            if (!FridayThe13th.arenaController.doesArenaExist(arenaName))
-                            {
+                            if (!FridayThe13th.arenaController.doesArenaExist(arenaName)) {
                                 //All is good, begin the setup process handled by the ArenaCreation manager
-                                try
-                                {
+                                try {
                                     FridayThe13th.arenaCreationManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName);
-                                }
-                                catch (ArenaSetupSessionAlreadyInProgress exception)
-                                {
+                                } catch (ArenaSetupSessionAlreadyInProgress exception) {
                                     //They already have a setup session in progress
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You already have an arena setup session in progress. You must finish that session before starting a new one.");
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 //An arena with that name already exists in the arena controller memory
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " already exists. Please choose another name and try again.");
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Incorrect setup syntax
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect setup syntax. Usage: /f13 setup [arenaName]");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //The command was sent by something other than an in-game player
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The setup command can only be executed by an in-game player.");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("add"))
+                else
                 {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("add"))
+            {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     //Setup commands cannot be executed by the console
-                    if (sender instanceof Player)
-                    {
+                    if (sender instanceof Player) {
                         //Correct Syntax: /f13 setup [arenaName] [object]
-                        if (args.length == 3)
-                        {
+                        if (args.length == 3) {
                             String arenaName = args[1];
 
-                            if (args[2].equalsIgnoreCase("spawn"))
-                            {
+                            if (args[2].equalsIgnoreCase("spawn")) {
                                 //All is good, begin the setup process handled by the ArenaCreation manager
                                 try {
                                     FridayThe13th.spawnPointCreationManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName);
@@ -96,174 +88,163 @@ public class AdminCommand implements CommandExecutor
                                     //An arena with that name does not exist in the arena controller memory
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 //Unknown add command
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown add item.");
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Incorrect setup syntax
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add [arenaName] [object]");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //The command was sent by something other than an in-game player
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The add command can only be executed by an in-game player.");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("play") || args[0].equalsIgnoreCase("join"))
+                else
                 {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("play") || args[0].equalsIgnoreCase("join"))
+            {
+                if (sender.hasPermission("FridayThe13th.User")) {
                     //Setup commands cannot be executed by the console
-                    if (sender instanceof Player)
-                    {
+                    if (sender instanceof Player) {
                         //Correct Syntax: /f13 setup [arenaName] [object]
-                        if (args.length == 2)
-                        {
+                        if (args.length == 2) {
                             String arenaName = args[1];
 
                             //All is good, begin the play process handled by the ArenaCreation manager
-                            try
-                            {
-                                FridayThe13th.arenaController.getArena(arenaName).getPlayerManager().playerJoinGame(((Player)sender));
-                            }
-                            catch (ArenaDoesNotExistException exception)
-                            {
+                            try {
+                                FridayThe13th.arenaController.getArena(arenaName).getPlayerManager().playerJoinGame(((Player) sender));
+                            } catch (ArenaDoesNotExistException exception) {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
-                            }
-                            catch (GameFullException exception)
-                            {
+                            } catch (GameFullException exception) {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The game in " + ChatColor.RED + arenaName + ChatColor.WHITE + " is currently full.");
-                            }
-                            catch (GameInProgressException exception)
-                            {
+                            } catch (GameInProgressException exception) {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The game in " + ChatColor.RED + arenaName + ChatColor.WHITE + " is currently in progress. You cannot join during a game.");
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Incorrect setup syntax
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add [arenaName] [object]");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //The command was sent by something other than an in-game player
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The play command can only be executed by an in-game player.");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("arena"))
+                else
                 {
-                    if (args.length == 2)
-                    {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("arena"))
+            {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    if (args.length == 2) {
                         String arenaName = args[1];
 
-                        try
-                        {
+                        try {
                             Arena arena = FridayThe13th.arenaController.getArena(arenaName);
 
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "-----" + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE +" -----");
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "-----" + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE + " -----");
                             sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
 
-                            if (arena.getGameManager().isGameEmpty())
-                            {
+                            if (arena.getGameManager().isGameEmpty()) {
                                 sender.sendMessage("Game Status: " + ChatColor.RED + "Empty");
-                            }
-                            else if (arena.getGameManager().isGameWaiting())
-                            {
+                            } else if (arena.getGameManager().isGameWaiting()) {
                                 sender.sendMessage("Game Status: " + ChatColor.GOLD + "Waiting");
-                            }
-                            else if (arena.getGameManager().isGameInProgress())
-                            {
+                            } else if (arena.getGameManager().isGameInProgress()) {
                                 sender.sendMessage("Game Status: " + ChatColor.GREEN + "In Progress");
                             }
 
-                        }
-                        catch (ArenaDoesNotExistException exception)
-                        {
+                        } catch (ArenaDoesNotExistException exception) {
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //Incorrect setup syntax
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add [arenaName] [object]");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("here"))
+                else
                 {
-                    if (FridayThe13th.arenaCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString()))
-                    {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("here"))
+            {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    if (FridayThe13th.arenaCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
                         //Make the selection
                         FridayThe13th.arenaCreationManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
-                    }
-                    else if (FridayThe13th.spawnPointCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString()))
-                    {
+                    } else if (FridayThe13th.spawnPointCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
                         //Make the selection
                         FridayThe13th.spawnPointCreationManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
-                    }
-                    else
-                    {
+                    } else {
                         //There is no active setup session
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You do not currently have a setup session in progress.");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("leave"))
+                else
                 {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("leave"))
+            {
+                if (sender.hasPermission("FridayThe13th.User")) {
                     //Setup commands cannot be executed by the console
-                    if (sender instanceof Player)
-                    {
-                        try
-                        {
+                    if (sender instanceof Player) {
+                        try {
                             FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString()).getPlayerManager().onplayerQuit(((Player) sender));
-                        }
-                        catch (PlayerNotPlayingException exception)
-                        {
+                        } catch (PlayerNotPlayingException exception) {
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You are not currently playing.");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The quit command can only be used by in-game players.");
                     }
                 }
-                else if (args[0].equalsIgnoreCase("arenas"))
+                else
                 {
-                    if (FridayThe13th.arenaController.getNumberOfArenas() > 0)
-                    {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("arenas")) {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    if (FridayThe13th.arenaController.getNumberOfArenas() > 0) {
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "--- Arenas ---");
 
                         //Print all arenas
                         Iterator it = FridayThe13th.arenaController.getArenas().entrySet().iterator();
                         int count = 1;
-                        while (it.hasNext())
-                        {
+                        while (it.hasNext()) {
                             Map.Entry entry = (Map.Entry) it.next();
                             Arena arena = (Arena) entry.getValue();
 
                             sender.sendMessage(count++ + ".) " + arena.getArenaName());
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //There are no arenas
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "There are no arenas to display.");
                     }
-                }
-                else
-                {
+                } else {
                     //Unknown Command
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown command.");
                 }
             }
+            else
+            {
+                //No permissions
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+            }
         }
-        else
-        {
-            //User does not have admin privileges to execute these commands
-        }
+
         return true;
     }
 }
