@@ -270,14 +270,35 @@ public class PlayerManager
      */
     public void onPlayerLogout(String playerUUID)
     {
+        //Hurry and see if we can teleport them out and clear inventory
+        Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
+        player.teleport(arena.getReturnLocation());
+        player.getInventory().clear();
+
+        //Cleanup
         performPlayerCleanupActions(playerUUID);
 
-        //see if they're jason, and if them leaving has to end the game
+        if (isJason(player))
+        {
+            //Jason logged off, so end the game
+            sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) logged off and quit the game.");
+            arena.getGameManager().endGame();
+        }
+        else
+        {
+            //They're a counselor
+            if (getNumPlayersAlive() <= 1)
+            {
+                //They were the last one
+                jasonWins();
+                arena.getGameManager().endGame();
+            }
+        }
 
 
         //Message everyone in game
-        OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
-        sendMessageToAllPlayers(ChatColor.GRAY + player.getName() + " has logged out and left the game.");
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
+        sendMessageToAllPlayers(ChatColor.GRAY + offlinePlayer.getName() + " has logged out and left the game.");
     }
 
     /**
@@ -286,16 +307,13 @@ public class PlayerManager
      */
     public void onplayerQuit(Player player)
     {
-        //Hurry and see if we can teleport them out and clear inventory
-        player.teleport(arena.getReturnLocation());
-        player.getInventory().clear();
 
         //Clean up
         performPlayerCleanupActions(player.getUniqueId().toString());
 
         if (isJason(player))
         {
-            //Jason logged off, so end the game
+            //Jason quit off, so end the game
             sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) left the game.");
             arena.getGameManager().endGame();
         }
@@ -304,7 +322,9 @@ public class PlayerManager
             //They're a counselor
             if (getNumPlayersAlive() <= 1)
             {
-                //
+                //They were the last one
+                jasonWins();
+                arena.getGameManager().endGame();
             }
         }
 
@@ -329,7 +349,7 @@ public class PlayerManager
         else
         {
             //They're a normal player, see if there are still others alive
-            if (getNumPlayersAlive() > 0)
+            if (getNumPlayersAlive() > 1) //since jason is still presumably alive
             {
                 //They're are others still alive, enter spectating mode
                 getCounselor(player).enterSpectatingMode();
@@ -361,11 +381,6 @@ public class PlayerManager
             return false;
         }
     }
-
-
-
-
-
 
     /**
      * Assigns all players a role (counselor or jason)
@@ -465,7 +480,9 @@ public class PlayerManager
         {
             Map.Entry entry = (Map.Entry) it.next();
             Player player = (Player) entry.getValue();
+            it.remove();
             performPlayerCleanupActions(player.getUniqueId().toString());
+
         }
     }
 
@@ -483,7 +500,6 @@ public class PlayerManager
         removePlayer(playerUUID);
         alivePlayers.remove(playerUUID);
         deadPlayers.remove(playerUUID);
-        counselors.remove(playerUUID);
 
         if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty())
         {
@@ -519,7 +535,8 @@ public class PlayerManager
                 //Hide the stats bars
                 counselor.getStatsDisplayManager().hideStats();
 
-                //Hide the scoreboard
+                //Remove from counselors
+                counselors.remove(playerUUID);
             }
             else if (isJason((Player)offlinePlayer))
             {
@@ -557,7 +574,7 @@ public class PlayerManager
     }
 
 
-    
+
 
     /* Teleports */
 

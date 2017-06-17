@@ -168,7 +168,7 @@ public class PlayerListener implements Listener {
 
                 Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
 
-                if (arena.getPlayerManager().isAlive(player) && player.getHealth() <= event.getDamage())
+                if (player.getHealth() <= event.getDamage())
                 {
                     //This blow would kill them
                     event.setCancelled(true);
