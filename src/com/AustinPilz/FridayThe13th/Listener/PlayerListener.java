@@ -113,25 +113,52 @@ public class PlayerListener implements Listener {
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
-            if (arena.getGameManager().isGameInProgress()) {
-                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer())) {
+            if (arena.getGameManager().isGameInProgress())
+            {
+                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
+                {
                     //Counselor [has stamina]
-                    if (event.getPlayer().isSprinting()) {
-                        //Sprinting
-                        arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
-                    } else if (event.getPlayer().isSneaking()) {
-                        //Sneaking
-                        arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
-                    } else if (event.getPlayer().isFlying()) {
-                        if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode()) {
-                            event.getPlayer().setFlying(false); //Prevent cheating
+                    if (event.getFrom().distance(event.getTo()) > 0)
+                    {
+                        if (event.getPlayer().isSprinting())
+                        {
+                            //Sprinting
+                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
                         }
-                    } else {
-                        //Must just be walking
-                        arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
+                        else if (event.getPlayer().isSneaking())
+                        {
+                            //Sneaking
+                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
+                        }
+                        else if (event.getPlayer().isFlying())
+                        {
+                            if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
+                            {
+                                event.getPlayer().setFlying(false); //Prevent cheating
+                            }
+                        }
+                        else
+                        {
+                            //Must just be walking
+                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
+                        }
                     }
-                } else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer())) {
-                    //TODO: Jason
+                }
+                else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
+                {
+                    if (event.getPlayer().isSneaking())
+                    {
+                        if (arena.getGameManager().getPlayerManager().getJason().canStalk())
+                        {
+                            //He's stalking
+                            arena.getGameManager().getPlayerManager().getJason().setStalking(true);
+                        }
+                        else
+                        {
+                            //Can't stalk, so cancel event
+                            event.setCancelled(true);
+                        }
+                    }
                 }
             }
         } catch (PlayerNotPlayingException exception) {

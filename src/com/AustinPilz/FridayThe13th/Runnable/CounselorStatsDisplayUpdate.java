@@ -1,9 +1,8 @@
 package com.AustinPilz.FridayThe13th.Runnable;
 
 import com.AustinPilz.FridayThe13th.Components.Counselor;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class CounselorStatsDisplayUpdate extends BukkitRunnable {
+public class CounselorStatsDisplayUpdate implements Runnable {
 
     private Counselor counselor;
 

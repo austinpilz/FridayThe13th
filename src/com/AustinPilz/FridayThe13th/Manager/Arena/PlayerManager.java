@@ -547,7 +547,13 @@ public class PlayerManager
             }
             else if (isJason((Player)offlinePlayer))
             {
-                //
+                //Stop tasks
+                jason.cancelTasks();
+
+                //Remove his ability display
+                jason.getAbilityDisplayManager().hideAbilities();
+
+
             }
 
             //Actions done only if they're online

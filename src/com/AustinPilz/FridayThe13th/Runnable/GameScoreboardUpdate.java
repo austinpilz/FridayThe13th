@@ -2,9 +2,9 @@ package com.AustinPilz.FridayThe13th.Runnable;
 
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class GameScoreboardUpdate extends BukkitRunnable {
+public class GameScoreboardUpdate implements Runnable
+{
 
     private Arena arena;
 

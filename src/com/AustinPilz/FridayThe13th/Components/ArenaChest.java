@@ -165,6 +165,7 @@ public class ArenaChest
                 ItemStack healthPotion = new ItemStack(Material.POTION, 1);
                 PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
                 meta.setBasePotionData(new PotionData(PotionType.REGEN));
+                meta.setDisplayName(ChatColor.GREEN + "Antiseptic Spray");
                 healthPotion.setItemMeta(meta);
                 getChest().getBlockInventory().addItem(healthPotion);
             }

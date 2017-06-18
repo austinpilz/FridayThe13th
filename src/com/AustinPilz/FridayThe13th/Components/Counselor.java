@@ -120,7 +120,7 @@ public class Counselor
         getStatsDisplayManager().startUpdaterTask();
 
         //Fear Check Task
-        statsUpdateTask =  Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorStatsUpdate(this), 0, 20);
+        statsUpdateTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorStatsUpdate(this), 0, 20);
     }
 
     /**

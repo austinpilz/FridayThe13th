@@ -3,8 +3,10 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.GameStatus;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Display.GameCountdownManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
+import com.AustinPilz.FridayThe13th.Runnable.GameCountdown;
 import com.AustinPilz.FridayThe13th.Runnable.GameScoreboardUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
 import com.AustinPilz.FridayThe13th.Runnable.WaitingCountdown;
@@ -24,20 +26,22 @@ public class GameManager
     private int gameTimeLeftInSeconds;
     private int gameTimeMax = 600;
     private int waitingTimeLeftInSeconds;
-    private int waitingTimeMax = 5;
+    private int waitingTimeMax = 1;
     private GameStatus gameStatus;
 
     //Tasks
     //second countdown (only when in waiting and in progress)
     int gameStatusCheckTask = -1;
+    int gameCountdownTask = -1;
     int waitingCountdownTask = -1;
     int scoreboardTask = -1;
 
 
     //Managers
     public PlayerManager playerManager;
-    protected WaitingCountdownDisplayManager waitingCountdownDisplayManager; //Game-wide waiting room countdown
-    protected GameScoreboardManager scoreboardManager; //Game-wide scoreboard with alive/dead players
+    private GameCountdownManager gameCountdownManager;
+    private WaitingCountdownDisplayManager waitingCountdownDisplayManager; //Game-wide waiting room countdown
+    private GameScoreboardManager scoreboardManager; //Game-wide scoreboard with alive/dead players
 
     /**
      * @param arena Arena object
@@ -49,6 +53,7 @@ public class GameManager
 
         //Managers
         playerManager = new PlayerManager(arena);
+        gameCountdownManager = new GameCountdownManager(arena);
         waitingCountdownDisplayManager = new WaitingCountdownDisplayManager(arena);
         scoreboardManager = new GameScoreboardManager(arena);
 
@@ -70,7 +75,16 @@ public class GameManager
     }
 
     /**
-     * Returns the countdown display manager
+     * Returns the game countdown display manager
+     * @return
+     */
+    public GameCountdownManager getGameCountdownManager()
+    {
+        return gameCountdownManager;
+    }
+
+    /**
+     * Returns the waiting countdown display manager
      */
     public WaitingCountdownDisplayManager getWaitingCountdownDisplayManager()
     {
@@ -110,13 +124,38 @@ public class GameManager
         return waitingTimeMax;
     }
 
+    /**
+     * Returns the number of seconds left in the game
+     * @return
+     */
+    public int getGameTimeLeft()
+    {
+        return gameTimeLeftInSeconds;
+    }
 
+    /**
+     * Returns the maximum number of seconds per game
+     * @return
+     */
+    public int getGameTimeMax()
+    {
+        return gameTimeMax;
+    }
+
+    /**
+     * Sets the time left in the game in seconds
+     * @param value
+     */
+    public void setGameTimeLeft(int value)
+    {
+        gameTimeLeftInSeconds = Math.max(0, value); //make sure it doesn't go below 0
+    }
     /**
      * Resets the games internal statistics
      */
     private void resetGameStatistics()
     {
-        gameTimeLeftInSeconds = 0;
+        setGameTimeLeft(getGameTimeMax());
         waitingTimeLeftInSeconds = getWaitingTimeMax();
     }
 
@@ -231,6 +270,7 @@ public class GameManager
             //Cancel tasks
             Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
             Bukkit.getScheduler().cancelTask(scoreboardTask);
+            Bukkit.getScheduler().cancelTask(gameCountdownTask);
 
             if (isGameWaiting())
             {
@@ -269,6 +309,10 @@ public class GameManager
 
             gameStatus = GameStatus.InProgress; //Change mode
 
+            //Schedule game countdown
+            gameCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameCountdown(arena),0, 20);
+
+
             //Start the game
             beginGame();
         }
@@ -279,12 +323,14 @@ public class GameManager
         //Reset location manager spawn point availability
         arena.getLocationManager().resetAvailableStartingPoints();
 
+        //Regenerate tests
         arena.getObjectManager().regenerateChests();
 
         //Assign all players roles (maybe move these into the performInProgressActions() ?
         getPlayerManager().performInProgressActions();
 
-        //Generate chests and stuff here?!
+        //Show countdown bar to everyone
+        getGameCountdownManager().displayCountdown();
 
     }
 
@@ -293,10 +339,19 @@ public class GameManager
      */
     protected void endGame()
     {
+        //Hide countdown from all players
+        getGameCountdownManager().hideCountdown();
+
         //Remove all players
         getPlayerManager().performEndGameActions();
 
         //Don't need to worry about tasks and timers here, handled automatically
         changeGameStatus(GameStatus.Empty);
+    }
+
+    public void gameTimeUp()
+    {
+        //need to pass that the counselors who are alive won.
+        endGame();
     }
 }
