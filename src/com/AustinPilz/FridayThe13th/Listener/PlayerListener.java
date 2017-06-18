@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th.Listener;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -84,7 +85,8 @@ public class PlayerListener implements Listener {
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
-            if (arena.getGameManager().isGameInProgress()) {
+            if (arena.getGameManager().isGameInProgress())
+            {
                 if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
                 {
                     if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
@@ -96,6 +98,10 @@ public class PlayerListener implements Listener {
                     }
                 }
 
+            }
+            else if (arena.getGameManager().isGameWaiting())
+            {
+                event.setCancelled(true); //Disable interaction while in the waiting room
             }
         } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
@@ -168,17 +174,35 @@ public class PlayerListener implements Listener {
 
                 Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
 
-                if (player.getHealth() <= event.getDamage())
+                if (arena.getGameManager().isGameInProgress()) {
+                    if (player.getHealth() <= event.getDamage()) {
+                        //This blow would kill them
+                        event.setCancelled(true);
+                        arena.getGameManager().getPlayerManager().onPlayerDeath(player);
+                    }
+                }
+                else
                 {
-                    //This blow would kill them
+                    //You can't get damaged while waiting
                     event.setCancelled(true);
-                    arena.getGameManager().getPlayerManager().onPlayerDeath(player);
                 }
 
             }
             catch (PlayerNotPlayingException exception)
             {
                 //Do nothing since in this case, we couldn't care
+            }
+        }
+    }
+
+    @EventHandler
+    public void onItemDrop (PlayerDropItemEvent event)
+    {
+        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer()))
+        {
+            if (event.getItemDrop().getItemStack().hasItemMeta() && !event.getItemDrop().getItemStack().getItemMeta().getDisplayName().isEmpty() && event.getItemDrop().getItemStack().getItemMeta().getDisplayName().contains("Jason's"))
+            {
+                event.setCancelled(true);
             }
         }
     }

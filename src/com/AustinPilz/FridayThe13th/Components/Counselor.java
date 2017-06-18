@@ -61,8 +61,8 @@ public class Counselor
         arena = a;
 
         //Stamina
-        stamina = 60;
-        maxStamina = 60;
+        stamina = 100;
+        maxStamina = 100;
         staminaDepletionRate = 0.1;
         staminaRegenerationRate = 1.5;
 
@@ -411,5 +411,6 @@ public class Counselor
     {
         getPlayer().removePotionEffect(PotionEffectType.BLINDNESS); //Scared
         getPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
+        getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
     }
 }

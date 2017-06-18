@@ -47,14 +47,14 @@ public class GameManager
         this.arena = arena;
         resetGameStatistics();
 
-        //Change game status to empty
-        gameStatus = GameStatus.Empty; //to void null pointer
-        changeGameStatus(GameStatus.Empty);
-
         //Managers
         playerManager = new PlayerManager(arena);
         waitingCountdownDisplayManager = new WaitingCountdownDisplayManager(arena);
         scoreboardManager = new GameScoreboardManager(arena);
+
+        //Change game status to empty
+        gameStatus = GameStatus.Empty; //to void null pointer
+        changeGameStatus(GameStatus.Empty);
 
         //Start Tasks
         gameStatusCheckTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameStatusCheck(arena), 60, 20);
@@ -278,6 +278,8 @@ public class GameManager
     {
         //Reset location manager spawn point availability
         arena.getLocationManager().resetAvailableStartingPoints();
+
+        arena.getObjectManager().regenerateChests();
 
         //Assign all players roles (maybe move these into the performInProgressActions() ?
         getPlayerManager().performInProgressActions();

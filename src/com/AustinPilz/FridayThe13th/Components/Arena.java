@@ -110,6 +110,11 @@ public class Arena
     public GameManager getGameManager() { return gameManager; }
 
     /**
+     * Returns the arena's object manager
+     * @return
+     */
+    public ObjectManager getObjectManager() { return objectManager; }
+    /**
      * Checks if supplied location is within the arena boundaries
      * @param inQuestion
      * @return

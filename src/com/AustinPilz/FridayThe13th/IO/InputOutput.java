@@ -1,13 +1,15 @@
 package com.AustinPilz.FridayThe13th.IO;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.ArenaChest;
+import com.AustinPilz.FridayThe13th.Components.ChestType;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
-import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaCreationException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
-import com.AustinPilz.FridayThe13th.Exceptions.SpawnPoint.SpawnPointCreationException;
+import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -197,7 +199,7 @@ public class InputOutput
      * Stores arena into database
      * @param arena
      */
-    public void storeArena(Arena arena) throws ArenaCreationException
+    public void storeArena(Arena arena) throws SaveToDatabaseException
     {
         try
         {
@@ -233,7 +235,7 @@ public class InputOutput
         catch (SQLException e)
         {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to save new arena into database: " + e.getMessage());
-            throw new ArenaCreationException();
+            throw new SaveToDatabaseException();
         }
     }
 
@@ -283,9 +285,9 @@ public class InputOutput
      * Stores new spawn point into the database
      * @param arena
      * @param location
-     * @throws SpawnPointCreationException
+     * @throws SaveToDatabaseException
      */
-    public void storeSpawnPoint(Arena arena, Location location) throws SpawnPointCreationException
+    public void storeSpawnPoint(Arena arena, Location location) throws SaveToDatabaseException
     {
         try
         {
@@ -308,24 +310,140 @@ public class InputOutput
         catch (SQLException e)
         {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to save new spawn point in arena "+arena.getArenaName()+" into database: " + e.getMessage());
-            throw new SpawnPointCreationException();
+            throw new SaveToDatabaseException();
         }
     }
 
 
+    /**
+     * Loads chests from database into arena memory
+     */
     public void loadChests()
     {
-        //
+        try
+        {
+            Connection conn;
+            PreparedStatement ps = null;
+            ResultSet result = null;
+            conn = getConnection();
+            ps = conn.prepareStatement("SELECT `World`, `X`, `Y`, `Z`, `Arena`, `Type` FROM `f13_chests`");
+            result = ps.executeQuery();
+
+            int count = 0;
+            int removed = 0;
+            while (result.next())
+            {
+                Location chestLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
+
+                if (chestLocation.getBlock().getType().equals(Material.CHEST))
+                {
+                    try
+                    {
+                        //Determine chest type
+                        ChestType type = ChestType.Item; //default
+
+                        if (result.getString("Type").equals("Item"))
+                        {
+                            type = ChestType.Item;
+                        }
+                        else if (result.getString("Type").equals("Weapon"))
+                        {
+                            type = ChestType.Weapon;
+                        }
+
+
+                        Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
+                        arena.getObjectManager().addChest(new ArenaChest(arena, chestLocation, type));
+                        count++;
+                    }
+                    catch (ArenaDoesNotExistException exception)
+                    {
+                        FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load chest in arena ("+result.getString("Arena")+"), arena does not exist in memory.");
+                        deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                        removed++;
+                    }
+                }
+                else
+                {
+                    //This location is no longer a chest, so remove it
+                    deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                    removed++;
+                }
+            }
+
+            if (count > 0)
+            {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Loaded " + count + " chest(s).");
+            }
+
+            conn.commit();
+            ps.close();
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to load chests from database: " + e.getMessage());
+        }
     }
 
-    public void newChest()
+    /**
+     * Stores chest to the database
+     * @param chest
+     * @throws SaveToDatabaseException
+     */
+    public void newChest(ArenaChest chest) throws SaveToDatabaseException
     {
-        //
+        try
+        {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "INSERT INTO f13_chests (`X`, `Y`, `Z`, `World`, `Arena`, `Type`) VALUES (?,?,?,?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+            preparedStatement.setDouble(1, chest.getLocation().getX());
+            preparedStatement.setDouble(2, chest.getLocation().getY());
+            preparedStatement.setDouble(3, chest.getLocation().getZ());
+            preparedStatement.setString(4, chest.getLocation().getWorld().getName());
+            preparedStatement.setString(5, chest.getArena().getArenaName());
+            preparedStatement.setString(6, chest.getChestType().getFieldDescription());
+
+            preparedStatement.executeUpdate();
+            conn.commit();
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to store a chest to the database: " + e.getMessage());
+            throw new SaveToDatabaseException();
+        }
     }
 
-    public void deleteChest()
+    /**
+     * Removes a chest from the database
+     * @param X
+     * @param Y
+     * @param Z
+     * @param world
+     */
+    public void deleteChest(double X, double Y, double Z, String world)
     {
-        //
+        try
+        {
+            Connection conn = InputOutput.getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_chests WHERE World = ? AND X = ? AND Y = ? AND Z = ?");
+            ps.setString(1, world);
+            ps.setDouble(2, X);
+            ps.setDouble(3, Y);
+            ps.setDouble(4, Z);
+            ps.executeUpdate();
+            conn.commit();
+            ps.close();
+
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove a chest from the database: " + e.getMessage());
+        }
     }
 
 

@@ -6,6 +6,7 @@ import com.AustinPilz.FridayThe13th.IO.InputOutput;
 import com.AustinPilz.FridayThe13th.Listener.BlockListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
+import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
@@ -33,6 +34,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     //Global Managers
     public static ArenaCreationManager arenaCreationManager;
     public static SpawnPointCreationManager spawnPointCreationManager;
+    public static ChestSetupManager chestSetupManager;
     public static InputOutput inputOutput;
 
     @Override
@@ -52,6 +54,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         arenaController = new ArenaController();
         arenaCreationManager = new ArenaCreationManager();
         spawnPointCreationManager = new SpawnPointCreationManager();
+        chestSetupManager = new ChestSetupManager();
 
         //InputOutput
         inputOutput = new InputOutput();
@@ -59,6 +62,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         inputOutput.prepareDB();
         inputOutput.loadArenas();
         inputOutput.loadSpawnPoints();
+        inputOutput.loadChests();
 
         //Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -75,6 +79,9 @@ public class FridayThe13th extends JavaPlugin implements Listener
     @Override
     public void onDisable()
     {
-        //
+        //Stuff here
+
+        //Close database connection
+        inputOutput.freeConnection();
     }
 }

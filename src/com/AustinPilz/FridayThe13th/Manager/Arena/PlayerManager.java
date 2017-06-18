@@ -300,20 +300,19 @@ public class PlayerManager
         //Cleanup
         performPlayerCleanupActions(playerUUID);
 
-        if (isJason(player))
-        {
-            //Jason logged off, so end the game
-            sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) logged off and quit the game.");
-            arena.getGameManager().endGame();
-        }
-        else
-        {
-            //They're a counselor
-            if (getNumPlayersAlive() <= 1)
-            {
-                //They were the last one
-                jasonWins();
+        if (arena.getGameManager().isGameInProgress()) {
+
+            if (isJason(player)) {
+                //Jason logged off, so end the game
+                sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) logged off and quit the game.");
                 arena.getGameManager().endGame();
+            } else {
+                //They're a counselor
+                if (getNumPlayersAlive() <= 1) {
+                    //They were the last one
+                    jasonWins();
+                    arena.getGameManager().endGame();
+                }
             }
         }
 
@@ -329,24 +328,22 @@ public class PlayerManager
      */
     public void onplayerQuit(Player player)
     {
-
         //Clean up
         performPlayerCleanupActions(player.getUniqueId().toString());
 
-        if (isJason(player))
-        {
-            //Jason quit off, so end the game
-            sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) left the game.");
-            arena.getGameManager().endGame();
-        }
-        else
-        {
-            //They're a counselor
-            if (getNumPlayersAlive() <= 1)
-            {
-                //They were the last one
-                jasonWins();
+        if (arena.getGameManager().isGameInProgress()) {
+
+            if (isJason(player)) {
+                //Jason quit off, so end the game
+                sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) left the game.");
                 arena.getGameManager().endGame();
+            } else {
+                //They're a counselor
+                if (getNumPlayersAlive() <= 1) {
+                    //They were the last one
+                    jasonWins();
+                    arena.getGameManager().endGame();
+                }
             }
         }
 
@@ -356,31 +353,28 @@ public class PlayerManager
 
     public void onPlayerDeath(Player player)
     {
-        //Transition from alive to dead hash set
-        alivePlayers.remove(player.getUniqueId().toString());
-        deadPlayers.add(player.getUniqueId().toString());
+        if (arena.getGameManager().isGameInProgress()) {
+            //Transition from alive to dead hash set
+            alivePlayers.remove(player.getUniqueId().toString());
+            deadPlayers.add(player.getUniqueId().toString());
 
-        //Check to see if they're jason, which would end the game
-        if (isJason(player))
-        {
-            //Counselors win
-            counselorsWin();
+            //Check to see if they're jason, which would end the game
+            if (isJason(player)) {
+                //Counselors win
+                counselorsWin();
 
-            arena.getGameManager().endGame(); //Game over kiddos
-        }
-        else
-        {
-            //They're a normal player, see if there are still others alive
-            if (getNumPlayersAlive() > 1) //since jason is still presumably alive
-            {
-                //They're are others still alive, enter spectating mode
-                getCounselor(player).enterSpectatingMode();
-            }
-            else
-            {
-                //They were the last to die, so end the game
-                jasonWins();
-                arena.getGameManager().endGame();
+                arena.getGameManager().endGame(); //Game over kiddos
+            } else {
+                //They're a normal player, see if there are still others alive
+                if (getNumPlayersAlive() > 1) //since jason is still presumably alive
+                {
+                    //They're are others still alive, enter spectating mode
+                    getCounselor(player).enterSpectatingMode();
+                } else {
+                    //They were the last to die, so end the game
+                    jasonWins();
+                    arena.getGameManager().endGame();
+                }
             }
         }
 
@@ -568,8 +562,11 @@ public class PlayerManager
                 teleportPlayerToReturnPoint(player);
 
                 //Return normal walking speed
-                player.setWalkSpeed(1);
-                player.setFlySpeed(0.1f);
+                player.setWalkSpeed(0.2f);
+                player.setFlySpeed(0.5f);
+
+                //Clear inventory
+                player.getInventory().clear();
             }
         }
     }

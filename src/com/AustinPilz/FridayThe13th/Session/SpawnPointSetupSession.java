@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Session;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
-import com.AustinPilz.FridayThe13th.Exceptions.SpawnPoint.SpawnPointCreationException;
+import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,7 +41,7 @@ public class SpawnPointSetupSession
     private void beginSelection()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena  " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Arena" + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "To add spawn point, go to desired point and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -52,7 +52,7 @@ public class SpawnPointSetupSession
     {
         if (arena.isLocationWithinArenaBoundaries(player.getLocation())) {
             this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-            this.player.sendMessage(ChatColor.WHITE + "Arena  " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+            this.player.sendMessage(ChatColor.WHITE + "Arena" + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
             this.player.sendMessage("");
             this.player.sendMessage(ChatColor.WHITE + "Spawn point selected " + ChatColor.GREEN + "successfully" + ChatColor.WHITE + ".");
             this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -66,7 +66,7 @@ public class SpawnPointSetupSession
 
                 //Add to arena's location manager
                 this.arena.getLocationManager().addStartingPoint(spawnLocation);
-            } catch (SpawnPointCreationException exception) {
+            } catch (SaveToDatabaseException exception) {
                 player.sendMessage(FridayThe13th.pluginAdminPrefix + "Spawn point setup FAILED due to a database issue.");
             } finally {
                 //Terminate session

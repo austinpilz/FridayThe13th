@@ -2,8 +2,10 @@ package com.AustinPilz.FridayThe13th.Command;
 
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.ChestType;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaSetupSessionAlreadyInProgress;
+import com.AustinPilz.FridayThe13th.Exceptions.Chest.ChestSetupSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
@@ -77,7 +79,8 @@ public class CommandHandler implements CommandExecutor
                         if (args.length == 3) {
                             String arenaName = args[1];
 
-                            if (args[2].equalsIgnoreCase("spawn")) {
+                            if (args[2].equalsIgnoreCase("spawn"))
+                            {
                                 //All is good, begin the setup process handled by the ArenaCreation manager
                                 try {
                                     FridayThe13th.spawnPointCreationManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName);
@@ -88,7 +91,43 @@ public class CommandHandler implements CommandExecutor
                                     //An arena with that name does not exist in the arena controller memory
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
                                 }
-                            } else {
+                            }
+                            else if (args[2].contains("chest"))
+                            {
+                                if (args[2].equalsIgnoreCase("chest:weapon"))
+                                {
+                                    try
+                                    {
+                                        FridayThe13th.chestSetupManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName, ChestType.Weapon);
+                                    } catch (ChestSetupSessionAlreadyInProgressException exception) {
+                                        //They already have a setup session in progress
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You already have a weapon chest setup session in progress. You must finish that session before starting a new one.");
+                                    } catch (ArenaDoesNotExistException exception) {
+                                        //An arena with that name does not exist in the arena controller memory
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
+                                    }
+                                }
+                                else if (args[2].equalsIgnoreCase("chest:item"))
+                                {
+                                    try
+                                    {
+                                        FridayThe13th.chestSetupManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName, ChestType.Item);
+                                    } catch (ChestSetupSessionAlreadyInProgressException exception) {
+                                        //They already have a setup session in progress
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You already have an item chest setup session in progress. You must finish that session before starting a new one.");
+                                    } catch (ArenaDoesNotExistException exception) {
+                                        //An arena with that name does not exist in the arena controller memory
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
+                                    }
+                                }
+                                else
+                                {
+                                    //Unknown type of chest
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown chest type.");
+                                }
+                            }
+                            else
+                            {
                                 //Unknown add command
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown add item.");
                             }
@@ -127,8 +166,8 @@ public class CommandHandler implements CommandExecutor
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The game in " + ChatColor.RED + arenaName + ChatColor.WHITE + " is currently in progress. You cannot join during a game.");
                             }
                         } else {
-                            //Incorrect setup syntax
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add [arenaName] [object]");
+                            //Incorrect play syntax
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect play syntax. Usage: /f13 play [arenaName]");
                         }
                     } else {
                         //The command was sent by something other than an in-game player
@@ -181,10 +220,15 @@ public class CommandHandler implements CommandExecutor
                     if (FridayThe13th.arenaCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
                         //Make the selection
                         FridayThe13th.arenaCreationManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
-                    } else if (FridayThe13th.spawnPointCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                    }
+                    else if (FridayThe13th.spawnPointCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
                         //Make the selection
                         FridayThe13th.spawnPointCreationManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
-                    } else {
+                    }
+                    else if (FridayThe13th.chestSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                        FridayThe13th.chestSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
+                    }
+                    else {
                         //There is no active setup session
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You do not currently have a setup session in progress.");
                     }
