@@ -159,6 +159,19 @@ public class PlayerListener implements Listener {
                             event.setCancelled(true);
                         }
                     }
+                    else if (event.getPlayer().isSprinting())
+                    {
+                        arena.getGameManager().getPlayerManager().getJason().setSprinting(true);
+                    }
+                    else if (event.getPlayer().isFlying())
+                    {
+                        arena.getGameManager().getPlayerManager().getJason().setFlying(true);
+                    }
+                    else
+                    {
+                        //Must just be walking
+                        arena.getGameManager().getPlayerManager().getJason().setWalking(true);
+                    }
                 }
             }
         } catch (PlayerNotPlayingException exception) {

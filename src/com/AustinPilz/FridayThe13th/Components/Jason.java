@@ -5,6 +5,7 @@ import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,6 +13,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class Jason
 {
@@ -34,6 +37,7 @@ public class Jason
     private double stalkLevelDepletionRate;
     private double stalkLevelRegenerationRate;
     private boolean stalkInitialGenerationCompleted;
+    private PotionEffect stalkPotion;
 
     //Sense
 
@@ -52,9 +56,10 @@ public class Jason
         //Stalk Values
         stalkLevel = 0;
         stalkLevelMax = 30;
-        stalkLevelDepletionRate = 0.1;
-        stalkLevelRegenerationRate = 0.01;
+        stalkLevelDepletionRate = 0.01;
+        stalkLevelRegenerationRate = 0.06;
         stalkInitialGenerationCompleted = false;
+        stalkPotion = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
     }
 
     /**
@@ -74,12 +79,18 @@ public class Jason
         return abilityDisplayManager;
     }
 
+    /**
+     * Schedules all Jason runnable tasks
+     */
     public void scheduleTasks()
     {
         taskAbilityDisplay = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new JasonAbilitiesDisplayUpdate(this), 0, 20);
         taskAbilityRegeneration = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new JasonAbilitiesRegeneration(this), 0, 20);
     }
 
+    /**
+     * Cancels all Jason runnable tasks
+     */
     public void cancelTasks()
     {
         Bukkit.getScheduler().cancelTask(taskAbilityDisplay);
@@ -164,7 +175,7 @@ public class Jason
      */
     public boolean canStalk()
     {
-        if (getStalkLevel() > 0)
+        if (getStalkLevel() > 0 && hasInitialStalkGenerationCompleted())
         {
             return true;
         }
@@ -182,7 +193,60 @@ public class Jason
     {
         if (value)
         {
-            setStalkLevel(Math.max(0, getStalkLevel() - stalkLevelDepletionRate));
+            setStalkLevel(Math.max(0, getStalkLevel() - (getStalkLevelMax() * stalkLevelDepletionRate)));
+            getPlayer().addPotionEffect(stalkPotion);
+
+            setWalking(false);
+            setSprinting(false);
+            setFlying(false);
+        }
+        else
+        {
+            //Remove invisibility potion
+            getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+
+        }
+    }
+
+    public void setWalking(boolean value)
+    {
+        if (value)
+        {
+            setStalking(false);
+            setSprinting(false);
+            setFlying(false);
+        }
+        else
+        {
+
+        }
+    }
+
+    public void setSprinting(boolean value)
+    {
+        if (value)
+        {
+            setStalking(false);
+            setWalking(false);
+            setFlying(false);
+        }
+        else
+        {
+
+        }
+    }
+
+    public void setFlying(boolean value)
+    {
+        if (value)
+        {
+            setStalking(false);
+            setWalking(false);
+            setSprinting(false);
+        }
+        else
+        {
+
         }
     }
 
@@ -194,7 +258,7 @@ public class Jason
         if (!getPlayer().isSneaking())
         {
             //Regen
-            setStalkLevel(Math.max(0, getStalkLevel() - stalkLevelDepletionRate));
+            setStalkLevel(Math.min(getStalkLevelMax(), getStalkLevel() + (getStalkLevelMax() * stalkLevelRegenerationRate)));
         }
     }
 
@@ -214,6 +278,12 @@ public class Jason
     public void setInitialStalkGenerationCompleted(boolean value)
     {
        stalkInitialGenerationCompleted = value;
+
+       if (value)
+       {
+           //When it becomes available, send message
+           ActionBarAPI.sendActionBar(getPlayer(), "Stalk ability is now available.", 60);
+       }
     }
 
 
