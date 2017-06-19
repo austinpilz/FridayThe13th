@@ -3,7 +3,16 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.ArenaChest;
+import com.AustinPilz.FridayThe13th.Components.ArenaDoor;
+import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Runnable.DoorOpen;
+import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.Door;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class ObjectManager
@@ -11,6 +20,10 @@ public class ObjectManager
     private Arena arena;
     private HashSet<ArenaChest> chestsWeapons;
     private HashSet<ArenaChest> chestsItems;
+
+    //Per Game Objects
+    private HashMap<Block, ArenaDoor> doors;
+    private HashSet<Block> brokenDoors;
 
     /**
      * @param arena Arena object
@@ -20,6 +33,10 @@ public class ObjectManager
         this.arena = arena;
         this.chestsItems = new HashSet<>();
         this.chestsWeapons = new HashSet<>();
+
+        //Per Game Objects
+        doors = new HashMap<>();
+        brokenDoors = new HashSet<>();
     }
 
     /**
@@ -63,6 +80,61 @@ public class ObjectManager
         for (ArenaChest chest: chestsItems)
         {
             chest.randomlyGenerate();
+        }
+    }
+
+
+    /**
+     * Restores all per game objects back to their default state
+     */
+    public void restorePerGameObjects()
+    {
+        //Restore doors to closed state
+        fixBrokenDoors();
+
+        //Restore switches
+        //Restore windows?
+
+    }
+
+    /**
+     * Returns all doors that are "broken" open
+     * @return
+     */
+    public HashSet<Block> getBrokenDoors()
+    {
+        return brokenDoors;
+    }
+
+    /**
+     * Gets arena door, adds and returns new one if didn't exist already
+     * @param block
+     * @return
+     */
+    public ArenaDoor getArenaDoor(Block block)
+    {
+        if (doors.containsKey(block))
+        {
+            return doors.get(block);
+        }
+        else
+        {
+            ArenaDoor newDoor = new ArenaDoor(block, arena);
+            doors.put(block, newDoor);
+            return newDoor;
+        }
+    }
+
+    /**
+     * Restores broken doors to closed
+     */
+    private void fixBrokenDoors()
+    {
+        for (Block block: brokenDoors)
+        {
+            Bukkit.broadcastMessage("fixing...");
+            BlockState state = block.getState();
+            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new DoorOpen(block, block.getRelative(BlockFace.DOWN), false), 1);
         }
     }
 }

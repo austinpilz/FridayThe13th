@@ -327,6 +327,9 @@ public class GameManager
         //Remove all players
         getPlayerManager().performEndGameActions();
 
+        //Replace any items changed during gameplay
+        arena.getObjectManager().restorePerGameObjects();
+
         //Don't need to worry about tasks and timers here, handled automatically
         changeGameStatus(GameStatus.Empty);
     }

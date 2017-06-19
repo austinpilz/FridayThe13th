@@ -1,17 +1,23 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Jason;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.IO.Setting;
 import com.AustinPilz.FridayThe13th.IO.Settings;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Door;
+import org.bukkit.material.Lever;
 
 public class BlockListener implements Listener
 {
@@ -38,14 +44,37 @@ public class BlockListener implements Listener
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBlockBreak(BlockBreakEvent event)
     {
-        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer()))
-        {
-            event.setCancelled(true);
+        try {
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
-            if (Settings.getGlobalBoolean(Setting.gameplayWarnOnBreak))
+            if (arena.getGameManager().isGameInProgress())
             {
-                event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot break blocks while playing.");
+                //Physical object interactions
+                if (event.getBlock().getState().getData() instanceof Door)
+                {
+                    //Door broken
+                    arena.getObjectManager().getArenaDoor(event.getBlock()).blockBreak();
+                    event.setCancelled(true);
+                }
+                else if (event.getBlock().getState().getData() instanceof Lever)
+                {
+                    //Lever
+                }
+                else if (event.getBlock().getType().equals(Material.THIN_GLASS) || event.getBlock().getType().equals(Material.STAINED_GLASS_PANE))
+                {
+                    //Window
+                }
+                else
+                {
+                    event.setCancelled(true);
+                }
             }
+            else if (arena.getGameManager().isGameWaiting())
+            {
+                event.setCancelled(true); //Disable interaction while in the waiting room
+            }
+        } catch (PlayerNotPlayingException exception) {
+            //Do nothing since in this case, we couldn't care
         }
     }
 

@@ -10,18 +10,16 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/spigot-1.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/ActionBarAPI-1.5.3.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/spigot-1.12.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/ActionBarAPI-1.5.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/spigot-api-1.12-R0.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

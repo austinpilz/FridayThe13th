@@ -4,19 +4,26 @@ import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.Jason;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Runnable.DoorOpen;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Door;
+import org.bukkit.material.Lever;
 
 public class PlayerListener implements Listener {
 
@@ -98,12 +105,34 @@ public class PlayerListener implements Listener {
                         //Let them know they can't interact in spectating mode
                         event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot interact while you're in spectating mode.");
                     }
+                    else
+                    {
+                        //They're in regular play mode
+                        if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Door)
+                        {
+                            BlockState state = event.getClickedBlock().getState();
+                            Door door = (Door) state.getData();
+
+                            Block testBlock = event.getClickedBlock();
+                            if (door.isTopHalf())
+                            {
+                                //Top 1/2
+                                testBlock = event.getClickedBlock().getRelative(BlockFace.DOWN);
+                            }
+
+                            if (arena.getObjectManager().getBrokenDoors().contains(testBlock))
+                            {
+                                //They're trying to interact with a broken door
+                                event.setCancelled(true);
+                            }
+                        }
+                    }
                 }
                 else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
                 {
                     Jason jason = arena.getGameManager().getPlayerManager().getJason();
 
-                    if (event.hasItem() && event.getItem().hasItemMeta())
+                    if (event.hasItem() && event.getItem().hasItemMeta() && !event.hasBlock())
                     {
                         ItemMeta itemMeta = event.getItem().getItemMeta();
 
@@ -118,6 +147,37 @@ public class PlayerListener implements Listener {
                             //Warp Potion
 
                             event.setCancelled(true);
+                        }
+                    }
+                    else if (event.hasBlock())
+                    {
+                        //Physical object interactions
+                        if (event.getClickedBlock().getState().getData() instanceof Door)
+                        {
+                            //Door clicked
+                            if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) && event.hasItem())
+                            {
+                                if (event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasDisplayName() && event.getItem().getItemMeta().getDisplayName().contains("Jason's"))
+                                {
+                                    event.setCancelled(false);
+                                }
+                                else
+                                {
+                                    event.setCancelled(true);
+                                }
+                            }
+                            else
+                            {
+                                event.setCancelled(true);
+                            }
+                        }
+                        else if (event.getClickedBlock().getState().getData() instanceof Lever)
+                        {
+                            //Lever
+                        }
+                        else if (event.getClickedBlock().getType().equals(Material.THIN_GLASS) || event.getClickedBlock().getType().equals(Material.STAINED_GLASS_PANE))
+                        {
+                            //Window
                         }
                     }
                 }

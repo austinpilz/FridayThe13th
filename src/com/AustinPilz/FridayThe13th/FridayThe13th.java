@@ -79,7 +79,9 @@ public class FridayThe13th extends JavaPlugin implements Listener
     @Override
     public void onDisable()
     {
-        //Stuff here
+        //End every game, restore players, etc.
+
+        //When implemented, store any values in DB that would need updates.
 
         //Close database connection
         inputOutput.freeConnection();
