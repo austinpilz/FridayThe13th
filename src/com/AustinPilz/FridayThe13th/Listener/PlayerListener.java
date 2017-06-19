@@ -123,6 +123,14 @@ public class PlayerListener implements Listener {
                                 event.setCancelled(true);
                             }
                         }
+                        else if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Lever)
+                        {
+                            if (arena.getObjectManager().getBrokenSwitches().contains(event.getClickedBlock()))
+                            {
+                                //TODO for now
+                                event.setCancelled(true);
+                            }
+                        }
                     }
                 }
                 else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
@@ -149,7 +157,7 @@ public class PlayerListener implements Listener {
                     else if (event.hasBlock())
                     {
                         //Physical object interactions
-                        if (event.getClickedBlock().getState().getData() instanceof Door)
+                        if (event.getClickedBlock().getState().getData() instanceof Door || event.getClickedBlock().getState().getData() instanceof Lever)
                         {
                             //Door clicked
                             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) && event.hasItem())
@@ -167,10 +175,6 @@ public class PlayerListener implements Listener {
                             {
                                 event.setCancelled(true);
                             }
-                        }
-                        else if (event.getClickedBlock().getState().getData() instanceof Lever)
-                        {
-                            //Lever
                         }
                         else if (event.getClickedBlock().getType().equals(Material.THIN_GLASS) || event.getClickedBlock().getType().equals(Material.STAINED_GLASS_PANE))
                         {

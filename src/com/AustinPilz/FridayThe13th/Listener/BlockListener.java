@@ -59,6 +59,8 @@ public class BlockListener implements Listener
                 else if (event.getBlock().getState().getData() instanceof Lever)
                 {
                     //Lever
+                    arena.getObjectManager().breakSwitch(event.getBlock());
+                    event.setCancelled(true);
                 }
                 else if (event.getBlock().getType().equals(Material.THIN_GLASS) || event.getBlock().getType().equals(Material.STAINED_GLASS_PANE))
                 {

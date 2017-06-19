@@ -6,10 +6,12 @@ import com.AustinPilz.FridayThe13th.Components.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.ArenaDoor;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
+import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.material.Lever;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +25,7 @@ public class ObjectManager
     //Per Game Objects
     private HashMap<Block, ArenaDoor> doors;
     private HashSet<Block> brokenDoors;
+    private HashSet<Block> brokenSwitches;
 
     /**
      * @param arena Arena object
@@ -36,6 +39,7 @@ public class ObjectManager
         //Per Game Objects
         doors = new HashMap<>();
         brokenDoors = new HashSet<>();
+        brokenSwitches = new HashSet<>();
     }
 
     /**
@@ -90,8 +94,12 @@ public class ObjectManager
     {
         //Restore doors to closed state
         fixBrokenDoors();
+        brokenDoors.clear();
 
         //Restore switches
+        fixBrokenSwitches();
+        brokenSwitches.clear();
+
         //Restore windows?
 
     }
@@ -106,10 +114,10 @@ public class ObjectManager
     }
 
     /**
-     * Gets arena door, adds and returns new one if didn't exist already
-     * @param block
+     * Returns all switches that are "broken" off
      * @return
      */
+
     public ArenaDoor getArenaDoor(Block block)
     {
         if (doors.containsKey(block))
@@ -131,9 +139,57 @@ public class ObjectManager
     {
         for (Block block: brokenDoors)
         {
-            Bukkit.broadcastMessage("fixing...");
-            BlockState state = block.getState();
             Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaDoorAction(block, block.getRelative(BlockFace.DOWN), false), 1);
+        }
+    }
+
+    /* SWITCHES */
+    public HashSet<Block> getBrokenSwitches() { return brokenSwitches; }
+    /**
+     * Gets arena door, adds and returns new one if didn't exist already
+     * @param block
+     * @return
+     */
+
+    /**
+     * Breaks supplied switch
+     * @param block
+     */
+    public void breakSwitch(Block block)
+    {
+        BlockState state = block.getState();
+        Lever lever = (Lever)state.getData();
+
+        if (lever.isPowered())
+        {
+            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, false), 1);
+        }
+        else
+        {
+            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, true), 1);
+        }
+
+        brokenSwitches.add(block);
+    }
+
+    /**
+     * Restores broken switches to ON
+     */
+    private void fixBrokenSwitches()
+    {
+        for (Block block: brokenSwitches)
+        {
+            BlockState state = block.getState();
+            Lever lever = (Lever)state.getData();
+
+            if (lever.isPowered())
+            {
+                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, false), 1);
+            }
+            else
+            {
+                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, true), 1);
+            }
         }
     }
 }
