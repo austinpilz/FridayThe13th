@@ -5,12 +5,11 @@ import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.ArenaDoor;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Runnable.DoorOpen;
+import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.material.Door;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -134,7 +133,7 @@ public class ObjectManager
         {
             Bukkit.broadcastMessage("fixing...");
             BlockState state = block.getState();
-            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new DoorOpen(block, block.getRelative(BlockFace.DOWN), false), 1);
+            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaDoorAction(block, block.getRelative(BlockFace.DOWN), false), 1);
         }
     }
 }

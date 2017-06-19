@@ -18,13 +18,13 @@ import org.bukkit.material.Door;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
-public class DoorOpen implements Runnable
+public class ArenaDoorAction implements Runnable
 {
     private Block door;
     private Block relative;
     private boolean action;
 
-    public DoorOpen(Block b, Block r, boolean open)
+    public ArenaDoorAction(Block b, Block r, boolean open)
     {
         this.door = b;
         this.relative = r;
