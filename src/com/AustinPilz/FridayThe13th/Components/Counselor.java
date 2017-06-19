@@ -46,6 +46,7 @@ public class Counselor
     private PotionEffect potionOutOfBreath;
     private PotionEffect potionFearBlind;
     private PotionEffect potionSpectatingInvisibility;
+    private PotionEffect potionSenseByJason;
 
     //Warnings
     private boolean shownStaminaWarning = false;
@@ -80,6 +81,7 @@ public class Counselor
         potionOutOfBreath = new PotionEffect(PotionEffectType.CONFUSION, 300, 1);
         potionFearBlind = new PotionEffect(PotionEffectType.BLINDNESS, 400, 1);
         potionSpectatingInvisibility = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
+        potionSenseByJason = new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1);
     }
 
     /**
@@ -219,6 +221,15 @@ public class Counselor
     }
 
     /**
+     * Returns the counselor's stamina percentage
+     * @return
+     */
+    public double getStaminaPercentage()
+    {
+        return getStamina() / getMaxStamina();
+    }
+
+    /**
      * Returns the counselor's max stamina level
      * @return
      */
@@ -263,7 +274,18 @@ public class Counselor
         else
         {
             //Stamina is within acceptable limits
-            getPlayer().setWalkSpeed(0.2f);
+
+            if (getPlayer().getHealth() / getPlayer().getHealthScale() <= .25)
+            {
+                //They're injured, so change walk speed
+                getPlayer().setWalkSpeed(0.13f);
+            }
+            else
+            {
+                //Their health is fine, so make walk speed normal
+                getPlayer().setWalkSpeed(0.2f);
+            }
+
             getPlayer().removePotionEffect(PotionEffectType.CONFUSION);
         }
     }
@@ -275,6 +297,15 @@ public class Counselor
     public double getFearLevel()
     {
         return fearLevel;
+    }
+
+    /**
+     * Returns the counselor's fear percentage
+     * @return
+     */
+    public double getFearLevelPercentage()
+    {
+        return getFearLevel() / getMaxFearLevel();
     }
 
     /**
@@ -303,7 +334,7 @@ public class Counselor
         //See how far they are from jason
         double distanceFromJason = getPlayer().getLocation().distance(arena.getGameManager().getPlayerManager().getJason().getPlayer().getLocation());
 
-        if (distanceFromJason <= 5)
+        if (distanceFromJason <= 5 && !arena.getGameManager().getPlayerManager().getJason().getPlayer().isSneaking())
         {
             //Increase if within certain distance
             double increase = getMaxFearLevel() * (distanceFromJason / 10);
@@ -407,10 +438,51 @@ public class Counselor
         spectatingMode = false;
     }
 
+    /**
+     * Removes potion effects from counselor
+     */
     public void removeAllPotionEffects()
     {
         getPlayer().removePotionEffect(PotionEffectType.BLINDNESS); //Scared
         getPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
         getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+        getPlayer().removePotionEffect(PotionEffectType.GLOWING);
     }
+
+
+    /* SENSE BY JASON */
+
+    /**
+     * Returns if counselor can be sensed by Jason
+     * @return
+     */
+    private boolean canBeSensedByJason()
+    {
+        if (getFearLevelPercentage() > .25)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Sets sense mode and applies effects accordingly
+     * @param value
+     */
+    public void setSenseMode(Boolean value)
+    {
+        if (value && canBeSensedByJason())
+        {
+            getPlayer().addPotionEffect(potionSenseByJason);
+        }
+        else
+        {
+            getPlayer().removePotionEffect(PotionEffectType.GLOWING);
+        }
+    }
+
+
 }

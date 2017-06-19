@@ -44,20 +44,10 @@ public class CounselorStatsDisplayManager
 
     public void updateStats()
     {
-        fearBar.setProgress(convertToBossBarValue(counselor.getFearLevel(), counselor.getMaxFearLevel()));
-        staminaBar.setProgress(convertToBossBarValue(counselor.getStamina(), counselor.getMaxStamina()));
+        fearBar.setProgress(counselor.getFearLevelPercentage());
+        staminaBar.setProgress(counselor.getStaminaPercentage());
     }
 
-    /**
-     * Converts value and max into boss bar acceptable value
-     * @param current
-     * @param max
-     * @return
-     */
-    private double convertToBossBarValue(double current, double max)
-    {
-        return (((current - 0) * (1 - 0)) / (max - 0)) + 0;
-    }
 
     public void startUpdaterTask()
     {

@@ -13,8 +13,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 public class Jason
 {
@@ -40,6 +43,13 @@ public class Jason
     private PotionEffect stalkPotion;
 
     //Sense
+    private double senseLevel;
+    private double senseLevelMax;
+    private double senseLevelDepletionRate;
+    private double senseLevelRegenerationRate;
+    private boolean senseInitialGenerationComplete;
+    private boolean senseActive;
+    private PotionEffect sensePotion;
 
     //Warp
 
@@ -60,6 +70,16 @@ public class Jason
         stalkLevelRegenerationRate = 0.06;
         stalkInitialGenerationCompleted = false;
         stalkPotion = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
+
+        //Sense Values
+        senseLevel = 0;
+        senseLevelMax = 30;
+        senseLevelDepletionRate = 0.1;
+        senseLevelRegenerationRate = 0.02;
+        senseInitialGenerationComplete = false;
+        senseActive = false;
+        sensePotion = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
+
     }
 
     /**
@@ -117,9 +137,26 @@ public class Jason
         bowMetaData.setDisplayName(ChatColor.RED + "Jason's Bow");
         bow.setItemMeta(bowMetaData);
 
+        //Sense Ability Potion
+        ItemStack sensePotion = new ItemStack(Material.POTION, 1);
+        PotionMeta sensePotionMeta = (PotionMeta) sensePotion.getItemMeta();
+        sensePotionMeta.setBasePotionData(new PotionData(PotionType.NIGHT_VISION));
+        sensePotionMeta.setDisplayName(ChatColor.GREEN + "Sense Ability");
+        sensePotion.setItemMeta(sensePotionMeta);
+
+        //Warp Ability Potion
+        ItemStack warpPotion = new ItemStack(Material.POTION, 1);
+        PotionMeta warpPotionMeta = (PotionMeta) sensePotion.getItemMeta();
+        warpPotionMeta.setBasePotionData(new PotionData(PotionType.SPEED));
+        warpPotionMeta.setDisplayName(ChatColor.GREEN + "Warp Ability");
+        warpPotion.setItemMeta(warpPotionMeta);
+
+
+        //Put them in inventory
         getPlayer().getInventory().addItem(sword);
         getPlayer().getInventory().addItem(bow);
         getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 2));
+        getPlayer().getInventory().addItem(sensePotion);
 
         //He walks a little slower
         getPlayer().setWalkSpeed(0.12f);
@@ -130,6 +167,85 @@ public class Jason
         //Schedule tasks
         scheduleTasks();
     }
+
+    /* MOVEMENTS */
+    /**
+     * Sets if Jason is stalking
+     * @param value
+     */
+    public void setStalking(boolean value)
+    {
+        if (value)
+        {
+            setStalkLevel(Math.max(0, getStalkLevel() - (getStalkLevelMax() * stalkLevelDepletionRate)));
+            getPlayer().addPotionEffect(stalkPotion);
+
+            setWalking(false);
+            setSprinting(false);
+            setFlying(false);
+        }
+        else
+        {
+            //Remove invisibility potion
+            getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+
+        }
+    }
+
+    /**
+     * Sets if Jason is walking
+     * @param value
+     */
+    public void setWalking(boolean value)
+    {
+        if (value)
+        {
+            setStalking(false);
+            setSprinting(false);
+            setFlying(false);
+        }
+        else
+        {
+
+        }
+    }
+
+    /**
+     * Sets if Jason is sprinting
+     * @param value
+     */
+    public void setSprinting(boolean value)
+    {
+        if (value)
+        {
+            setStalking(false);
+            setWalking(false);
+            setFlying(false);
+        }
+        else
+        {
+
+        }
+    }
+
+    /**
+     * Sets if Jason is flying
+     * @param value
+     */
+    public void setFlying(boolean value)
+    {
+        if (value)
+        {
+            setStalking(false);
+            setWalking(false);
+            setSprinting(false);
+        }
+        else
+        {
+
+        }
+    }
+
 
     /* STALKING */
 
@@ -186,80 +302,11 @@ public class Jason
     }
 
     /**
-     * Sets if Jason is able to stalk
-     * @param value
-     */
-    public void setStalking(boolean value)
-    {
-        if (value)
-        {
-            setStalkLevel(Math.max(0, getStalkLevel() - (getStalkLevelMax() * stalkLevelDepletionRate)));
-            getPlayer().addPotionEffect(stalkPotion);
-
-            setWalking(false);
-            setSprinting(false);
-            setFlying(false);
-        }
-        else
-        {
-            //Remove invisibility potion
-            getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
-
-        }
-    }
-
-    public void setWalking(boolean value)
-    {
-        if (value)
-        {
-            setStalking(false);
-            setSprinting(false);
-            setFlying(false);
-        }
-        else
-        {
-
-        }
-    }
-
-    public void setSprinting(boolean value)
-    {
-        if (value)
-        {
-            setStalking(false);
-            setWalking(false);
-            setFlying(false);
-        }
-        else
-        {
-
-        }
-    }
-
-    public void setFlying(boolean value)
-    {
-        if (value)
-        {
-            setStalking(false);
-            setWalking(false);
-            setSprinting(false);
-        }
-        else
-        {
-
-        }
-    }
-
-    /**
      * Regenerates Jason's stalking level if he's not sneaking
      */
     public void regenerateStalking()
     {
-        if (!getPlayer().isSneaking())
-        {
-            //Regen
-            setStalkLevel(Math.min(getStalkLevelMax(), getStalkLevel() + (getStalkLevelMax() * stalkLevelRegenerationRate)));
-        }
+        setStalkLevel(Math.min(getStalkLevelMax(), getStalkLevel() + (getStalkLevelMax() * stalkLevelRegenerationRate)));
     }
 
     /**
@@ -287,5 +334,155 @@ public class Jason
     }
 
 
+    /* SENSE */
+
+    /**
+     * Gets Jason's sense level
+     * @return
+     */
+    public double getSenseLevel()
+    {
+        return senseLevel;
+    }
+
+    /**
+     * Sets Jason's sense level
+     */
+    public void setSenseLevel(double level)
+    {
+        senseLevel = level;
+    }
+
+    /**
+     * Gets Jason's sense level max
+     * @return
+     */
+    public double getSenseLevelMax()
+    {
+        return senseLevelMax;
+    }
+
+    /**
+     * Gets Jason's sense level percentage
+     * @return
+     */
+    public double getSenseLevelPercentage()
+    {
+        return getSenseLevel()/getSenseLevelMax();
+    }
+
+    /**
+     * Returns if Jason can use sense ability
+     * @return
+     */
+    public boolean canSense()
+    {
+        if (getSenseLevelPercentage() == 1 && hasInitialSenseGenerationCompleted())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Regenerates sense level
+     */
+    public void regenerateSense()
+    {
+        setSenseLevel(Math.min(getSenseLevelMax(), getSenseLevel() + (getSenseLevelMax() * senseLevelRegenerationRate)));
+    }
+
+    /**
+     * Returns if the sense mode is currently in use
+     * @return
+     */
+    public boolean isSenseActive()
+    {
+        return senseActive;
+    }
+
+    /**
+     * Sets if the sense mode if currently is use
+     * @param value
+     */
+    public void setSenseActive(boolean value)
+    {
+        senseActive = value;
+
+        if (value)
+        {
+            //Apply potion to jason
+            getPlayer().addPotionEffect(sensePotion);
+
+            //Apply potion effect to players
+            arena.getGameManager().getPlayerManager().jasonSensing(true);
+        }
+        else
+        {
+            //Remove potion from jason
+            getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+
+            //Remove potion effect from players
+            arena.getGameManager().getPlayerManager().jasonSensing(false);
+        }
+    }
+
+    /**
+     * Returns if initial sense generation has completed
+     * @return
+     */
+    public boolean hasInitialSenseGenerationCompleted()
+    {
+        return senseInitialGenerationComplete;
+    }
+
+    /**
+     * Sets if initial sense generation has completed
+     * @param value
+     */
+    public void setInitialSenseGenerationCompleted(boolean value)
+    {
+        senseInitialGenerationComplete = value;
+
+        if (value)
+        {
+            //When it becomes available, send message
+            ActionBarAPI.sendActionBar(getPlayer(), "Sense ability is now available.", 60);
+        }
+    }
+
+    /**
+     * Jason requests to activate sense
+     */
+    public void senseActivationRequest(boolean value)
+    {
+        if (value && canSense())
+        {
+            setSenseActive(true);
+        }
+        else
+        {
+            setSenseActive(false);
+        }
+
+    }
+
+    /**
+     * Sets if Jason is currently sensing
+     * @param value
+     */
+    public void setSensing(boolean value)
+    {
+        if (value)
+        {
+            setSenseLevel(Math.max(0, getSenseLevel() - (getSenseLevelMax() * senseLevelDepletionRate)));
+            setSenseActive(true); //Constantly updates players
+        }
+    }
+
+    /* WARP */
 
 }

@@ -4,10 +4,8 @@ import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.GameStatus;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameCountdownManager;
-import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.GameCountdown;
-import com.AustinPilz.FridayThe13th.Runnable.GameScoreboardUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
 import com.AustinPilz.FridayThe13th.Runnable.WaitingCountdown;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -34,14 +32,12 @@ public class GameManager
     int gameStatusCheckTask = -1;
     int gameCountdownTask = -1;
     int waitingCountdownTask = -1;
-    int scoreboardTask = -1;
 
 
     //Managers
     public PlayerManager playerManager;
     private GameCountdownManager gameCountdownManager;
     private WaitingCountdownDisplayManager waitingCountdownDisplayManager; //Game-wide waiting room countdown
-    private GameScoreboardManager scoreboardManager; //Game-wide scoreboard with alive/dead players
 
     /**
      * @param arena Arena object
@@ -55,7 +51,6 @@ public class GameManager
         playerManager = new PlayerManager(arena);
         gameCountdownManager = new GameCountdownManager(arena);
         waitingCountdownDisplayManager = new WaitingCountdownDisplayManager(arena);
-        scoreboardManager = new GameScoreboardManager(arena);
 
         //Change game status to empty
         gameStatus = GameStatus.Empty; //to void null pointer
@@ -91,11 +86,6 @@ public class GameManager
         return waitingCountdownDisplayManager;
     }
 
-    /**
-     * Returns the game's scoreboard manager
-     * @return
-     */
-    public GameScoreboardManager getScoreboardManager() { return scoreboardManager; }
 
     /**
      * Returns the seconds left in the waiting countdown
@@ -269,7 +259,6 @@ public class GameManager
         {
             //Cancel tasks
             Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
-            Bukkit.getScheduler().cancelTask(scoreboardTask);
             Bukkit.getScheduler().cancelTask(gameCountdownTask);
 
             if (isGameWaiting())
@@ -290,7 +279,6 @@ public class GameManager
 
             //Start the tasks
             waitingCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new WaitingCountdown(arena), 20, 20);
-            scoreboardTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameScoreboardUpdate(arena), 0, 60);
 
             //Reset players visuals (remove action bars)
             getPlayerManager().resetPlayerActionBars();
@@ -329,9 +317,6 @@ public class GameManager
         //Assign all players roles (maybe move these into the performInProgressActions() ?
         getPlayerManager().performInProgressActions();
 
-        //Show countdown bar to everyone
-        getGameCountdownManager().displayCountdown();
-
     }
 
     /**
@@ -339,9 +324,6 @@ public class GameManager
      */
     protected void endGame()
     {
-        //Hide countdown from all players
-        getGameCountdownManager().hideCountdown();
-
         //Remove all players
         getPlayerManager().performEndGameActions();
 

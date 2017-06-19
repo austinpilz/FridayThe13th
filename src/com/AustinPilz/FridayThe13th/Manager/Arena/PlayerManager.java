@@ -482,7 +482,6 @@ public class PlayerManager
         sendMessageToAllPlayers("Game over! Thanks for playing Friday the 13th.");
 
         Iterator it = getPlayers().entrySet().iterator();
-        int i = 0;
         while (it.hasNext())
         {
             Map.Entry entry = (Map.Entry) it.next();
@@ -561,9 +560,6 @@ public class PlayerManager
             {
                 Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
 
-                //Hide scoreboards
-                arena.getGameManager().getScoreboardManager().hideSidebars(player);
-
                 //Teleport them to the return point
                 teleportPlayerToReturnPoint(player);
 
@@ -601,6 +597,22 @@ public class PlayerManager
     }
 
 
+    /* JASONS ABILITIES */
+
+    /**
+     * Performs jason sense ability actions to applicable counselors
+     * @param value
+     */
+    public void jasonSensing(boolean value)
+    {
+        Iterator it = getCounselors().entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            Counselor counselor = (Counselor) entry.getValue();
+            counselor.setSenseMode(value);
+        }
+    }
 
 
 

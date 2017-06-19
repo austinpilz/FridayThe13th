@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Jason;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerListener implements Listener {
 
@@ -95,6 +97,28 @@ public class PlayerListener implements Listener {
 
                         //Let them know they can't interact in spectating mode
                         event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot interact while you're in spectating mode.");
+                    }
+                }
+                else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
+                {
+                    Jason jason = arena.getGameManager().getPlayerManager().getJason();
+
+                    if (event.hasItem() && event.getItem().hasItemMeta())
+                    {
+                        ItemMeta itemMeta = event.getItem().getItemMeta();
+
+                        if (itemMeta.getDisplayName().contains("Sense"))
+                        {
+                            //Sense Potion
+                            jason.senseActivationRequest(true);
+                            event.setCancelled(true);
+                        }
+                        else if (itemMeta.getDisplayName().contains("Warp"))
+                        {
+                            //Warp Potion
+
+                            event.setCancelled(true);
+                        }
                     }
                 }
 
@@ -238,12 +262,19 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onItemDrop (PlayerDropItemEvent event)
     {
-        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer()))
+        try
         {
-            if (event.getItemDrop().getItemStack().hasItemMeta() && !event.getItemDrop().getItemStack().getItemMeta().getDisplayName().isEmpty() && event.getItemDrop().getItemStack().getItemMeta().getDisplayName().contains("Jason's"))
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()); //See if they're playing
+
+            if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
             {
-                event.setCancelled(true);
+                event.setCancelled(true); //Jason can't drop anything
             }
+
+        }
+        catch (PlayerNotPlayingException exception)
+        {
+            //Do nothing since in this case, we couldn't care
         }
     }
 

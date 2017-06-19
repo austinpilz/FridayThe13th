@@ -17,12 +17,10 @@ import java.util.Map;
 public class GameCountdownManager
 {
     private Arena arena;
-    private BossBar countdownBar;
 
     public GameCountdownManager (Arena arena)
     {
         this.arena = arena;
-        countdownBar = Bukkit.createBossBar("Game Time", BarColor.WHITE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG);
     }
 
     public void updateCountdown()
@@ -31,44 +29,34 @@ public class GameCountdownManager
         {
             arena.getGameManager().gameTimeUp(); //game ran out of time
         }
-
-
-        int rem = arena.getGameManager().getGameTimeLeft()%3600;
-        int mn = rem/60;
-        int sec = rem%60;
-
-        //MATH
-        float value = ((((float)arena.getGameManager().getGameTimeLeft() - 0) * (1 - 0)) / (arena.getGameManager().getGameTimeMax() - 0)) + 0;
-        countdownBar.setProgress(value);
-        countdownBar.setTitle("Game Time - " + mn + ":" + sec);
-
-
-
-    }
-
-    public void displayCountdown()
-    {
-        Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-        while (it.hasNext())
+        else
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
+            int rem = arena.getGameManager().getGameTimeLeft() % 3600;
+            int mn = rem / 60;
+            int sec = rem % 60;
 
-            //ActionBarAPI.sendActionBar(player, minutes+":"+seconds, 20);
-            //player.sendMessage(FridayThe13th.pluginPrefix + minutes+":"+seconds + " left in game.");
-            countdownBar.addPlayer(player);
-        }
-    }
-
-    public void hideCountdown()
-    {
-        Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-        while (it.hasNext())
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-
-            countdownBar.removeAll();
+            if (mn > 1 && sec == 0)
+            {
+                //Every whole minute
+                Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
+                while (it.hasNext())
+                {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    Player player = (Player) entry.getValue();
+                    ActionBarAPI.sendActionBar(player, "Time Left: " + mn + " minutes", 60);
+                }
+            }
+            else if (mn == 0 && (sec == 30 || sec == 20 || sec == 10 || sec == 5))
+            {
+                //Special
+                Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
+                while (it.hasNext())
+                {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    Player player = (Player) entry.getValue();
+                    ActionBarAPI.sendActionBar(player, "Time Left: " + sec + " seconds", 60);
+                }
+            }
         }
     }
 }

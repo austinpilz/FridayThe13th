@@ -24,6 +24,35 @@ public class JasonAbilitiesRegeneration implements Runnable
         }
 
         //Regenerate Values
-        jason.regenerateStalking();
+        if (!jason.getPlayer().isSneaking())
+        {
+            jason.regenerateStalking();
+        }
+
+        //Sense - Requires stalk been init first
+        if (!jason.isSenseActive() && jason.hasInitialStalkGenerationCompleted())
+        {
+            jason.regenerateSense();
+
+            if (!jason.hasInitialSenseGenerationCompleted() && jason.getSenseLevelPercentage() == 1)
+            {
+                jason.setInitialSenseGenerationCompleted(true);
+            }
+        }
+
+        //Sense - Depletion
+        if (jason.isSenseActive())
+        {
+            if (jason.getSenseLevel() > 0)
+            {
+                //It's active, degen
+                jason.setSensing(true);
+            }
+            else
+            {
+                //It's out
+                jason.setSenseActive(false); //Ran out of sense level
+            }
+        }
     }
 }

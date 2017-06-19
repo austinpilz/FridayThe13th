@@ -14,24 +14,35 @@ public class JasonAbilityDisplayManager
 
     //Bars
     BossBar stalkBar;
+    BossBar senseBar;
 
     public JasonAbilityDisplayManager(Jason jason)
     {
         this.jason = jason;
 
         //Bars
-        stalkBar = Bukkit.createBossBar(ChatColor.GRAY + "Stalking", BarColor.GREEN, BarStyle.SOLID, BarFlag.DARKEN_SKY);
+        stalkBar = Bukkit.createBossBar(ChatColor.GRAY + "Stalk", BarColor.GREEN, BarStyle.SOLID, BarFlag.DARKEN_SKY);
+        senseBar = Bukkit.createBossBar(ChatColor.GRAY + "Sense", BarColor.RED, BarStyle.SOLID, BarFlag.DARKEN_SKY);
     }
 
     public void updateLevels()
     {
         //Stalk
+        stalkBar.setProgress(jason.getStalkLevelPercentage());
         if (jason.hasInitialStalkGenerationCompleted())
         {
-            stalkBar.setTitle(ChatColor.WHITE + "Stalking");
+            stalkBar.setTitle(ChatColor.WHITE + "Stalk");
+
+            //Sense is dependent on stalk being done first
+            senseBar.addPlayer(jason.getPlayer());
+            senseBar.setProgress(jason.getSenseLevelPercentage());
         }
 
-        stalkBar.setProgress(jason.getStalkLevelPercentage());
+        //Sense
+        if (jason.hasInitialSenseGenerationCompleted())
+        {
+            senseBar.setTitle(ChatColor.WHITE + "Sense");
+        }
     }
 
     public void showAbilities()
@@ -42,5 +53,6 @@ public class JasonAbilityDisplayManager
     public void hideAbilities()
     {
         stalkBar.removeAll();
+        senseBar.removeAll();
     }
 }
