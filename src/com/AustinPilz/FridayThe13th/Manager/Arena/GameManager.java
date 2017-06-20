@@ -9,6 +9,8 @@ import com.AustinPilz.FridayThe13th.Runnable.GameCountdown;
 import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
 import com.AustinPilz.FridayThe13th.Runnable.WaitingCountdown;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -329,6 +331,13 @@ public class GameManager
 
         //Replace any items changed during gameplay
         arena.getObjectManager().restorePerGameObjects();
+
+        //Remove any holograms from the previous game
+        //Remove Hologram
+        for (Hologram hologram: HologramsAPI.getHolograms(FridayThe13th.instance))
+        {
+            hologram.delete();
+        }
 
         //Don't need to worry about tasks and timers here, handled automatically
         changeGameStatus(GameStatus.Empty);

@@ -8,6 +8,7 @@ import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,6 +37,8 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static SpawnPointCreationManager spawnPointCreationManager;
     public static ChestSetupManager chestSetupManager;
     public static InputOutput inputOutput;
+
+    //3rd Party Plugins
 
     @Override
     public void onLoad()
@@ -71,7 +74,21 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //Register Command Handlers
         getCommand("f13").setExecutor(new CommandHandler());
 
-        //MIN 2 MAX 9
+        //3rd Party Plugins
+        if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays"))
+        {
+            log.log(Level.SEVERE, consolePrefix + "Holographic displays not found - required for gameplay.");
+            this.setEnabled(false);
+            return;
+        }
+
+        if (!Bukkit.getPluginManager().isPluginEnabled("ActionBarAPI"))
+        {
+            log.log(Level.SEVERE, consolePrefix + "ActionBarAPI not found - required for gameplay.");
+            this.setEnabled(false);
+            return;
+        }
+
 
         log.log(Level.INFO, consolePrefix + "Boot up complete - took " + (System.currentTimeMillis() - startMili) + " ms");
     }

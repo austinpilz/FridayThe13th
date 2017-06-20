@@ -52,7 +52,12 @@ public class Jason
     private PotionEffect sensePotion;
 
     //Warp
-
+    private double warpLevel;
+    private double warpLevelMax;
+    private double warpLevelDepletionRate;
+    private double warpLevelRegenerationRate;
+    private boolean warpInitialGenerationComplete;
+    private boolean warpActive;
 
 
     public Jason(Player p, Arena a)
@@ -75,10 +80,18 @@ public class Jason
         senseLevel = 0;
         senseLevelMax = 30;
         senseLevelDepletionRate = 0.1;
-        senseLevelRegenerationRate = 0.02;
+        senseLevelRegenerationRate = 0.04;
         senseInitialGenerationComplete = false;
         senseActive = false;
         sensePotion = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
+
+        //Warp Values
+        warpLevel = 0;
+        warpLevelMax = 30;
+        warpLevelDepletionRate = 0.1;
+        warpLevelRegenerationRate = 0.03;
+        warpInitialGenerationComplete = false;
+        warpActive = false;
 
     }
 
@@ -160,6 +173,9 @@ public class Jason
 
         //He walks a little slower
         getPlayer().setWalkSpeed(0.12f);
+        getPlayer().setFlySpeed(0.1f);
+
+        getPlayer().setAllowFlight(true);
 
         //Show his abilities
         getAbilityDisplayManager().showAbilities();
@@ -236,13 +252,15 @@ public class Jason
     {
         if (value)
         {
+            setWarpActive(true);
+
             setStalking(false);
             setWalking(false);
             setSprinting(false);
         }
         else
         {
-
+            setWarpActive(false);
         }
     }
 
@@ -484,6 +502,93 @@ public class Jason
     }
 
     /* WARP */
+
+    public boolean canWarp()
+    {
+        if (getWarpLevelPercentage() > 0 && hasInitialWarpGenerationCompleted())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private double getWarpLevel()
+    {
+        return warpLevel;
+    }
+
+    private void setWarpLevel(Double level)
+    {
+        warpLevel = level;
+    }
+
+    private double getWarpLevelMax()
+    {
+        return warpLevelMax;
+    }
+
+    public double getWarpLevelPercentage()
+    {
+        return warpLevel/warpLevelMax;
+    }
+
+    public boolean hasInitialWarpGenerationCompleted()
+    {
+        return warpInitialGenerationComplete;
+    }
+
+    public void setInitialWarpGenerationCompleted(boolean value)
+    {
+        warpInitialGenerationComplete = value;
+
+        if (value)
+        {
+            //When it becomes available, send message
+            ActionBarAPI.sendActionBar(getPlayer(), "Warp ability is now available.", 60);
+        }
+    }
+
+    public void regenerateWarp()
+    {
+        setWarpLevel(Math.min(getWarpLevelMax(), getWarpLevel() + (getWarpLevelMax() * warpLevelRegenerationRate)));
+    }
+
+    public boolean isWarpActive()
+    {
+        return warpActive;
+    }
+
+    public void setWarpActive(boolean value)
+    {
+        warpActive = value;
+
+        if (!value)
+        {
+            getPlayer().setFlying(false);
+        }
+    }
+
+    public void setWarping(boolean value)
+    {
+        if (value)
+        {
+            setWarpLevel(Math.max(0, getWarpLevel() - (getWarpLevelMax() * warpLevelDepletionRate)));
+        }
+    }
+
+
+    /**
+     * Removes Jason's potion effects
+     */
+    public void removePotionEffects()
+    {
+        getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+        getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+        getPlayer().removePotionEffect(PotionEffectType.SLOW);
+    }
 
 
 }

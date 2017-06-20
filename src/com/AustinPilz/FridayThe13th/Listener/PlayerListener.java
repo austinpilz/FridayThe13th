@@ -4,6 +4,8 @@ import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.Jason;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -125,11 +127,32 @@ public class PlayerListener implements Listener {
                         }
                         else if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Lever)
                         {
-                            if (arena.getObjectManager().getBrokenSwitches().contains(event.getClickedBlock()))
+                            if (arena.getObjectManager().getBrokenSwitches().containsKey(event.getClickedBlock()))
                             {
-                                //TODO for now
                                 event.setCancelled(true);
+
+                                if (event.hasItem() && event.getItem().getType().equals(Material.REDSTONE))
+                                {
+                                    //Register the repair attempt
+                                    arena.getObjectManager().getBrokenSwitches().get(event.getClickedBlock()).repairSwitchAttempt(event.getPlayer());
+                                }
+                                else
+                                {
+                                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You need repair wire to fix broken switches.");
+                                }
                             }
+                            else
+                            {
+                                //Players can only turn off switches on if they're not broken
+                                BlockState state = event.getClickedBlock().getState();
+                                Lever lever = (Lever)state.getData();
+
+                                if (lever.isPowered())
+                                {
+                                    event.setCancelled(true);
+                                }
+                            }
+
                         }
                     }
                 }
@@ -145,12 +168,6 @@ public class PlayerListener implements Listener {
                         {
                             //Sense Potion
                             jason.senseActivationRequest(true);
-                            event.setCancelled(true);
-                        }
-                        else if (itemMeta.getDisplayName().contains("Warp"))
-                        {
-                            //Warp Potion
-
                             event.setCancelled(true);
                         }
                     }
@@ -250,7 +267,15 @@ public class PlayerListener implements Listener {
                     }
                     else if (event.getPlayer().isFlying())
                     {
-                        arena.getGameManager().getPlayerManager().getJason().setFlying(true);
+                        if (arena.getGameManager().getPlayerManager().getJason().canWarp())
+                        {
+                            arena.getGameManager().getPlayerManager().getJason().setFlying(true);
+                        }
+                        else
+                        {
+                            event.setCancelled(true);
+                            event.getPlayer().setFlying(false);
+                        }
                     }
                     else
                     {

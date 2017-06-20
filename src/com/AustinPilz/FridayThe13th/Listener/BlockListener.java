@@ -71,7 +71,7 @@ public class BlockListener implements Listener
                     event.setCancelled(true);
                 }
             }
-            else if (arena.getGameManager().isGameWaiting())
+            else if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty())
             {
                 event.setCancelled(true); //Disable interaction while in the waiting room
             }

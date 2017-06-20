@@ -54,5 +54,29 @@ public class JasonAbilitiesRegeneration implements Runnable
                 jason.setSenseActive(false); //Ran out of sense level
             }
         }
+
+        //Warp
+        if (!jason.isWarpActive() && jason.hasInitialSenseGenerationCompleted())
+        {
+            jason.regenerateWarp();
+
+            if (!jason.hasInitialWarpGenerationCompleted() && jason.getWarpLevelPercentage() == 1)
+            {
+                jason.setInitialWarpGenerationCompleted(true);
+            }
+        }
+
+        if (jason.isWarpActive())
+        {
+            if (jason.getWarpLevelPercentage() > 0)
+            {
+                jason.setWarping(true);
+            }
+            else
+            {
+                //Ran out
+                jason.setWarpActive(false);
+            }
+        }
     }
 }

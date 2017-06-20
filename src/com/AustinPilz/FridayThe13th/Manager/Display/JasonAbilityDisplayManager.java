@@ -15,6 +15,7 @@ public class JasonAbilityDisplayManager
     //Bars
     BossBar stalkBar;
     BossBar senseBar;
+    BossBar warpBar;
 
     public JasonAbilityDisplayManager(Jason jason)
     {
@@ -23,6 +24,7 @@ public class JasonAbilityDisplayManager
         //Bars
         stalkBar = Bukkit.createBossBar(ChatColor.GRAY + "Stalk", BarColor.GREEN, BarStyle.SOLID, BarFlag.DARKEN_SKY);
         senseBar = Bukkit.createBossBar(ChatColor.GRAY + "Sense", BarColor.RED, BarStyle.SOLID, BarFlag.DARKEN_SKY);
+        warpBar = Bukkit.createBossBar(ChatColor.GRAY + "Warp", BarColor.PURPLE, BarStyle.SOLID, BarFlag.DARKEN_SKY);
     }
 
     public void updateLevels()
@@ -42,6 +44,16 @@ public class JasonAbilityDisplayManager
         if (jason.hasInitialSenseGenerationCompleted())
         {
             senseBar.setTitle(ChatColor.WHITE + "Sense");
+
+            //Warp bar is dependent on sense bar being done first
+            warpBar.addPlayer(jason.getPlayer());
+            warpBar.setProgress(jason.getWarpLevelPercentage());
+        }
+
+        //Warp
+        if (jason.hasInitialWarpGenerationCompleted())
+        {
+            warpBar.setTitle(ChatColor.WHITE + "Warp");
         }
     }
 
@@ -54,5 +66,6 @@ public class JasonAbilityDisplayManager
     {
         stalkBar.removeAll();
         senseBar.removeAll();
+        warpBar.removeAll();
     }
 }

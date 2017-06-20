@@ -4,17 +4,24 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.ArenaDoor;
+import com.AustinPilz.FridayThe13th.Components.ArenaSwitch;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.material.Lever;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ObjectManager
 {
@@ -25,7 +32,8 @@ public class ObjectManager
     //Per Game Objects
     private HashMap<Block, ArenaDoor> doors;
     private HashSet<Block> brokenDoors;
-    private HashSet<Block> brokenSwitches;
+    private HashMap<Block, ArenaSwitch> brokenSwitches;
+    private HashSet<Block> brokenWindows;
 
     /**
      * @param arena Arena object
@@ -39,7 +47,8 @@ public class ObjectManager
         //Per Game Objects
         doors = new HashMap<>();
         brokenDoors = new HashSet<>();
-        brokenSwitches = new HashSet<>();
+        brokenSwitches = new HashMap<>();
+        brokenWindows = new HashSet<>();
     }
 
     /**
@@ -144,7 +153,7 @@ public class ObjectManager
     }
 
     /* SWITCHES */
-    public HashSet<Block> getBrokenSwitches() { return brokenSwitches; }
+    public HashMap<Block, ArenaSwitch> getBrokenSwitches() { return brokenSwitches; }
     /**
      * Gets arena door, adds and returns new one if didn't exist already
      * @param block
@@ -169,7 +178,8 @@ public class ObjectManager
             Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, true), 1);
         }
 
-        brokenSwitches.add(block);
+        //Add to hash set
+        brokenSwitches.put(block, new ArenaSwitch(block, arena));
     }
 
     /**
@@ -177,19 +187,13 @@ public class ObjectManager
      */
     private void fixBrokenSwitches()
     {
-        for (Block block: brokenSwitches)
+        Iterator it = getBrokenSwitches().entrySet().iterator();
+        while (it.hasNext())
         {
-            BlockState state = block.getState();
-            Lever lever = (Lever)state.getData();
-
-            if (lever.isPowered())
-            {
-                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, false), 1);
-            }
-            else
-            {
-                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, true), 1);
-            }
+            Map.Entry entry = (Map.Entry) it.next();
+            ArenaSwitch arenaSwitch = (ArenaSwitch) entry.getValue();
+            arenaSwitch.repairSwitch();
+            it.remove();
         }
     }
 }

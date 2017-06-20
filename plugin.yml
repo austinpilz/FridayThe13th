@@ -5,7 +5,7 @@ description: Classic Friday The 13th Gameplay
 author: Austin Pilz
 website: http://austinpilz.com
 load: POSTWORLD
-softdepend: [Multiverse-Core, Multiworld]
+softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, ActionBarAPI]
 commands:
     f13:
         description: Friday The 13th commands

@@ -11,7 +11,9 @@ import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.*;
 
@@ -549,6 +551,9 @@ public class PlayerManager
                 //Stop tasks
                 jason.cancelTasks();
 
+                //Stop Potions
+                jason.removePotionEffects();
+
                 //Remove his ability display
                 jason.getAbilityDisplayManager().hideAbilities();
 
@@ -566,14 +571,13 @@ public class PlayerManager
                 //Return normal walking speed
                 player.setWalkSpeed(0.2f);
                 player.setFlySpeed(0.5f);
+                player.setAllowFlight(false);
 
                 //Clear inventory
                 player.getInventory().clear();
             }
         }
     }
-
-
 
 
     /* Teleports */
@@ -615,6 +619,21 @@ public class PlayerManager
     }
 
 
+    /* SPECIALS */
+
+    public void fireFirework(Player player, Color color)
+    {
+        Firework f = (Firework) player.getWorld().spawn(player.getWorld().getHighestBlockAt(player.getLocation()).getLocation(), Firework.class);
+        FireworkMeta fm = f.getFireworkMeta();
+        fm.addEffect(FireworkEffect.builder()
+                .flicker(true)
+                .trail(true)
+                .with(FireworkEffect.Type.BALL)
+                .withColor(color)
+                .build());
+        fm.setPower(1);
+        f.setFireworkMeta(fm);
+    }
 
     /* Messaging */
 
