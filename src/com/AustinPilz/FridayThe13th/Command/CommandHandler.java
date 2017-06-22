@@ -282,10 +282,21 @@ public class CommandHandler implements CommandExecutor
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown command.");
                 }
             }
+            else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
+
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + "--- Help Menu ---");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/setup");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/add");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arena");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arenas");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/here");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/join" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
+            }
             else
             {
                 //No permissions
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.DARK_RED + "You don't have permission to access this command.");
             }
         }
 
