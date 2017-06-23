@@ -3,6 +3,8 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.GameStatus;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.IO.Setting;
+import com.AustinPilz.FridayThe13th.IO.Settings;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameCountdownManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.GameCountdown;
@@ -24,9 +26,9 @@ public class GameManager
 
     //Game Variables
     private int gameTimeLeftInSeconds;
-    private int gameTimeMax = 600;
+    private int gameTimeMax;
     private int waitingTimeLeftInSeconds;
-    private int waitingTimeMax = 1;
+    private int waitingTimeMax;
     private GameStatus gameStatus;
 
     //Tasks
@@ -48,6 +50,10 @@ public class GameManager
     {
         this.arena = arena;
         resetGameStatistics();
+
+        //Get max times
+        waitingTimeMax = Settings.getGlobalInt(Setting.gameplayWaitingTime);
+        gameTimeMax = Settings.getGlobalInt(Setting.gameplayGameTime);
 
         //Managers
         playerManager = new PlayerManager(arena);

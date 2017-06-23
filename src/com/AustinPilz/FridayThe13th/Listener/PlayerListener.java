@@ -8,6 +8,7 @@ import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Bed;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -154,6 +155,10 @@ public class PlayerListener implements Listener {
                             }
 
                         }
+                        else if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Bed)
+                        {
+                            event.setCancelled(true);
+                        }
                     }
                 }
                 else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
@@ -219,30 +224,48 @@ public class PlayerListener implements Listener {
             {
                 if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
                 {
-                    //Counselor [has stamina]
-                    if (event.getFrom().distance(event.getTo()) > 0)
+                    if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
                     {
-                        if (event.getPlayer().isSprinting())
+                        //Counselor in spectate mode
+                        if (!arena.isLocationWithinArenaBoundaries(event.getTo()))
                         {
-                            //Sprinting
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
+                            event.setCancelled(true);
+                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You can't leave the arena boundary while in spectate mode.");
                         }
-                        else if (event.getPlayer().isSneaking())
+                    }
+                    else
+                    {
+                        //Counselor in regular mod
+                        if (event.getFrom().distance(event.getTo()) > 0)
                         {
-                            //Sneaking
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
-                        }
-                        else if (event.getPlayer().isFlying())
-                        {
-                            if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
+                            if (event.getPlayer().isSprinting())
                             {
-                                event.getPlayer().setFlying(false); //Prevent cheating
+                                if ( arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getStaminaPercentage() == 0)
+                                {
+                                    event.setCancelled(true); //cant run when they have no energy
+                                }
+                                else {
+                                    //Sprinting
+                                    arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
+                                }
                             }
-                        }
-                        else
-                        {
-                            //Must just be walking
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
+                            else if (event.getPlayer().isSneaking())
+                            {
+                                //Sneaking
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
+                            }
+                            else if (event.getPlayer().isFlying())
+                            {
+                                if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
+                                {
+                                    event.getPlayer().setFlying(false); //Prevent cheating
+                                }
+                            }
+                            else
+                            {
+                                //Must just be walking
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
+                            }
                         }
                     }
                 }
@@ -324,8 +347,15 @@ public class PlayerListener implements Listener {
 
                 Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
 
-                if (arena.getGameManager().isGameInProgress()) {
-                    if (player.getHealth() <= event.getDamage()) {
+                if (arena.getGameManager().isGameInProgress())
+                {
+                    if (arena.getGameManager().getPlayerManager().isCounselor(player) && arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode())
+                    {
+                        event.setCancelled(true); //You can't get hurt in spectate mode
+                    }
+
+                    if (player.getHealth() <= event.getDamage())
+                    {
                         //This blow would kill them
                         event.setCancelled(true);
                         arena.getGameManager().getPlayerManager().onPlayerDeath(player);

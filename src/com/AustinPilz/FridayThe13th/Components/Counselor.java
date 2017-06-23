@@ -408,6 +408,9 @@ public class Counselor
     {
         spectatingMode = true;
 
+        //Remove any potions frmo in game
+        removeAllPotionEffects();
+
         //Make them invisible
         getPlayer().addPotionEffect(potionSpectatingInvisibility);
 
@@ -424,7 +427,7 @@ public class Counselor
         cancelTasks();
 
         //Let them know
-        ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "You died. " + ChatColor.GREEN + "You are now in spectating mode. You are invisible and can fly.", 400);
+        ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "You died. " + ChatColor.GREEN + "You are now in spectating mode. You are invisible and can fly.");
     }
 
     /**
@@ -436,6 +439,8 @@ public class Counselor
         getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
         getPlayer().setAllowFlight(false);
         spectatingMode = false;
+        ActionBarAPI.sendActionBar(getPlayer(), "");
+
     }
 
     /**
@@ -458,7 +463,7 @@ public class Counselor
      */
     private boolean canBeSensedByJason()
     {
-        if (getFearLevelPercentage() > .25)
+        if (getFearLevelPercentage() > .25 && !isInSpectatingMode())
         {
             return true;
         }
