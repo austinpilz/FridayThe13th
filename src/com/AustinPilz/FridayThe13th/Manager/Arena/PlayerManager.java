@@ -365,6 +365,10 @@ public class PlayerManager
 
                 arena.getGameManager().endGame(); //Game over kiddos
             } else {
+
+                //Firework
+                arena.getGameManager().getPlayerManager().fireFirework(player, Color.RED);
+
                 //They're a normal player, see if there are still others alive
                 if (getNumPlayersAlive() > 1) //since jason is still presumably alive
                 {
@@ -481,7 +485,7 @@ public class PlayerManager
     protected void performEndGameActions()
     {
         //Game ended
-        sendMessageToAllPlayers(ChatColor.RED + "Game over!" + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
+        sendMessageToAllPlayers(ChatColor.RED + "Game over! " + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
 
         Iterator it = getPlayers().entrySet().iterator();
         while (it.hasNext())

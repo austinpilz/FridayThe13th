@@ -17,9 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Door;
@@ -236,35 +234,29 @@ public class PlayerListener implements Listener {
                     else
                     {
                         //Counselor in regular mod
-                        if (event.getFrom().distance(event.getTo()) > 0)
-                        {
-                            if (event.getPlayer().isSprinting())
-                            {
-                                if ( arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getStaminaPercentage() == 0)
-                                {
-                                    event.setCancelled(true); //cant run when they have no energy
+                        if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
+                            event.setCancelled(true);
+                        }
+                        else {
+                            if (event.getFrom().distance(event.getTo()) > 0) {
+                                if (event.getPlayer().isSprinting()) {
+                                    if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getStaminaPercentage() == 0) {
+                                        event.setCancelled(true); //cant run when they have no energy
+                                    } else {
+                                        //Sprinting
+                                        arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
+                                    }
+                                } else if (event.getPlayer().isSneaking()) {
+                                    //Sneaking
+                                    arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
+                                } else if (event.getPlayer().isFlying()) {
+                                    if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode()) {
+                                        event.getPlayer().setFlying(false); //Prevent cheating
+                                    }
+                                } else {
+                                    //Must just be walking
+                                    arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
                                 }
-                                else {
-                                    //Sprinting
-                                    arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
-                                }
-                            }
-                            else if (event.getPlayer().isSneaking())
-                            {
-                                //Sneaking
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
-                            }
-                            else if (event.getPlayer().isFlying())
-                            {
-                                if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
-                                {
-                                    event.getPlayer().setFlying(false); //Prevent cheating
-                                }
-                            }
-                            else
-                            {
-                                //Must just be walking
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
                             }
                         }
                     }
@@ -349,10 +341,26 @@ public class PlayerListener implements Listener {
 
                 if (arena.getGameManager().isGameInProgress())
                 {
-                    if (arena.getGameManager().getPlayerManager().isCounselor(player) && arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode())
+                    if (arena.getGameManager().getPlayerManager().isCounselor(player))
                     {
-                        event.setCancelled(true); //You can't get hurt in spectate mode
+                        if (arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode())
+                        {
+                            event.setCancelled(true); //You can't get hurt in spectate mode
+                        }
+                        else
+                        {
+                            if(event instanceof EntityDamageByEntityEvent)
+                            {
+                                EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
+                                if(edbeEvent.getDamager() instanceof Player && FridayThe13th.arenaController.isPlayerPlaying((Player)edbeEvent.getDamager()) && arena.getGameManager().getPlayerManager().isCounselor((Player)edbeEvent.getDamager()) && arena.getGameManager().getPlayerManager().getCounselor((Player)edbeEvent.getDamager()).isInSpectatingMode())
+                                {
+                                    event.setCancelled(true); //Players in spectating mode can't hit other players
+                                }
+
+                            }
+                        }
                     }
+
 
                     if (player.getHealth() <= event.getDamage())
                     {
@@ -370,6 +378,23 @@ public class PlayerListener implements Listener {
             }
             catch (PlayerNotPlayingException exception)
             {
+                //Do nothing since in this case, we couldn't care
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onHealthRegen (EntityRegainHealthEvent event)
+    {
+        if(event.getEntity() instanceof Player && event.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.REGEN))
+        {
+            try
+            {
+                Player player = (Player) event.getEntity();
+                Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
+                event.setCancelled(true);
+
+            } catch (PlayerNotPlayingException exception) {
                 //Do nothing since in this case, we couldn't care
             }
         }
