@@ -65,7 +65,7 @@ public class Counselor
         stamina = 100;
         maxStamina = 100;
         staminaDepletionRate = 0.1;
-        staminaRegenerationRate = 1.5;
+        staminaRegenerationRate = .1;
 
         //Fear
         fearLevel = 5;
@@ -205,7 +205,7 @@ public class Counselor
     {
         if (value)
         {
-            setStamina(Math.min(getMaxStamina(), stamina + staminaRegenerationRate));
+            setStamina(Math.min(getMaxStamina(), stamina + getMaxStamina()*staminaRegenerationRate));
             setMoving(false);
             updateStaminaEffects();
         }

@@ -153,7 +153,7 @@ public class PlayerListener implements Listener {
                             }
 
                         }
-                        else if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Bed)
+                        else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.BED))
                         {
                             event.setCancelled(true);
                         }
@@ -360,7 +360,6 @@ public class PlayerListener implements Listener {
                             }
                         }
                     }
-
 
                     if (player.getHealth() <= event.getDamage())
                     {

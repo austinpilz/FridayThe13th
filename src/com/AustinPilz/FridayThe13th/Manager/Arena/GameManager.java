@@ -335,6 +335,9 @@ public class GameManager
         //Remove all players
         getPlayerManager().performEndGameActions();
 
+        //Make countdown bar for any counselors disappear
+        getGameCountdownManager().hideCountdownBar();
+
         //Replace any items changed during gameplay
         arena.getObjectManager().restorePerGameObjects();
 

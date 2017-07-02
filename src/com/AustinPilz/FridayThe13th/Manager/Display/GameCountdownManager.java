@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Counselor;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
@@ -17,14 +18,32 @@ import java.util.Map;
 public class GameCountdownManager
 {
     private Arena arena;
+    private BossBar gameCountdownBar;
 
     public GameCountdownManager (Arena arena)
     {
         this.arena = arena;
+        gameCountdownBar = Bukkit.createBossBar("Time Left", BarColor.WHITE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG);
     }
 
     public void updateCountdown()
     {
+        gameCountdownBar.setProgress(arena.getGameManager().getGameTimeLeft()/arena.getGameManager().getGameTimeMax());
+
+        Iterator counselorIterator = arena.getGameManager().getPlayerManager().getCounselors().entrySet().iterator();
+        while (counselorIterator.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) counselorIterator.next();
+            Counselor counselor = (Counselor) entry.getValue();
+
+            if (counselor.isInSpectatingMode())
+            {
+                gameCountdownBar.addPlayer(counselor.getPlayer());
+            }
+        }
+
+
+
         if (arena.getGameManager().getGameTimeLeft() == 0)
         {
             arena.getGameManager().gameTimeUp(); //game ran out of time
@@ -58,5 +77,10 @@ public class GameCountdownManager
                 }
             }
         }
+    }
+
+    public void hideCountdownBar()
+    {
+        gameCountdownBar.removeAll();
     }
 }
