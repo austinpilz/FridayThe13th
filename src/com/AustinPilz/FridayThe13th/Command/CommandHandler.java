@@ -123,13 +123,13 @@ public class CommandHandler implements CommandExecutor
                                 else
                                 {
                                     //Unknown type of chest
-                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown chest type.");
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown chest type. Available types are " + ChatColor.AQUA + "Chest:item" + ChatColor.WHITE + " and " + ChatColor.AQUA + "Chest:weapon");
                                 }
                             }
                             else
                             {
                                 //Unknown add command
-                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown add item.");
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Unknown add item. Available items are " + ChatColor.AQUA + "chest" + ChatColor.WHITE + " and " + ChatColor.AQUA + "spawn");
                             }
                         } else {
                             //Incorrect setup syntax
@@ -283,15 +283,22 @@ public class CommandHandler implements CommandExecutor
                 }
             }
             else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
-
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + "--- Help Menu ---");
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/setup");
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/add");
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arena");
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arenas");
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/here");
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/join" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play");
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*"))
+                {
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "--- Help Menu ---");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/setup");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/add");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arena");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arenas");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/here");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/join" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
+                }
+                else if (sender.hasPermission("FridayThe13th.User")){
+                    sender.sendMessage(FridayThe13th.pluginPrefix + "--- Help Menu ---");
+                    sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + "/join" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play");
+                    sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
+                }
             }
             else
             {
