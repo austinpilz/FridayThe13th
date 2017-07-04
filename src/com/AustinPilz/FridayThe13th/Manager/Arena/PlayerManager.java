@@ -312,7 +312,6 @@ public class PlayerManager
                 //They're a counselor
                 if (getNumPlayersAlive() <= 1) {
                     //They were the last one
-                    jasonWins();
                     arena.getGameManager().endGame();
                 }
             }
@@ -343,7 +342,6 @@ public class PlayerManager
                 //They're a counselor
                 if (getNumPlayersAlive() <= 1) {
                     //They were the last one
-                    jasonWins();
                     arena.getGameManager().endGame();
                 }
             }
@@ -367,6 +365,10 @@ public class PlayerManager
 
                 arena.getGameManager().endGame(); //Game over kiddos
             } else {
+
+                //Firework
+                arena.getGameManager().getPlayerManager().fireFirework(player, Color.RED);
+
                 //They're a normal player, see if there are still others alive
                 if (getNumPlayersAlive() > 1) //since jason is still presumably alive
                 {
@@ -374,7 +376,6 @@ public class PlayerManager
                     getCounselor(player).enterSpectatingMode();
                 } else {
                     //They were the last to die, so end the game
-                    jasonWins();
                     arena.getGameManager().endGame();
                 }
             }
@@ -426,6 +427,9 @@ public class PlayerManager
 
         //Jason stuff
         jason.prepapreForGameplay();
+
+        //Tell everyone who Jason is
+        sendMessageToAllPlayers(ChatColor.AQUA + jason.getPlayer().getName() + ChatColor.WHITE + " is Jason.");
 
     }
 
@@ -481,7 +485,7 @@ public class PlayerManager
     protected void performEndGameActions()
     {
         //Game ended
-        sendMessageToAllPlayers("Game over! Thanks for playing Friday the 13th.");
+        sendMessageToAllPlayers(ChatColor.RED + "Game over! " + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
 
         Iterator it = getPlayers().entrySet().iterator();
         while (it.hasNext())
@@ -660,12 +664,5 @@ public class PlayerManager
         sendMessageToAllPlayers("Counselors " + ChatColor.GREEN + "WIN" + ChatColor.WHITE + "! Jason was slain.");
     }
 
-    /**
-     * Performs actions when jason wins
-     */
-    private void jasonWins()
-    {
-        sendMessageToAllPlayers("Jason " + ChatColor.GREEN + "WINS" + ChatColor.WHITE + "! " + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed.");
-    }
 
 }

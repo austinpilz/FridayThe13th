@@ -10,6 +10,8 @@ public enum Setting {
 	
 	//GamePlay
 	gameplayMaxStamina("Gameplay.MaxStamina", 30),
+	gameplayWaitingTime("Gameplay.WaitingTimeInSeconds", 20),
+	gameplayGameTime("Gameplay.GameTimeInSeconds", 600),
 	gameplayWarnOnBreak("Gameplay.Alerts.AlertOnBlockBreakAttempt", true),
 	gameplayWarnOnPlace("Gameplay.Alerts.AlertOnBlockPlaceAttempt", true);
 	
