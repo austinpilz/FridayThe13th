@@ -347,8 +347,8 @@ public class CommandHandler implements CommandExecutor
             }
             else
             {
-                //No permissions
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.DARK_RED + "You don't have permission to access this command.");
+                //Unknown command
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.DARK_RED + "Unknown command.");
             }
         }
 
