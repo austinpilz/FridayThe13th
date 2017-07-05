@@ -399,6 +399,9 @@ public class PlayerManager
         //Teleport player to waiting location
         teleportPlayerToWaitingPoint(player);
 
+        //Show the countdown timer
+        arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player);
+
         //Change game mode & clear inventory
         player.setGameMode(GameMode.SURVIVAL);
         player.setHealth(20);
