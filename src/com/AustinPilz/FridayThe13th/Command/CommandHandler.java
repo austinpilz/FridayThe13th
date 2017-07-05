@@ -133,7 +133,7 @@ public class CommandHandler implements CommandExecutor
                             }
                         } else {
                             //Incorrect setup syntax
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add " + ChatColor.RED + "[arenaName]" + ChatColor.AQUA + "[object]");
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add " + ChatColor.RED + "[arenaName] " + ChatColor.AQUA + "[object]");
                         }
                     } else {
                         //The command was sent by something other than an in-game player
@@ -205,7 +205,7 @@ public class CommandHandler implements CommandExecutor
                         }
                     } else {
                         //Incorrect setup syntax
-                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add " + ChatColor.RED + "[arenaName]" + ChatColor.AQUA + "[object]");
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect add syntax. Usage: /f13 add " + ChatColor.RED + "[arenaName] " + ChatColor.AQUA + "[object]");
                     }
                 }
                 else
