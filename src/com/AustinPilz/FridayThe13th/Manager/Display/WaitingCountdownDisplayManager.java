@@ -34,6 +34,8 @@ public class WaitingCountdownDisplayManager
         waitingBar.addPlayer(p);
     }
 
+    public void hideForPlayer(Player p) { waitingBar.removePlayer(p); }
+
     /**
      * Hides countdown from all players
      */

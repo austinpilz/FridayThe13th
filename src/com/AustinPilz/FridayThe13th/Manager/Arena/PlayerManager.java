@@ -523,6 +523,7 @@ public class PlayerManager
             {
                 //Teleport them to the return point
                 teleportPlayerToReturnPoint(Bukkit.getPlayer(UUID.fromString(playerUUID)));
+                arena.getGameManager().getWaitingCountdownDisplayManager().hideForPlayer(Bukkit.getPlayer(UUID.fromString(playerUUID)));
             }
             else
             {
