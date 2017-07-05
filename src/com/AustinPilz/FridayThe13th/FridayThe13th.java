@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Command.CommandHandler;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
 import com.AustinPilz.FridayThe13th.IO.InputOutput;
+import com.AustinPilz.FridayThe13th.IO.SpigotUpdateChecker;
 import com.AustinPilz.FridayThe13th.Listener.BlockListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
@@ -31,6 +32,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
     //Game Components
     public static ArenaController arenaController;
+    public static SpigotUpdateChecker updateChecker;
 
     //Global Managers
     public static ArenaCreationManager arenaCreationManager;
@@ -87,6 +89,21 @@ public class FridayThe13th extends JavaPlugin implements Listener
             log.log(Level.SEVERE, consolePrefix + "ActionBarAPI not found - required for gameplay.");
             this.setEnabled(false);
             return;
+        }
+
+        //Check for Update
+        try
+        {
+            this.updateChecker.checkUpdate(this.pluginVersion);
+
+            if (updateChecker.isUpdateNeeded())
+            {
+                log.log(Level.INFO, consolePrefix + "Update available! New Version - v" + updateChecker.getLatestVersion() + " &  Your Version - v" + FridayThe13th.pluginVersion);
+            }
+        } catch (Exception e)
+        {
+            log.log(Level.WARNING, consolePrefix + "Encountered an error while attempting to check Spigot for update.");
+            //e.printStackTrace();
         }
 
 

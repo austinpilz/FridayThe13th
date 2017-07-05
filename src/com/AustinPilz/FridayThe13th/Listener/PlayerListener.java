@@ -29,8 +29,12 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        //
+    public void onPlayerJoin(PlayerJoinEvent event)
+    {
+        if (FridayThe13th.updateChecker.isUpdateNeeded() && event.getPlayer().hasPermission("FridayThe13th.admin"))
+        {
+            event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + "There is a new version of Friday the 13th available for update!");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
