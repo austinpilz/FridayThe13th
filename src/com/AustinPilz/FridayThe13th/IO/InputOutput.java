@@ -239,6 +239,24 @@ public class InputOutput
         }
     }
 
+    public void deleteArena(String arenaName)
+    {
+        try
+        {
+            Connection conn = InputOutput.getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_arenas WHERE Name = ?");
+            ps.setString(1, arenaName);
+            ps.executeUpdate();
+            conn.commit();
+            ps.close();
+
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove an arena from the database: " + e.getMessage());
+        }
+    }
+
     public void loadSpawnPoints()
     {
         try

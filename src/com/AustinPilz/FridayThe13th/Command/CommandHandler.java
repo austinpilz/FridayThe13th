@@ -70,6 +70,49 @@ public class CommandHandler implements CommandExecutor
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
                 }
             }
+            if (args[0].equalsIgnoreCase("delete"))
+            {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    //Setup commands cannot be executed by the console
+                    if (sender instanceof Player) {
+                        //Correct Syntax: /f13 setup [arenaName]
+                        if (args.length == 2) {
+                            String arenaName = args[1];
+
+                            //Check to see if the arena with that name already exists
+                            if (FridayThe13th.arenaController.doesArenaExist(arenaName))
+                            {
+                                //End the game and remove the arena
+                                try {
+                                    Arena arena = FridayThe13th.arenaController.getArena(arenaName);
+                                    arena.getGameManager().gameTimeUp();
+                                    FridayThe13th.arenaController.removeArena(arena);
+                                    FridayThe13th.inputOutput.deleteArena(arenaName);
+                                }
+                                catch (ArenaDoesNotExistException exception)
+                                {
+                                    //
+                                }
+
+                            } else {
+                                //An arena with that name already exists in the arena controller memory
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " does not exist.");
+                            }
+                        } else {
+                            //Incorrect setup syntax
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Incorrect delete syntax. Usage: /f13 delete " + ChatColor.RED +"[arenaName]");
+                        }
+                    } else {
+                        //The command was sent by something other than an in-game player
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "The delete command can only be executed by an in-game player.");
+                    }
+                }
+                else
+                {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
+                }
+            }
             else if (args[0].equalsIgnoreCase("add"))
             {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
