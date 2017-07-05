@@ -70,7 +70,7 @@ public class CommandHandler implements CommandExecutor
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "You don't have permission to access this command.");
                 }
             }
-            if (args[0].equalsIgnoreCase("delete"))
+            else if (args[0].equalsIgnoreCase("delete"))
             {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     //Setup commands cannot be executed by the console
