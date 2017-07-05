@@ -96,16 +96,17 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //Check for Update
         try
         {
+            this.updateChecker = new SpigotUpdateChecker();
             this.updateChecker.checkUpdate(this.pluginVersion);
 
             if (updateChecker.isUpdateNeeded())
             {
-                log.log(Level.INFO, consolePrefix + "Update available! New Version - v" + updateChecker.getLatestVersion() + " &  Your Version - v" + FridayThe13th.pluginVersion);
+                log.log(Level.INFO, consolePrefix + "Update available! New Version - v" + updateChecker.getLatestVersion() + " & Your Version - v" + FridayThe13th.pluginVersion);
             }
         } catch (Exception e)
         {
             log.log(Level.WARNING, consolePrefix + "Encountered an error while attempting to check Spigot for update.");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
 
         //Submit Metrics
