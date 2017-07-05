@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th;
 
 import com.AustinPilz.FridayThe13th.Command.CommandHandler;
+import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
 import com.AustinPilz.FridayThe13th.IO.InputOutput;
 import com.AustinPilz.FridayThe13th.IO.MetricsLite;
@@ -12,10 +13,13 @@ import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -128,6 +132,13 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public void onDisable()
     {
         //End every game, restore players, etc.
+        Iterator it = FridayThe13th.arenaController.getArenas().entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            Arena arena = (Arena) entry.getValue();
+            arena.getGameManager().gameTimeUp();
+        }
 
         //When implemented, store any values in DB that would need updates.
 

@@ -158,11 +158,13 @@ public class ArenaController
 
     /**
      * Returns if the player is actively playing within an arena
-     * @param playerUUID
+     * @param player
      * @return
      */
     public boolean isPlayerPlaying(Player player)
     {
         return isPlayerPlaying(player.getUniqueId().toString());
     }
+
+
 }
