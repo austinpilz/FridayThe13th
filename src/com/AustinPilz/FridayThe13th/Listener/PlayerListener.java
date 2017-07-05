@@ -266,39 +266,31 @@ public class PlayerListener implements Listener {
                 }
                 else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
                 {
-                    if (event.getPlayer().isSneaking())
-                    {
-                        if (arena.getGameManager().getPlayerManager().getJason().canStalk())
-                        {
-                            //He's stalking
-                            arena.getGameManager().getPlayerManager().getJason().setStalking(true);
-                        }
-                        else
-                        {
-                            //Can't stalk, so cancel event
-                            event.setCancelled(true);
-                        }
+                    if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
+                        event.setCancelled(true);
                     }
-                    else if (event.getPlayer().isSprinting())
-                    {
-                        arena.getGameManager().getPlayerManager().getJason().setSprinting(true);
-                    }
-                    else if (event.getPlayer().isFlying())
-                    {
-                        if (arena.getGameManager().getPlayerManager().getJason().canWarp())
-                        {
-                            arena.getGameManager().getPlayerManager().getJason().setFlying(true);
+                    else {
+                        if (event.getPlayer().isSneaking()) {
+                            if (arena.getGameManager().getPlayerManager().getJason().canStalk()) {
+                                //He's stalking
+                                arena.getGameManager().getPlayerManager().getJason().setStalking(true);
+                            } else {
+                                //Can't stalk, so cancel event
+                                event.setCancelled(true);
+                            }
+                        } else if (event.getPlayer().isSprinting()) {
+                            arena.getGameManager().getPlayerManager().getJason().setSprinting(true);
+                        } else if (event.getPlayer().isFlying()) {
+                            if (arena.getGameManager().getPlayerManager().getJason().canWarp()) {
+                                arena.getGameManager().getPlayerManager().getJason().setFlying(true);
+                            } else {
+                                event.setCancelled(true);
+                                event.getPlayer().setFlying(false);
+                            }
+                        } else {
+                            //Must just be walking
+                            arena.getGameManager().getPlayerManager().getJason().setWalking(true);
                         }
-                        else
-                        {
-                            event.setCancelled(true);
-                            event.getPlayer().setFlying(false);
-                        }
-                    }
-                    else
-                    {
-                        //Must just be walking
-                        arena.getGameManager().getPlayerManager().getJason().setWalking(true);
                     }
                 }
             }
