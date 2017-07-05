@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Command.CommandHandler;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
 import com.AustinPilz.FridayThe13th.IO.InputOutput;
+import com.AustinPilz.FridayThe13th.IO.MetricsLite;
 import com.AustinPilz.FridayThe13th.IO.SpigotUpdateChecker;
 import com.AustinPilz.FridayThe13th.Listener.BlockListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
@@ -14,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,6 +106,17 @@ public class FridayThe13th extends JavaPlugin implements Listener
         {
             log.log(Level.WARNING, consolePrefix + "Encountered an error while attempting to check Spigot for update.");
             //e.printStackTrace();
+        }
+
+        //Submit Metrics
+        try
+        {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        }
+        catch (IOException e)
+        {
+            log.log(Level.WARNING, consolePrefix + "Encountered an error while attempting to submit plugin metrics.");
         }
 
 
