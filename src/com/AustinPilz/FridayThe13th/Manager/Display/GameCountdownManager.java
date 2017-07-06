@@ -23,7 +23,7 @@ public class GameCountdownManager
     public GameCountdownManager (Arena arena)
     {
         this.arena = arena;
-        gameCountdownBar = Bukkit.createBossBar("Time Left", BarColor.WHITE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG);
+        gameCountdownBar = Bukkit.createBossBar("Time Left", BarColor.WHITE, BarStyle.SOLID, BarFlag.CREATE_FOG);
     }
 
     public void updateCountdown()
