@@ -4,8 +4,6 @@ import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.Jason;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +17,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Chest;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
 
@@ -200,9 +199,9 @@ public class PlayerListener implements Listener {
                                 event.setCancelled(true);
                             }
                         }
-                        else if (event.getClickedBlock().getType().equals(Material.THIN_GLASS) || event.getClickedBlock().getType().equals(Material.STAINED_GLASS_PANE))
+                        else if (event.getClickedBlock().getState().getData() instanceof Chest)
                         {
-                            //Window
+                            event.setCancelled(true);
                         }
                     }
                 }
