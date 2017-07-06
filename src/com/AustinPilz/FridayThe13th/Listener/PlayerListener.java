@@ -125,6 +125,7 @@ public class PlayerListener implements Listener {
                             {
                                 //They're trying to interact with a broken door
                                 event.setCancelled(true);
+                                event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "That door has been broken by Jason.");
                             }
                         }
                         else if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Lever)
