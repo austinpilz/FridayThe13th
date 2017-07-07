@@ -174,7 +174,7 @@ public class PlayerListener implements Listener {
                 {
                     Jason jason = arena.getGameManager().getPlayerManager().getJason();
 
-                    if (event.hasItem() && event.getItem().hasItemMeta() && !event.hasBlock())
+                    if (event.hasItem() && event.getItem().hasItemMeta())
                     {
                         ItemMeta itemMeta = event.getItem().getItemMeta();
 

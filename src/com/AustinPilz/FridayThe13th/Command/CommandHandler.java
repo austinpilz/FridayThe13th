@@ -151,7 +151,7 @@ public class CommandHandler implements CommandExecutor {
                             }
                         } else {
                             //Incorrect setup syntax
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addSyntaxError", "Incorrect add syntax. Usage: {0}", ChatColor.AQUA + "/f13 delete [arenaName] [object]"));
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addSyntaxError", "Incorrect add syntax. Usage: {0}", ChatColor.AQUA + "/f13 add [arenaName] [object]"));
                         }
                     } else {
                         //The command was sent by something other than an in-game player

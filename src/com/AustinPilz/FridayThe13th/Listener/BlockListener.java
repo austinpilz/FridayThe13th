@@ -110,6 +110,7 @@ public class BlockListener implements Listener
                 else if (event.getBlock().getType().equals(Material.THIN_GLASS) || event.getBlock().getType().equals(Material.STAINED_GLASS_PANE))
                 {
                     //Window
+                    event.setCancelled(true);
                 }
                 else
                 {
