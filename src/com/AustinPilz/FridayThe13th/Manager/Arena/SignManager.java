@@ -54,7 +54,7 @@ public class SignManager
             }
             else if (arena.getGameManager().isGameWaiting())
             {
-                sign.setLine(2, ChatColor.AQUA + "Waiting" + ChatColor.BLACK + " - " + arena.getGameManager().getWaitingTimeLeft());
+                sign.setLine(2, ChatColor.AQUA + "Waiting" + ChatColor.BLACK + " - " + arena.getGameManager().getWaitingTimeLeft() + "s");
                 sign.setLine(3, "Click to join!");
             }
             else if (arena.getGameManager().isGameInProgress())

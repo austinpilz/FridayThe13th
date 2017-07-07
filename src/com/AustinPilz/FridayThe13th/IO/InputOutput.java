@@ -507,7 +507,7 @@ public class InputOutput
      * @param Z
      * @param world
      */
-    public void deleteSIgn(double X, double Y, double Z, String world)
+    public void deleteSign(double X, double Y, double Z, String world)
     {
         try
         {
@@ -549,7 +549,7 @@ public class InputOutput
             {
                 Location signLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
 
-                if (signLocation.getBlock().getType().equals(Material.SIGN) || signLocation.getBlock().getType().equals(Material.WALL_SIGN))
+                if (signLocation.getBlock().getType().equals(Material.SIGN_POST) || signLocation.getBlock().getType().equals(Material.WALL_SIGN))
                 {
                     try
                     {
@@ -560,14 +560,14 @@ public class InputOutput
                     catch (ArenaDoesNotExistException exception)
                     {
                         FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load sign in arena ("+result.getString("Arena")+"), arena does not exist in memory.");
-                        deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                        deleteSign(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
                         removed++;
                     }
                 }
                 else
                 {
                     //This location is no longer a chest, so remove it
-                    deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                    deleteSign(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
                     removed++;
                 }
             }
@@ -575,6 +575,11 @@ public class InputOutput
             if (count > 0)
             {
                 FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Loaded " + count + " signs(s).");
+            }
+
+            if (removed > 0)
+            {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Removed " + removed + " signs(s).");
             }
 
             conn.commit();
