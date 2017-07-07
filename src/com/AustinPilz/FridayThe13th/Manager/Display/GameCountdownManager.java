@@ -24,12 +24,11 @@ public class GameCountdownManager
     {
         this.arena = arena;
         gameCountdownBar = Bukkit.createBossBar(FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.counselor.timeLeft", "Time Left"), BarColor.WHITE, BarStyle.SOLID, BarFlag.CREATE_FOG);
+        gameCountdownBar.setProgress(1);
     }
 
     public void updateCountdown()
     {
-        gameCountdownBar.setProgress(arena.getGameManager().getGameTimeLeft()/arena.getGameManager().getGameTimeMax());
-
         Iterator counselorIterator = arena.getGameManager().getPlayerManager().getCounselors().entrySet().iterator();
         while (counselorIterator.hasNext())
         {
@@ -50,6 +49,7 @@ public class GameCountdownManager
         }
         else
         {
+            gameCountdownBar.setProgress(arena.getGameManager().getGameTimeLeft()/arena.getGameManager().getGameTimeMax());
             int rem = arena.getGameManager().getGameTimeLeft() % 3600;
             int mn = rem / 60;
             int sec = rem % 60;
@@ -73,11 +73,17 @@ public class GameCountdownManager
                 {
                     Map.Entry entry = (Map.Entry) it.next();
                     Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + sec + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.minutes", "seconds"), 60);
+                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + sec + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.seconds", "seconds"), 60);
                 }
             }
         }
     }
+
+    /**
+     * Removes the time left bar from the specified player
+     * @param p
+     */
+    public void hideFromPlayer(Player p) { gameCountdownBar.removePlayer(p); }
 
     public void hideCountdownBar()
     {

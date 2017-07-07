@@ -450,6 +450,7 @@ public class Counselor
         getPlayer().setAllowFlight(false);
         spectatingMode = false;
         ActionBarAPI.sendActionBar(getPlayer(), "");
+        arena.getGameManager().getGameCountdownManager().hideFromPlayer(getPlayer());
 
     }
 

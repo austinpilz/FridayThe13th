@@ -366,7 +366,7 @@ public class PlayerListener implements Listener {
 
                 if (arena.getGameManager().isGameInProgress())
                 {
-                    if (arena.getGameManager().getPlayerManager().isCounselor(player))
+                    if (arena.getGameManager().getPlayerManager().isCounselor(player) || arena.getGameManager().getPlayerManager().isJason(player))
                     {
                         if (arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode())
                         {

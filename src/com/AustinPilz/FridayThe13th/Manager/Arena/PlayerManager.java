@@ -406,7 +406,7 @@ public class PlayerManager
         //Change game mode & clear inventory
         player.setGameMode(GameMode.SURVIVAL);
         player.setHealth(20);
-        player.setFoodLevel(20);
+        player.setFoodLevel(10);
         player.getInventory().clear();
     }
 
