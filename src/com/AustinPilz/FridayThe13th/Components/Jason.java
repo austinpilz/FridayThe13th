@@ -59,6 +59,11 @@ public class Jason
     private boolean warpInitialGenerationComplete;
     private boolean warpActive;
 
+    //Restore values
+    private float originalWalkSpeed;
+    private float originalFlySpeed;
+    private boolean originalAllowFly;
+
 
     public Jason(Player p, Arena a)
     {
@@ -93,6 +98,10 @@ public class Jason
         warpInitialGenerationComplete = false;
         warpActive = false;
 
+        //Restore Values
+        originalWalkSpeed = player.getWalkSpeed();
+        originalFlySpeed = player.getFlySpeed();
+        originalAllowFly = player.getAllowFlight();
     }
 
     /**
@@ -588,6 +597,19 @@ public class Jason
         getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
         getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
         getPlayer().removePotionEffect(PotionEffectType.SLOW);
+    }
+
+    /**
+     * Restores the players original speed values
+     */
+    public void restoreOriginalSpeeds()
+    {
+        if (player.isOnline())
+        {
+            player.setFlySpeed(originalFlySpeed);
+            player.setWalkSpeed(originalWalkSpeed);
+            player.setAllowFlight(originalAllowFly);
+        }
     }
 
 

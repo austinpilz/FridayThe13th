@@ -1,7 +1,11 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Jason;
+import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
+import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
+import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.ChatColor;
@@ -9,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,6 +25,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Chest;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class PlayerListener implements Listener {
 
@@ -211,8 +219,30 @@ public class PlayerListener implements Listener {
             {
                 event.setCancelled(true); //Disable interaction while in the waiting room
             }
-        } catch (PlayerNotPlayingException exception) {
+        } catch (PlayerNotPlayingException exception)
+        {
             //Do nothing since in this case, we couldn't care
+            if (event.hasBlock() && (event.getClickedBlock().getType().equals(Material.WALL_SIGN) || event.getClickedBlock().getType().equals(Material.SIGN_POST)))
+            {
+                Sign sign = (Sign)event.getClickedBlock().getState();
+
+                Iterator it = FridayThe13th.arenaController.getArenas().entrySet().iterator();
+                while (it.hasNext())
+                {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    Arena arena = (Arena) entry.getValue();
+                    if (arena.getSignManager().isJoinSign(sign))
+                    {
+                        try {
+                            arena.getGameManager().getPlayerManager().playerJoinGame(event.getPlayer());
+                        } catch (GameFullException e) {
+                            event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + "The game in " + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE + " is currently full.");
+                        } catch (GameInProgressException e) {
+                            event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + "The game in " + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE + " is currently in progress. You cannot join during a game.");
+                        }
+                    }
+                }
+            }
         }
     }
 

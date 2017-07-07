@@ -18,6 +18,9 @@ public class WaitingCountdown implements Runnable
         {
             arena.getGameManager().setWaitingTimeLeft(arena.getGameManager().getWaitingTimeLeft() - 1);
             arena.getGameManager().getWaitingCountdownDisplayManager().updateCountdownValue();
+
+            //Update the signs
+            arena.getSignManager().updateJoinSigns();
         }
     }
 }

@@ -541,6 +541,7 @@ public class PlayerManager
 
                 //Remove any potions
                 counselor.removeAllPotionEffects();
+                counselor.restoreOriginalSpeeds();
 
                 //Leave spectating mode, if applicable
                 if (counselor.isInSpectatingMode())
@@ -561,11 +562,10 @@ public class PlayerManager
 
                 //Stop Potions
                 jason.removePotionEffects();
+                jason.restoreOriginalSpeeds();
 
                 //Remove his ability display
                 jason.getAbilityDisplayManager().hideAbilities();
-
-
             }
 
             //Actions done only if they're online
@@ -575,11 +575,6 @@ public class PlayerManager
 
                 //Teleport them to the return point
                 teleportPlayerToReturnPoint(player);
-
-                //Return normal walking speed
-                player.setWalkSpeed(0.2f);
-                player.setFlySpeed(0.5f);
-                player.setAllowFlight(false);
 
                 //Clear inventory
                 player.getInventory().clear();

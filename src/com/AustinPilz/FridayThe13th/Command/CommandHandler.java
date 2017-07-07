@@ -86,6 +86,7 @@ public class CommandHandler implements CommandExecutor
                                 try {
                                     Arena arena = FridayThe13th.arenaController.getArena(arenaName);
                                     arena.getGameManager().gameTimeUp();
+                                    arena.getSignManager().markDeleted();
                                     FridayThe13th.arenaController.removeArena(arena);
                                     FridayThe13th.inputOutput.deleteArena(arenaName);
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena " + ChatColor.RED + arenaName + ChatColor.WHITE + " has been deleted successfully.");

@@ -52,6 +52,11 @@ public class Counselor
     private boolean shownStaminaWarning = false;
     private boolean shownFearWarning = false;
 
+    //Restore values
+    private float originalWalkSpeed;
+    private float originalFlySpeed;
+    private boolean originalAllowFly;
+
     /**
      * Creates new counselor object
      * @param p Minecraft player object
@@ -82,6 +87,11 @@ public class Counselor
         potionFearBlind = new PotionEffect(PotionEffectType.BLINDNESS, 400, 1);
         potionSpectatingInvisibility = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
         potionSenseByJason = new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1);
+
+        //Restore Values
+        originalWalkSpeed = player.getWalkSpeed();
+        originalFlySpeed = player.getFlySpeed();
+        originalAllowFly = player.getAllowFlight();
     }
 
     /**
@@ -486,6 +496,19 @@ public class Counselor
         else
         {
             getPlayer().removePotionEffect(PotionEffectType.GLOWING);
+        }
+    }
+
+    /**
+     * Restores the players original speed values
+     */
+    public void restoreOriginalSpeeds()
+    {
+        if (player.isOnline())
+        {
+            player.setFlySpeed(originalFlySpeed);
+            player.setWalkSpeed(originalWalkSpeed);
+            player.setAllowFlight(originalAllowFly);
         }
     }
 

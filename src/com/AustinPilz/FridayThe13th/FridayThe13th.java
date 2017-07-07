@@ -29,7 +29,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static final String pluginVersion = "1.0.1";
     public static final String pluginPrefix = ChatColor.RED + "[F13] " + ChatColor.WHITE;
     public static final String pluginAdminPrefix = ChatColor.RED + "[F13:A] " + ChatColor.WHITE;
-    public static final String signPrefix = "[Friday13]";
+    public static final String signPrefix = ChatColor.RED + "[F13]";
     public static final String consolePrefix = "[FridayThe13th] ";
     public static final String pluginURL = "";
     public static FridayThe13th instance;
@@ -74,6 +74,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         inputOutput.loadArenas();
         inputOutput.loadSpawnPoints();
         inputOutput.loadChests();
+        inputOutput.loadSigns();
 
         //Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -139,8 +140,6 @@ public class FridayThe13th extends JavaPlugin implements Listener
             Arena arena = (Arena) entry.getValue();
             arena.getGameManager().gameTimeUp();
         }
-
-        //When implemented, store any values in DB that would need updates.
 
         //Close database connection
         inputOutput.freeConnection();

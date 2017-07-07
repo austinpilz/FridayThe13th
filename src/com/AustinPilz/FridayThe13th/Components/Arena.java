@@ -1,9 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components;
 
-import com.AustinPilz.FridayThe13th.Manager.Arena.GameManager;
-import com.AustinPilz.FridayThe13th.Manager.Arena.LocationManager;
-import com.AustinPilz.FridayThe13th.Manager.Arena.ObjectManager;
-import com.AustinPilz.FridayThe13th.Manager.Arena.PlayerManager;
+import com.AustinPilz.FridayThe13th.Manager.Arena.*;
 import org.bukkit.Location;
 
 import java.util.Arrays;
@@ -23,12 +20,14 @@ public class Arena
     private LocationManager locationManager; //Manages important locations such as counselor spawn locations
     private ObjectManager objectManager;
     private GameManager gameManager; //Manages the active game, players, etc.
+    private SignManager signManager;
 
     public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation)
     {
         //Initialize
         locationManager = new LocationManager(this);
         objectManager = new ObjectManager(this);
+        signManager = new SignManager(this);
         gameManager = new GameManager(this);
 
         //Values
@@ -114,6 +113,13 @@ public class Arena
      * @return
      */
     public ObjectManager getObjectManager() { return objectManager; }
+
+    /**
+     * Returns the arena's sign manager
+     * @return
+     */
+    public SignManager getSignManager() { return signManager; }
+
     /**
      * Checks if supplied location is within the arena boundaries
      * @param inQuestion

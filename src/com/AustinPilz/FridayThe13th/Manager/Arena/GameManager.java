@@ -312,6 +312,8 @@ public class GameManager
             //Start the game
             beginGame();
         }
+
+        arena.getSignManager().updateJoinSigns(); //update the join signs
     }
 
     private void beginGame()
