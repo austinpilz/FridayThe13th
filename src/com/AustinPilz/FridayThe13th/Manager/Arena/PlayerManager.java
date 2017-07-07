@@ -272,11 +272,11 @@ public class PlayerManager
                     performWaitingActions(player);
 
                     //Announce arrival
-                    sendMessageToAllPlayers(ChatColor.GRAY + player.getName() + " has joined the game.");
+                    sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()));
 
                 } catch (PlayerAlreadyPlayingException exception) {
                     //They're already in the controller global player list
-                    player.sendMessage(FridayThe13th.pluginPrefix + "Failed to add you to game because you're already registered as playing a game.");
+                    player.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinFailAR", "Failed to add you to game because you're already registered as playing a game."));
                 }
             } else {
                 throw new GameFullException();
@@ -306,7 +306,7 @@ public class PlayerManager
 
             if (isJason(player)) {
                 //Jason logged off, so end the game
-                sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) logged off and quit the game.");
+                sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getName()));
                 arena.getGameManager().endGame();
             } else {
                 //They're a counselor
@@ -320,7 +320,7 @@ public class PlayerManager
 
         //Message everyone in game
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
-        sendMessageToAllPlayers(ChatColor.GRAY + offlinePlayer.getName() + " has logged out and left the game.");
+        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutBroadcast", "{0} has logged out and left the game.", player.getName()));
     }
 
     /**
@@ -336,7 +336,7 @@ public class PlayerManager
 
             if (isJason(player)) {
                 //Jason quit off, so end the game
-                sendMessageToAllPlayers(ChatColor.RED + "GAME OVER! " + ChatColor.WHITE + player.getName() + " (Jason) left the game.");
+                sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getName()));
                 arena.getGameManager().endGame();
             } else {
                 //They're a counselor
@@ -348,7 +348,7 @@ public class PlayerManager
         }
 
         //Message everyone in game
-        sendMessageToAllPlayers(ChatColor.GRAY + player.getName() + " has left the game.");
+        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitBroadcast", "{0} has left the game.", player.getName()));
     }
 
     public void onPlayerDeath(Player player)
@@ -382,7 +382,8 @@ public class PlayerManager
         }
 
         //Let everyone know
-        sendMessageToAllPlayers(ChatColor.GRAY + player.getName() + " was " + ChatColor.RED + "killed" + ChatColor.WHITE + ".");
+        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerKilledBroadcast", "{0} was killed.", player.getName()));
+
     }
 
 
@@ -660,7 +661,7 @@ public class PlayerManager
      */
     private void counselorsWin()
     {
-        sendMessageToAllPlayers("Counselors " + ChatColor.GREEN + "WIN" + ChatColor.WHITE + "! Jason was slain.");
+        sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.counselorsWin", "Counselors win! Jason was slain."));
     }
 
 

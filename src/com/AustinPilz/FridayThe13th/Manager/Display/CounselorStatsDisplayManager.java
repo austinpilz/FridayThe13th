@@ -19,8 +19,8 @@ public class CounselorStatsDisplayManager
     public CounselorStatsDisplayManager(Counselor counselor)
     {
         this.counselor = counselor;
-        staminaBar = Bukkit.createBossBar("Stamina", BarColor.GREEN, BarStyle.SOLID, BarFlag.DARKEN_SKY);
-        fearBar = Bukkit.createBossBar("Fear", BarColor.RED, BarStyle.SOLID, BarFlag.CREATE_FOG);
+        staminaBar = Bukkit.createBossBar(FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.staminaBarTitle", "Stamina"), BarColor.GREEN, BarStyle.SOLID, BarFlag.DARKEN_SKY);
+        fearBar = Bukkit.createBossBar(FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.fearBarTitle", "Fear"), BarColor.RED, BarStyle.SOLID, BarFlag.CREATE_FOG);
         updateStats();
     }
 
