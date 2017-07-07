@@ -4,6 +4,7 @@ import com.AustinPilz.FridayThe13th.Command.CommandHandler;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
 import com.AustinPilz.FridayThe13th.IO.InputOutput;
+import com.AustinPilz.FridayThe13th.IO.LanguageWrapper;
 import com.AustinPilz.FridayThe13th.IO.MetricsLite;
 import com.AustinPilz.FridayThe13th.IO.SpigotUpdateChecker;
 import com.AustinPilz.FridayThe13th.Listener.BlockListener;
@@ -33,6 +34,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static final String consolePrefix = "[FridayThe13th] ";
     public static final String pluginURL = "";
     public static FridayThe13th instance;
+    public static LanguageWrapper language;
 
     public static final Logger log = Logger.getLogger("Minecraft");
 
@@ -61,6 +63,9 @@ public class FridayThe13th extends JavaPlugin implements Listener
         instance = this;
         long startMili = System.currentTimeMillis();
 
+        //Language Wrapper
+        language = new LanguageWrapper(this, "eng");
+
         //Initialize Game Components
         arenaController = new ArenaController();
         arenaCreationManager = new ArenaCreationManager();
@@ -86,14 +91,14 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //3rd Party Plugins
         if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays"))
         {
-            log.log(Level.SEVERE, consolePrefix + "Holographic displays not found - required for gameplay.");
+            log.log(Level.SEVERE, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.holographic", "Holographic displays not found - required for gameplay."));
             this.setEnabled(false);
             return;
         }
 
         if (!Bukkit.getPluginManager().isPluginEnabled("ActionBarAPI"))
         {
-            log.log(Level.SEVERE, consolePrefix + "ActionBarAPI not found - required for gameplay.");
+            log.log(Level.SEVERE, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.actionBarAPI", "ActionBar API not found - required for gameplay."));
             this.setEnabled(false);
             return;
         }
@@ -106,11 +111,12 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
             if (updateChecker.isUpdateNeeded())
             {
-                log.log(Level.INFO, consolePrefix + "Update available! New Version - v" + updateChecker.getLatestVersion() + " & Your Version - v" + FridayThe13th.pluginVersion);
+                log.log(Level.INFO, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.message.updateFound", "Update available! New version - v{0} & v{1}", updateChecker.getLatestVersion(), FridayThe13th.pluginVersion));
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
-            log.log(Level.WARNING, consolePrefix + "Encountered an error while attempting to check Spigot for update.");
+            log.log(Level.WARNING, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.spigotUpdate", "Encountered an unexpected error while attempting to check Spigot for update."));
             e.printStackTrace();
         }
 
@@ -122,11 +128,10 @@ public class FridayThe13th extends JavaPlugin implements Listener
         }
         catch (IOException e)
         {
-            log.log(Level.WARNING, consolePrefix + "Encountered an error while attempting to submit plugin metrics.");
+            log.log(Level.WARNING, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.metrics", "Encountered an unexpected error while attempting to submit stats."));
         }
 
-
-        log.log(Level.INFO, consolePrefix + "Boot up complete - took " + (System.currentTimeMillis() - startMili) + " ms");
+        log.log(Level.INFO, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.message.bootupTime", "Startup complete - took {0} ms", (System.currentTimeMillis() - startMili)));
     }
 
     @Override
