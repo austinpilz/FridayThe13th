@@ -7,6 +7,7 @@ import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.IO.Setting;
 import com.AustinPilz.FridayThe13th.IO.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -46,26 +47,26 @@ public class BlockListener implements Listener
                         {
                             //Arena does not exist
                             event.setCancelled(true);
-                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "Arena " + ChatColor.RED + lines[1] + ChatColor.WHITE + " does not exist.");
+                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + lines[1] + ChatColor.WHITE));
                         }
                         catch (SaveToDatabaseException exception)
                         {
                             event.setCancelled(true);
-                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "There was an error while attempting to save sign to the database. Please see console for full error..");
+                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.signDatabaseError", "There was an error while attempting to save sign to the database. See console for full error."));
                         }
                     }
                     else
                     {
                         //They didn't supply the sign name
                         event.setCancelled(true);
-                        event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You have to supply the arena name on the second line of the sign.");
+                        event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.signArenaError", "You need to supply the arena name on the second line of the sign."));
                     }
                 }
                 else
                 {
                     //No permissions
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You don't have permissions to add Friday the 13th signs.");
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.signAddPermissionError", "You don't have permission to add signs."));
                 }
             }
         }
@@ -80,7 +81,7 @@ public class BlockListener implements Listener
 
             if (Settings.getGlobalBoolean(Setting.gameplayWarnOnPlace))
             {
-                event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot place blocks while playing.");
+                event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.blockPlace", "You cannot place blocks while playing."));
             }
         }
     }

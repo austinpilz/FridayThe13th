@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Jason;
+import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -22,9 +23,9 @@ public class JasonAbilityDisplayManager
         this.jason = jason;
 
         //Bars
-        stalkBar = Bukkit.createBossBar(ChatColor.GRAY + "Stalk", BarColor.GREEN, BarStyle.SOLID, BarFlag.DARKEN_SKY);
-        senseBar = Bukkit.createBossBar(ChatColor.GRAY + "Sense", BarColor.RED, BarStyle.SOLID, BarFlag.DARKEN_SKY);
-        warpBar = Bukkit.createBossBar(ChatColor.GRAY + "Warp", BarColor.PURPLE, BarStyle.SOLID, BarFlag.DARKEN_SKY);
+        stalkBar = Bukkit.createBossBar(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.jason.stalkTitle", "Stalk"), BarColor.GREEN, BarStyle.SOLID, BarFlag.DARKEN_SKY);
+        senseBar = Bukkit.createBossBar(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.jason.senseTitle", "Sense"), BarColor.RED, BarStyle.SOLID, BarFlag.DARKEN_SKY);
+        warpBar = Bukkit.createBossBar(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.jason.warpTitle", "Warp"), BarColor.PURPLE, BarStyle.SOLID, BarFlag.DARKEN_SKY);
     }
 
     public void updateLevels()
@@ -33,7 +34,7 @@ public class JasonAbilityDisplayManager
         stalkBar.setProgress(jason.getStalkLevelPercentage());
         if (jason.hasInitialStalkGenerationCompleted())
         {
-            stalkBar.setTitle(ChatColor.WHITE + "Stalk");
+            stalkBar.setTitle(ChatColor.WHITE + FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.jason.stalkTitle", "Stalk"));
 
             //Sense is dependent on stalk being done first
             senseBar.addPlayer(jason.getPlayer());
@@ -43,7 +44,7 @@ public class JasonAbilityDisplayManager
         //Sense
         if (jason.hasInitialSenseGenerationCompleted())
         {
-            senseBar.setTitle(ChatColor.WHITE + "Sense");
+            senseBar.setTitle(ChatColor.WHITE + FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.jason.senseTitle", "Sense"));
 
             //Warp bar is dependent on sense bar being done first
             warpBar.addPlayer(jason.getPlayer());
@@ -53,7 +54,7 @@ public class JasonAbilityDisplayManager
         //Warp
         if (jason.hasInitialWarpGenerationCompleted())
         {
-            warpBar.setTitle(ChatColor.WHITE + "Warp");
+            warpBar.setTitle(ChatColor.WHITE + FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.jason.warpTitle", "Warp"));
         }
     }
 

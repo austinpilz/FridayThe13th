@@ -23,7 +23,7 @@ public class GameCountdownManager
     public GameCountdownManager (Arena arena)
     {
         this.arena = arena;
-        gameCountdownBar = Bukkit.createBossBar("Time Left", BarColor.WHITE, BarStyle.SOLID, BarFlag.CREATE_FOG);
+        gameCountdownBar = Bukkit.createBossBar(FridayThe13th.language.get(Bukkit.getConsoleSender(), "bossBar.counselor.timeLeft", "Time Left"), BarColor.WHITE, BarStyle.SOLID, BarFlag.CREATE_FOG);
     }
 
     public void updateCountdown()
@@ -62,7 +62,7 @@ public class GameCountdownManager
                 {
                     Map.Entry entry = (Map.Entry) it.next();
                     Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, "Time Left: " + mn + " minutes", 60);
+                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + mn + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.minutes", "minutes"), 60);
                 }
             }
             else if (mn == 0 && (sec == 30 || sec == 20 || sec == 10 || sec == 5))
@@ -73,7 +73,7 @@ public class GameCountdownManager
                 {
                     Map.Entry entry = (Map.Entry) it.next();
                     Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, "Time Left: " + sec + " seconds", 60);
+                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + sec + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.minutes", "seconds"), 60);
                 }
             }
         }

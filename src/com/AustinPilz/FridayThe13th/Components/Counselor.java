@@ -277,7 +277,7 @@ public class Counselor
             //Give them a warning
             if (!shownStaminaWarning)
             {
-                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "Warning:" + ChatColor.WHITE + " Stamina low, you're almost out of energy.", 300);
+                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.staminaLow", "Warning: {0}Stamina low. You're almost out of energy.", ChatColor.WHITE), 300);
                 shownStaminaWarning = true;
             }
         }
@@ -382,7 +382,7 @@ public class Counselor
 
             if (!shownFearWarning)
             {
-                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "Warning:" + ChatColor.WHITE + " You are scared. Find light sources to feel safe again.", 300);
+                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.fearLevelHigh", "You are scared. {0}Find a well lit area.", ChatColor.WHITE), 300);
                 shownFearWarning = true;
             }
         }
@@ -437,7 +437,7 @@ public class Counselor
         cancelTasks();
 
         //Let them know
-        ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + "You died. " + ChatColor.GREEN + "You are now in spectating mode. You are invisible and can fly.");
+        ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.enterSpectatingMode", "You Died! {0}You are now in spectating mode.", ChatColor.WHITE), 300);
     }
 
     /**

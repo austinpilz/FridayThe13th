@@ -356,7 +356,7 @@ public class Jason
        if (value)
        {
            //When it becomes available, send message
-           ActionBarAPI.sendActionBar(getPlayer(), "Stalk ability is now available.", 60);
+           ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.stalkAvailable", "Stalk ability is now available"), 60);
        }
     }
 
@@ -477,7 +477,7 @@ public class Jason
         if (value)
         {
             //When it becomes available, send message
-            ActionBarAPI.sendActionBar(getPlayer(), "Sense ability is now available.", 60);
+            ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.senseAvailable", "Sense ability is now available"), 60);
         }
     }
 
@@ -556,7 +556,7 @@ public class Jason
         if (value)
         {
             //When it becomes available, send message
-            ActionBarAPI.sendActionBar(getPlayer(), "Warp ability is now available.", 60);
+            ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.warpAvailable", "Warp ability is now available"), 60);
         }
     }
 

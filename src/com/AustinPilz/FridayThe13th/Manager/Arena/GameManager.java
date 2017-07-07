@@ -177,7 +177,7 @@ public class GameManager
                 {
                     Map.Entry entry = (Map.Entry) it.next();
                     Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, ChatColor.RED + "Waiting for 1 more player before waiting countdown begins...");
+                    ActionBarAPI.sendActionBar(player, ChatColor.RED + FridayThe13th.language.get(player, "actionBar.waitingForMorePlayers", "Waiting for 1 more player before waiting countdown begins..."));
                 }
 
 
