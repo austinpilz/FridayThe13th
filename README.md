@@ -9,4 +9,4 @@ To install the Friday the 13th plugin on your Minecraft server, please download 
 ## License
 Implementation Copyright (C) 2017 Austin Pilz austinpilz@gmail.com
 
-You are permitted to use this plugin for use on your server, regardless of size. You are not permitted to 1.) redistribute the plugin elsewhere, 2.) make modifications exclusive to servers, or 3.) sell the plugin.
+You are permitted to use this plugin for use on your server, regardless of size. You are not permitted to redistribute the plugin to another website, whether you claim it is your own or not. You are also not permitted to sell the plugin, it it always to be free.
