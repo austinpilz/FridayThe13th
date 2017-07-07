@@ -61,9 +61,9 @@ public class ArenaSetupSession
     private void beginArenaCreation()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "To begin the setup process for arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + FridayThe13th.language.get(player, "setup.arena.begin", "To begin the setup process for arena ") + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
-        this.player.sendMessage(ChatColor.WHITE + "Go to the lowest point of the arena boundary and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
+        this.player.sendMessage(ChatColor.WHITE + FridayThe13th.language.get(player, "setup.arena.begin2", "Go to the lowest point of the arena boundary and execute {0} to use your current location.", ChatColor.AQUA + "/f13 here" + ChatColor.WHITE));
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
         this.state++;
 
