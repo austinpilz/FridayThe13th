@@ -174,16 +174,11 @@ public class PlayerListener implements Listener {
                 {
                     Jason jason = arena.getGameManager().getPlayerManager().getJason();
 
-                    if (event.hasItem() && event.getItem().hasItemMeta())
+                    if (event.hasItem() && event.getItem().hasItemMeta() && event.getItem().getItemMeta().getDisplayName().contains("Sense"))
                     {
-                        ItemMeta itemMeta = event.getItem().getItemMeta();
-
-                        if (itemMeta.getDisplayName().contains("Sense"))
-                        {
-                            //Sense Potion
-                            jason.senseActivationRequest(true);
-                            event.setCancelled(true);
-                        }
+                        //Sense Potion
+                        jason.senseActivationRequest(true);
+                        event.setCancelled(true);
                     }
                     else if (event.hasBlock())
                     {
