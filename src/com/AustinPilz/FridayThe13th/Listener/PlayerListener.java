@@ -99,6 +99,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
+
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
@@ -164,7 +165,7 @@ public class PlayerListener implements Listener {
                             }
 
                         }
-                        else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.BED))
+                        else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.BED_BLOCK))
                         {
                             event.setCancelled(true);
                         }
@@ -203,6 +204,10 @@ public class PlayerListener implements Listener {
                             }
                         }
                         else if (event.getClickedBlock().getState().getData() instanceof Chest)
+                        {
+                            event.setCancelled(true);
+                        }
+                        else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.BED_BLOCK))
                         {
                             event.setCancelled(true);
                         }
