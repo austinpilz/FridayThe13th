@@ -49,7 +49,10 @@ public class GameCountdownManager
         }
         else
         {
-            gameCountdownBar.setProgress(arena.getGameManager().getGameTimeLeft()/arena.getGameManager().getGameTimeMax());
+            //Update the bar
+            float percentage = ((float) arena.getGameManager().getGameTimeLeft()) / arena.getGameManager().getGameTimeMax();
+            gameCountdownBar.setProgress(percentage);
+
             int rem = arena.getGameManager().getGameTimeLeft() % 3600;
             int mn = rem / 60;
             int sec = rem % 60;
