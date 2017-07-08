@@ -406,7 +406,7 @@ public class InputOutput
                         arena.getObjectManager().addChest(new ArenaChest(arena, chestLocation, type));
                         count++;
                     }
-                    catch (ArenaDoesNotExistException exception)
+                    catch (ArenaDoesNotExistException nullexception)
                     {
                         deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
                         removed++;
