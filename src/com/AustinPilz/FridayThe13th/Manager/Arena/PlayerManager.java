@@ -590,6 +590,10 @@ public class PlayerManager
                 //Teleport them to the return point
                 teleportPlayerToReturnPoint(player);
 
+                //Restore health and hunger
+                player.setHealth(20);
+                player.setFoodLevel(20);
+
                 //Clear inventory
                 player.getInventory().clear();
             }

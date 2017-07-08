@@ -360,37 +360,57 @@ public class PlayerListener implements Listener {
         {
             try
             {
-                Player player = (Player) event.getEntity();
+                Player playerDamaged = (Player) event.getEntity();
 
-                Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
+                Arena arena = FridayThe13th.arenaController.getPlayerArena(playerDamaged.getUniqueId().toString()); //See if they're playing
 
                 if (arena.getGameManager().isGameInProgress())
                 {
-                    if (arena.getGameManager().getPlayerManager().isCounselor(player) || arena.getGameManager().getPlayerManager().isJason(player))
+                    if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && arena.getGameManager().getPlayerManager().getCounselor(playerDamaged).isInSpectatingMode())
                     {
-                        if (arena.getGameManager().getPlayerManager().isCounselor(player) && arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode())
+                        event.setCancelled(true); //You can't get hurt in spectate mode
+                    }
+                    else
+                    {
+                        if(event instanceof EntityDamageByEntityEvent)
                         {
-                            event.setCancelled(true); //You can't get hurt in spectate mode
-                        }
-                        else
-                        {
-                            if(event instanceof EntityDamageByEntityEvent)
+                            EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
+                            if(edbeEvent.getDamager() instanceof Player)
                             {
-                                EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
-                                if(edbeEvent.getDamager() instanceof Player && FridayThe13th.arenaController.isPlayerPlaying((Player)edbeEvent.getDamager()) && arena.getGameManager().getPlayerManager().isCounselor((Player)edbeEvent.getDamager()) && arena.getGameManager().getPlayerManager().getCounselor((Player)edbeEvent.getDamager()).isInSpectatingMode())
+                                //The person doing the damage is a player, too.
+                                Player playerDamager = (Player)edbeEvent.getDamager();
+
+                                if (FridayThe13th.arenaController.isPlayerPlaying((Player)edbeEvent.getDamager()))
                                 {
-                                    event.setCancelled(true); //Players in spectating mode can't hit other players
+                                    //The person doing the damage is playing
+                                    if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().getCounselor(playerDamager).isInSpectatingMode())
+                                    {
+                                        //The damager is a counselor in spectate mode
+                                        event.setCancelled(true);
+                                    }
+                                    else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isJason(playerDamaged))
+                                    {
+                                        //Counselor is damaging Jason
+                                    }
+                                }
+                                else
+                                {
+                                    //The person doing the damage isn't even playing
+                                    event.setCancelled(true);
                                 }
 
+                                //Players in spectating mode can't hit other players
+                                event.setCancelled(true);
                             }
                         }
                     }
 
-                    if (player.getHealth() <= event.getDamage())
+
+                    if (playerDamaged.getHealth() <= event.getDamage())
                     {
                         //This blow would kill them
                         event.setCancelled(true);
-                        arena.getGameManager().getPlayerManager().onPlayerDeath(player);
+                        arena.getGameManager().getPlayerManager().onPlayerDeath(playerDamaged);
                     }
                 }
                 else
