@@ -298,7 +298,7 @@ public class InputOutput
 
             if (removed > 0)
             {
-                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Removed " + count + " spawn point(s) for arenas that no longer exist.");
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Removed " + removed + " spawn point(s) for arenas that no longer exist.");
             }
 
             conn.commit();
@@ -408,7 +408,6 @@ public class InputOutput
                     }
                     catch (ArenaDoesNotExistException exception)
                     {
-                        FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load chest in arena ("+result.getString("Arena")+"), arena does not exist in memory.");
                         deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
                         removed++;
                     }
@@ -424,6 +423,11 @@ public class InputOutput
             if (count > 0)
             {
                 FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Loaded " + count + " chest(s).");
+            }
+
+            if (removed > 0)
+            {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Removed " + removed + " chest(s) for arenas that no longer exist.");
             }
 
             conn.commit();
