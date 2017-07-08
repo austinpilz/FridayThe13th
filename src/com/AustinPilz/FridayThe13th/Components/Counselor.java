@@ -119,6 +119,9 @@ public class Counselor
         ///Display Status
         getStatsDisplayManager().displayStats();
 
+        //Display game-wide scoreboard
+        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
+
         //Start All Counselor Tasks
         scheduleTasks();
     }

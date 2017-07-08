@@ -189,6 +189,9 @@ public class Jason
         //Show his abilities
         getAbilityDisplayManager().showAbilities();
 
+        //Display game-wide scoreboard
+        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
+
         //Schedule tasks
         scheduleTasks();
     }

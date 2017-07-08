@@ -273,6 +273,7 @@ public class InputOutput
             result = ps.executeQuery();
 
             int count = 0;
+            int removed = 0;
             while (result.next())
             {
                 Location spawnLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
@@ -281,17 +282,23 @@ public class InputOutput
                 {
                     Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
                     arena.getLocationManager().addStartingPoint(spawnLocation);
+                    count++;
                 }
                 catch (ArenaDoesNotExistException exception)
                 {
-                    FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load spawn point in arena ("+result.getString("Arena")+"), arena does not exist in memory.");
+                    deleteSpawnPoint(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"), result.getString("Arena"));
+                    removed++;
                 }
-                count++;
             }
 
             if (count > 0)
             {
                 FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Loaded " + count + " spawn point(s).");
+            }
+
+            if (removed > 0)
+            {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Removed " + count + " spawn point(s) for arenas that no longer exist.");
             }
 
             conn.commit();
@@ -333,6 +340,28 @@ public class InputOutput
         {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to save new spawn point in arena "+arena.getArenaName()+" into database: " + e.getMessage());
             throw new SaveToDatabaseException();
+        }
+    }
+
+    public void deleteSpawnPoint(double X, double Y, double Z, String world, String arena)
+    {
+        try
+        {
+            Connection conn = InputOutput.getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_spawn_points WHERE Arena = ? AND World = ? AND X = ? AND Y = ? AND Z = ?");
+            ps.setString(1, arena);
+            ps.setString(2, world);
+            ps.setDouble(3, X);
+            ps.setDouble(4, Y);
+            ps.setDouble(5, Z);
+            ps.executeUpdate();
+            conn.commit();
+            ps.close();
+
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove a chest from the database: " + e.getMessage());
         }
     }
 

@@ -20,6 +20,7 @@ public class GameCountdown implements Runnable
             arena.getGameManager().setGameTimeLeft(arena.getGameManager().getGameTimeLeft() - 1); //Decrement a second
             arena.getGameManager().getGameCountdownManager().updateCountdown(); //Update the display
             arena.getSignManager().updateJoinSigns(); //Update signs
+            arena.getGameManager().getGameScoreboardManager().updateScoreboard();
         }
     }
 }

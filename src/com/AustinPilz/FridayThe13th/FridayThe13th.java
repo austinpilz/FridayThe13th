@@ -111,7 +111,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
             if (updateChecker.isUpdateNeeded())
             {
-                log.log(Level.INFO, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.message.updateFound", "Update available! New version - v{0} & v{1}", updateChecker.getLatestVersion(), FridayThe13th.pluginVersion));
+                log.log(Level.INFO, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.message.updateFound", "Update available! New version - v{0} & Current version - v{1}", updateChecker.getLatestVersion(), FridayThe13th.pluginVersion));
             }
         }
         catch (Exception e)

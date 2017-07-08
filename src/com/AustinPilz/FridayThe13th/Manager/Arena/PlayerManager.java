@@ -587,6 +587,9 @@ public class PlayerManager
             {
                 Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
 
+                //Hide game-wide scoreboard
+                arena.getGameManager().getGameScoreboardManager().hideFromPlayer(player);
+
                 //Teleport them to the return point
                 teleportPlayerToReturnPoint(player);
 

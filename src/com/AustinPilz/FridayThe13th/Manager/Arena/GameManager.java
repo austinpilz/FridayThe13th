@@ -6,6 +6,7 @@ import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.IO.Setting;
 import com.AustinPilz.FridayThe13th.IO.Settings;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameCountdownManager;
+import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.GameCountdown;
 import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
@@ -45,6 +46,7 @@ public class GameManager
     public PlayerManager playerManager;
     private GameCountdownManager gameCountdownManager;
     private WaitingCountdownDisplayManager waitingCountdownDisplayManager; //Game-wide waiting room countdown
+    private GameScoreboardManager gameScoreboardManager;
 
     /**
      * @param arena Arena object
@@ -62,6 +64,7 @@ public class GameManager
         playerManager = new PlayerManager(arena);
         gameCountdownManager = new GameCountdownManager(arena);
         waitingCountdownDisplayManager = new WaitingCountdownDisplayManager(arena);
+        gameScoreboardManager = new GameScoreboardManager(arena);
 
         //Change game status to empty
         gameStatus = GameStatus.Empty; //to void null pointer
@@ -97,6 +100,11 @@ public class GameManager
         return waitingCountdownDisplayManager;
     }
 
+    /**
+     * Returns the game scoreboard display manager
+     * @return
+     */
+    public GameScoreboardManager getGameScoreboardManager() { return gameScoreboardManager; }
 
     /**
      * Returns the seconds left in the waiting countdown
