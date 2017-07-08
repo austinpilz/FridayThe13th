@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerManager
 {
@@ -470,9 +471,21 @@ public class PlayerManager
         jason.getPlayer().teleport(arena.getJasonStartLocation());
 
         //Teleport counselors to starting points
-
         Location[] counselorLocations = arena.getLocationManager().getAvailableStartingPoints().toArray(new Location[arena.getLocationManager().getAvailableStartingPoints().size()]);
 
+        //Randomize starting points
+        Random rnd = ThreadLocalRandom.current();
+        for (int i = counselorLocations.length - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+
+            // Simple swap
+            Location a = counselorLocations[index];
+            counselorLocations[index] = counselorLocations[i];
+            counselorLocations[i] = a;
+        }
+
+        //Assign the spots
         Iterator it = getCounselors().entrySet().iterator();
         int i = 0;
         while (it.hasNext())

@@ -18,7 +18,7 @@ public class ArenaDoor
     public ArenaDoor(Block block, Arena arena)
     {
         hits = 0;
-        requiredHits = 3;
+        requiredHits = 5;
         doorBlock = block;
         this.arena = arena;
     }

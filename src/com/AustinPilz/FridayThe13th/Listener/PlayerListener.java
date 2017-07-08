@@ -185,7 +185,7 @@ public class PlayerListener implements Listener {
                         //Physical object interactions
                         if (event.getClickedBlock().getState().getData() instanceof Door || event.getClickedBlock().getState().getData() instanceof Lever)
                         {
-                            //Door clicked
+                            //Door or lever clicked
                             if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) && event.hasItem())
                             {
                                 if (event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasDisplayName() && event.getItem().getItemMeta().getDisplayName().contains("Jason's"))
