@@ -8,6 +8,7 @@ import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -380,27 +381,31 @@ public class PlayerListener implements Listener {
                                 //The person doing the damage is a player, too.
                                 Player playerDamager = (Player)edbeEvent.getDamager();
 
-                                if (FridayThe13th.arenaController.isPlayerPlaying((Player)edbeEvent.getDamager()))
+                                if (FridayThe13th.arenaController.isPlayerPlaying(playerDamager))
                                 {
                                     //The person doing the damage is playing
                                     if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().getCounselor(playerDamager).isInSpectatingMode())
                                     {
-                                        //The damager is a counselor in spectate mode
+                                        //The damage is a counselor in spectate mode
                                         event.setCancelled(true);
+                                        playerDamager.sendMessage(FridayThe13th.pluginPrefix + "You can't damage players while in spectating mode.");
                                     }
                                     else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isJason(playerDamaged))
                                     {
                                         //Counselor is damaging Jason
+                                        if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) || event.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE))
+                                        {
+                                            //Counselor hit jason with a weapon, Jason is now stunned
+                                            event.setCancelled(false);
+                                        }
                                     }
                                 }
                                 else
                                 {
                                     //The person doing the damage isn't even playing
                                     event.setCancelled(true);
+                                    playerDamager.sendMessage(FridayThe13th.pluginPrefix + "You can't hit players when you're not playing.");
                                 }
-
-                                //Players in spectating mode can't hit other players
-                                event.setCancelled(true);
                             }
                         }
                     }

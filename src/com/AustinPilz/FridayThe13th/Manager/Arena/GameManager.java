@@ -15,9 +15,12 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class GameManager
@@ -348,6 +351,15 @@ public class GameManager
         for (Hologram hologram: HologramsAPI.getHolograms(FridayThe13th.instance))
         {
             hologram.delete();
+        }
+
+        //Remove any dropped items on the ground
+        List<Entity> entList = arena.getBoundary1().getWorld().getEntities();//get all entities in the world
+
+        for(Entity current : entList) {
+            if (current instanceof Item && arena.isLocationWithinArenaBoundaries(current.getLocation())) {
+                current.remove();//remove it
+            }
         }
 
         //Don't need to worry about tasks and timers here, handled automatically
