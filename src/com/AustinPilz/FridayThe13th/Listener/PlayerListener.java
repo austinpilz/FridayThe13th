@@ -363,7 +363,7 @@ public class PlayerListener implements Listener {
                 {
                     if (arena.getGameManager().getPlayerManager().isCounselor(player) || arena.getGameManager().getPlayerManager().isJason(player))
                     {
-                        if (arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode())
+                        if (arena.getGameManager().getPlayerManager().isCounselor(player) && arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode())
                         {
                             event.setCancelled(true); //You can't get hurt in spectate mode
                         }
