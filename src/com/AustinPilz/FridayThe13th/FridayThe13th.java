@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class FridayThe13th extends JavaPlugin implements Listener
 {
     public static final String pluginName = "Friday The 13th";
-    public static final String pluginVersion = "1.1.2j" +
+    public static final String pluginVersion = "1.2" +
             "";
     public static final String pluginPrefix = ChatColor.RED + "[F13] " + ChatColor.WHITE;
     public static final String pluginAdminPrefix = ChatColor.RED + "[F13:A] " + ChatColor.WHITE;
