@@ -1,6 +1,9 @@
 package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.coloredcarrot.api.sidebar.Sidebar;
+import com.coloredcarrot.api.sidebar.SidebarString;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -9,23 +12,24 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameScoreboardManager
 {
     private Arena arena;
-    private Scoreboard gameScoreboard;
-    private Scoreboard dummyScoreboard;
-    private Objective obj;
+    private Sidebar gameScoreboard;
 
-    private String prevTimeSlot = "";
+    private SidebarString timeLeftValue;
+    private SidebarString jasonValue;
+    private SidebarString space;
 
     public GameScoreboardManager(Arena a)
     {
         arena = a;
-        gameScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        dummyScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        obj = gameScoreboard.registerNewObjective("scoreboard", "dummy");
-        obj.setDisplayName(ChatColor.RED + "--Friday the 13th--");
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        gameScoreboard = new Sidebar(ChatColor.RED + "" + ChatColor.BOLD + "Friday the 13th", FridayThe13th.instance, 60);
+        timeLeftValue = new SidebarString("");
+        jasonValue = new SidebarString("");
     }
 
     /**
@@ -33,63 +37,57 @@ public class GameScoreboardManager
      */
     public void updateScoreboard()
     {
-        Score emptySpace1 = obj.getScore("   ");
-        emptySpace1.setScore(15);
+        List<SidebarString> newList = new ArrayList<>(gameScoreboard.getEntries());
+        for (SidebarString string : newList)
+        {
+            gameScoreboard.removeEntry(string);
+        }
 
-        Score areaTitle = obj.getScore(ChatColor.RED + "Arena");
-        areaTitle.setScore(14);
+        SidebarString arenaTitle = new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Arena", "Arena"));
+        gameScoreboard.addEntry(arenaTitle);
 
-        Score arenaName = obj.getScore(arena.getArenaName());
-        arenaName.setScore(13);
+        SidebarString arenaName = new SidebarString(arena.getArenaName());
+        gameScoreboard.addEntry(arenaName);
 
-        Score emptySpace2 = obj.getScore("   ");
-        emptySpace2.setScore(12);
+        gameScoreboard.addEntry(new SidebarString(" "));
 
-        Score timeLeftTitle = obj.getScore(ChatColor.RED + "Time Left");
-        timeLeftTitle.setScore(11);
+        //Time Left
+        SidebarString timeLeftTitle = new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.TimeLeft", "Time Left"));
+        gameScoreboard.addEntry(timeLeftTitle);
 
         int rem = arena.getGameManager().getGameTimeLeft() % 3600;
         int mn = rem / 60;
         int sec = rem % 60;
-        Score timeLeftValue = obj.getScore(mn + "m " + sec + "s");
-        timeLeftValue.setScore(10);
 
-        Score emptySpace3 = obj.getScore("   ");
-        emptySpace3.setScore(9);
+        timeLeftValue = new SidebarString(mn + "m " + sec + "s");
+        gameScoreboard.addEntry(timeLeftValue);
 
-        Score aliveTitle = obj.getScore(ChatColor.RED + "Alive");
-        aliveTitle.setScore(8);
+        gameScoreboard.addEntry(new SidebarString("  "));
 
-        Score aliveValue = obj.getScore(arena.getGameManager().getPlayerManager().getNumPlayersAlive()+"");
-        aliveValue.setScore(7);
+        SidebarString jasonTitle = new SidebarString(ChatColor.GOLD + "Jason");
+        gameScoreboard.addEntry(jasonTitle);
 
-        Score emptySpace4 = obj.getScore("   ");
-        emptySpace4.setScore(6);
+        jasonValue = new SidebarString(arena.getGameManager().getPlayerManager().getJason().getPlayer().getName());
+        gameScoreboard.addEntry(jasonValue);
 
-        Score deadTitle = obj.getScore(ChatColor.RED + "Dead");
-        deadTitle.setScore(5);
+        //Space
+        gameScoreboard.addEntry(new SidebarString("   "));
 
-        Score deadValue = obj.getScore(arena.getGameManager().getPlayerManager().getNumPlayersDead()+"");
-        deadValue.setScore(4);
+        //ALIVE
+        gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.AliveDead", "Alive / Dead")));
+        gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + "" + arena.getGameManager().getPlayerManager().getNumPlayersAlive() + ChatColor.WHITE + " / " + ChatColor.RED + "" + arena.getGameManager().getPlayerManager().getNumPlayersDead()));
 
-        Score emptySpace5 = obj.getScore("   ");
-        emptySpace5.setScore(3);
-
-        Score jasonTitle = obj.getScore(ChatColor.RED + "Jason");
-        jasonTitle.setScore(2);
-
-        Score jasonValue = obj.getScore(arena.getGameManager().getPlayerManager().getJason().getPlayer().getName()+"");
-        jasonValue.setScore(1);
+        gameScoreboard.update();
     }
 
     public void displayForPlayer(Player p)
     {
-        //p.setScoreboard(gameScoreboard);
+        gameScoreboard.showTo(p);
     }
 
     public void hideFromPlayer(Player p)
     {
-        p.setScoreboard(dummyScoreboard);
+        gameScoreboard.hideFrom(p);
     }
 
 

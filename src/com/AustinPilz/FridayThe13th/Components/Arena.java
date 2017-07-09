@@ -24,12 +24,6 @@ public class Arena
 
     public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation)
     {
-        //Initialize
-        locationManager = new LocationManager(this);
-        objectManager = new ObjectManager(this);
-        signManager = new SignManager(this);
-        gameManager = new GameManager(this);
-
         //Values
         this.arenaName = arenaName;
         this.boundary1 = boundary1;
@@ -37,6 +31,12 @@ public class Arena
         this.waitingLocation = waitingLocation;
         this.returnLocation = returnLocation;
         this.jasonStartLocation = jasonStartLocation;
+
+        //Initialize
+        locationManager = new LocationManager(this);
+        objectManager = new ObjectManager(this);
+        signManager = new SignManager(this);
+        gameManager = new GameManager(this);
     }
 
     /**

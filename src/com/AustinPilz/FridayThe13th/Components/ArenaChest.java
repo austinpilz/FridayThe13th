@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components;
 
 
+import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -106,7 +107,7 @@ public class ArenaChest
             {
                 ItemStack item = new ItemStack(Material.IRON_SWORD, 1);
                 ItemMeta metaData = item.getItemMeta();
-                metaData.setDisplayName("Blade");
+                metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Blade", "Blade"));
                 item.setItemMeta(metaData);
                 item.setDurability((short) 250);
                 getChest().getBlockInventory().addItem(item);
@@ -118,7 +119,7 @@ public class ArenaChest
             {
                 ItemStack item = new ItemStack(Material.IRON_AXE, 1);
                 ItemMeta metaData = item.getItemMeta();
-                metaData.setDisplayName("Heavy Axe");
+                metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.HeavyAxe", "Heavy Axe"));
                 item.setItemMeta(metaData);
                 item.setDurability((short) 60);
                 getChest().getBlockInventory().addItem(item);
@@ -130,7 +131,7 @@ public class ArenaChest
             {
                 ItemStack item = new ItemStack(Material.WOOD_AXE, 1);
                 ItemMeta metaData = item.getItemMeta();
-                metaData.setDisplayName("Light Axe");
+                metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.LightAxe", "Light Axe"));
                 item.setDurability((short) 60);
                 item.setItemMeta(metaData);
                 getChest().getBlockInventory().addItem(item);
@@ -142,7 +143,7 @@ public class ArenaChest
             {
                 ItemStack item = new ItemStack(Material.BOW, 1);
                 ItemMeta metaData = item.getItemMeta();
-                metaData.setDisplayName("Gun");
+                metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Gun", "Gun"));
                 item.setItemMeta(metaData);
                 getChest().getBlockInventory().addItem(item);
 
@@ -152,7 +153,7 @@ public class ArenaChest
             //Always put a stick (BRANCH)
             ItemStack stick = new ItemStack(Material.STICK, 1);
             ItemMeta metaData = stick.getItemMeta();
-            metaData.setDisplayName("Brittle Branch");
+            metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.BrittleBranch", "Brittle Branch"));
             stick.setItemMeta(metaData);
             getChest().getBlockInventory().addItem(stick);
         }
@@ -165,7 +166,7 @@ public class ArenaChest
                 ItemStack healthPotion = new ItemStack(Material.POTION, 1);
                 PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
                 meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
-                meta.setDisplayName(ChatColor.GREEN + "Antiseptic Spray");
+                meta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Antiseptic", "Antiseptic Spray"));
                 healthPotion.setItemMeta(meta);
                 getChest().getBlockInventory().addItem(healthPotion);
             }
@@ -187,7 +188,7 @@ public class ArenaChest
             {
                 ItemStack item = new ItemStack(Material.REDSTONE, 1);
                 ItemMeta metaData = item.getItemMeta();
-                metaData.setDisplayName("Repair Wire");
+                metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.RepairWire", "Repair Wire"));
                 item.setItemMeta(metaData);
                 getChest().getBlockInventory().addItem(item);
             }

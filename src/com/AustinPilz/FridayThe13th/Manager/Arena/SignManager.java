@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 
@@ -49,17 +50,17 @@ public class SignManager
 
             if (arena.getGameManager().isGameEmpty())
             {
-                sign.setLine(2, ChatColor.GREEN + "Empty");
-                sign.setLine(3, "Click to join!");
+                sign.setLine(2, ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Empty", "Empty"));
+                sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
             }
             else if (arena.getGameManager().isGameWaiting())
             {
-                sign.setLine(2, ChatColor.AQUA + "Waiting" + ChatColor.BLACK + " - " + arena.getGameManager().getWaitingTimeLeft() + "s");
-                sign.setLine(3, "Click to join!");
+                sign.setLine(2, ChatColor.AQUA + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Waiting", "Waiting") + ChatColor.BLACK + " - " + arena.getGameManager().getWaitingTimeLeft() + "s");
+                sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
             }
             else if (arena.getGameManager().isGameInProgress())
             {
-                sign.setLine(2, ChatColor.RED + "In Progress");
+                sign.setLine(2, ChatColor.RED + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.InProgress", "In Progress"));
 
                 int rem = arena.getGameManager().getGameTimeLeft() % 3600;
                 int mn = rem / 60;
@@ -80,7 +81,9 @@ public class SignManager
         for (Sign sign : joinSigns)
         {
             sign.setLine(0, ChatColor.RED + FridayThe13th.signPrefix);
-            sign.setLine(1, "[Deleted]");
+            sign.setLine(1, "["+FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Deleted", "Deleted")+"]");
+            sign.setLine(2, "");
+            sign.setLine(3, "");
             sign.update();
         }
     }

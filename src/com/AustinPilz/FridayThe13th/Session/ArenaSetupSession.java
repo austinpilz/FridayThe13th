@@ -96,7 +96,7 @@ public class ArenaSetupSession
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
         this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
-        this.player.sendMessage(ChatColor.WHITE + "Waiting location selected. Go to where players will be sent after the game ends and execute" + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
+        this.player.sendMessage(ChatColor.WHITE + "Waiting location selected. Go to where players will be sent after the game ends and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
         this.state++;
         this.waitingLocation = player.getLocation();
@@ -107,7 +107,7 @@ public class ArenaSetupSession
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
         this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
-        this.player.sendMessage(ChatColor.WHITE + "Return location selected. Go to where JASON will start the game and execute" + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
+        this.player.sendMessage(ChatColor.WHITE + "Return location selected. Go to where JASON will start the game and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
         this.state++;
         this.returnLocation = player.getLocation();

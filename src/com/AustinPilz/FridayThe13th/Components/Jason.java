@@ -149,30 +149,22 @@ public class Jason
         ItemStack sword = new ItemStack(Material.DIAMOND_AXE, 1);
         ItemMeta metaData = sword.getItemMeta();
         metaData.setUnbreakable(true);
-        metaData.setDisplayName(ChatColor.RED + "Jason's Axe");
+        metaData.setDisplayName(ChatColor.RED + "Jason's " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.JasonsAxe", "Axe"));
         sword.setItemMeta(metaData);
 
         //Give him a bow
         ItemStack bow = new ItemStack(Material.BOW, 1);
         ItemMeta bowMetaData = sword.getItemMeta();
         bowMetaData.addEnchant(Enchantment.ARROW_DAMAGE, 2, true);
-        bowMetaData.setDisplayName(ChatColor.RED + "Jason's Bow");
+        bowMetaData.setDisplayName(ChatColor.RED + "Jason's " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.JasonsBow", "Bow"));
         bow.setItemMeta(bowMetaData);
 
         //Sense Ability Potion
         ItemStack sensePotion = new ItemStack(Material.POTION, 1);
         PotionMeta sensePotionMeta = (PotionMeta) sensePotion.getItemMeta();
         sensePotionMeta.setBasePotionData(new PotionData(PotionType.NIGHT_VISION));
-        sensePotionMeta.setDisplayName(ChatColor.GREEN + "Sense Ability");
+        sensePotionMeta.setDisplayName(ChatColor.GREEN + "Sense " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.SenseAbility", "Ability"));
         sensePotion.setItemMeta(sensePotionMeta);
-
-        //Warp Ability Potion
-        ItemStack warpPotion = new ItemStack(Material.POTION, 1);
-        PotionMeta warpPotionMeta = (PotionMeta) sensePotion.getItemMeta();
-        warpPotionMeta.setBasePotionData(new PotionData(PotionType.SPEED));
-        warpPotionMeta.setDisplayName(ChatColor.GREEN + "Warp Ability");
-        warpPotion.setItemMeta(warpPotionMeta);
-
 
         //Put them in inventory
         getPlayer().getInventory().addItem(sword);

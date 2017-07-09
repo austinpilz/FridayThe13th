@@ -142,7 +142,7 @@ public class InputOutput
             FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Unknown error encountered while attempting to prepare database.");
         }
     }
-    
+
 
     /**
      * Load arenas into arena controller memory
