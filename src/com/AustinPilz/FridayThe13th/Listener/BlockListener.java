@@ -2,6 +2,8 @@ package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
+import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
+import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
@@ -19,6 +21,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class BlockListener implements Listener
 {
@@ -121,8 +126,34 @@ public class BlockListener implements Listener
             {
                 event.setCancelled(true); //Disable interaction while in the waiting room
             }
-        } catch (PlayerNotPlayingException exception) {
-            //Do nothing since in this case, we couldn't care
+        } catch (PlayerNotPlayingException exception)
+        {
+            //They're not playing
+            if (event.getBlock().getType().equals(Material.WALL_SIGN) || event.getBlock().getType().equals(Material.SIGN_POST))
+            {
+                Sign sign = (Sign)event.getBlock().getState();
+
+                Iterator it = FridayThe13th.arenaController.getArenas().entrySet().iterator();
+                while (it.hasNext())
+                {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    Arena arena = (Arena) entry.getValue();
+                    if (arena.getSignManager().isJoinSign(sign))
+                    {
+                        if (event.getPlayer().hasPermission("FridayThe13th.Admin"))
+                        {
+                            arena.getSignManager().removeJoinSign(sign);
+                            FridayThe13th.inputOutput.deleteSign(sign.getX(), sign.getY(), sign.getZ(), sign.getWorld().toString());
+                            event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(event.getPlayer(), "block.confirm.signBreak", "Sign removed successfully."));
+                        }
+                        else
+                        {
+                            //Don't have permission to break the sign
+                            event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(event.getPlayer(), "block.error.signBreakNoPermission", "You don't have permission to break Friday the 13th signs."));
+                        }
+                    }
+                }
+            }
         }
     }
 

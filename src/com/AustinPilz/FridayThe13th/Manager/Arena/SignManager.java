@@ -39,6 +39,12 @@ public class SignManager
     }
 
     /**
+     * Removes join sign
+     * @param sign
+     */
+    public void removeJoinSign(Sign sign) { joinSigns.remove(sign); }
+
+    /**
      * Updates all arena join signs
      */
     public void updateJoinSigns()
