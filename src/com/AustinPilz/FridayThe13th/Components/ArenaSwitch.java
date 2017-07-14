@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components;
 
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.IO.InventoryActions;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
@@ -9,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Lever;
 
 public class ArenaSwitch
@@ -47,7 +49,7 @@ public class ArenaSwitch
             hologram.delete();
 
             //Remove redstone from players inventory
-            player.getInventory().remove(Material.REDSTONE);
+            InventoryActions.remove((Inventory)player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
 
             //Fire firework
             arena.getGameManager().getPlayerManager().fireFirework(player, Color.ORANGE);
