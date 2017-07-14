@@ -224,10 +224,6 @@ public class Jason
             setSprinting(false);
             setFlying(false);
         }
-        else
-        {
-
-        }
     }
 
     /**
@@ -241,10 +237,6 @@ public class Jason
             setStalking(false);
             setWalking(false);
             setFlying(false);
-        }
-        else
-        {
-
         }
     }
 
