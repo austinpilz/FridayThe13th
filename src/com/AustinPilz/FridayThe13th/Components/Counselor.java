@@ -8,8 +8,12 @@ import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -444,6 +448,13 @@ public class Counselor
         getStatsDisplayManager().hideStats();
         cancelTasks();
 
+        //Give them the compass
+        ItemStack compass = new ItemStack(Material.EMERALD, 1);
+        ItemMeta compassMetaData = compass.getItemMeta();
+        compassMetaData.setDisplayName(ChatColor.GREEN + "Spectate Selector");
+        compass.setItemMeta(compassMetaData);
+        getPlayer().getInventory().addItem(compass);
+
         //Let them know
         ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.enterSpectatingMode", "You Died! {0}You are now in spectating mode.", ChatColor.WHITE), 300);
     }
@@ -471,8 +482,8 @@ public class Counselor
         getPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
         getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
         getPlayer().removePotionEffect(PotionEffectType.GLOWING);
+        getPlayer().closeInventory(); //Close the spectate inventory if they happen to have it open
     }
-
 
     /* SENSE BY JASON */
 

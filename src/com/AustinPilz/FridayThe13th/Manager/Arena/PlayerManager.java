@@ -9,9 +9,14 @@ import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingExcept
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -638,6 +643,32 @@ public class PlayerManager
             Counselor counselor = (Counselor) entry.getValue();
             counselor.setSenseMode(value);
         }
+    }
+
+    public Inventory getSpectateMenuInventory()
+    {
+       Inventory inventory = Bukkit.createInventory(null, 18, ChatColor.GREEN + "" + ChatColor.BOLD + "Spectate Selection");
+       int i = 0;
+
+        Iterator it = getCounselors().entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            Counselor counselor = (Counselor) entry.getValue();
+
+            if (!counselor.isInSpectatingMode())
+            {
+                ItemStack player = new ItemStack(Material.SKULL_ITEM, 1);
+                SkullMeta playerMetaData = (SkullMeta)player.getItemMeta();
+                playerMetaData.setOwner(counselor.getPlayer().getName());
+                playerMetaData.setDisplayName(counselor.getPlayer().getName());
+                player.setItemMeta(playerMetaData);
+
+                inventory.setItem(i++, player);
+            }
+        }
+
+        return inventory;
     }
 
 

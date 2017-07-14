@@ -21,8 +21,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.Chest;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
@@ -110,10 +112,17 @@ public class PlayerListener implements Listener {
                 {
                     if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())
                     {
-                        event.setCancelled(true);
-
-                        //Let them know they can't interact in spectating mode
-                        event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot interact while you're in spectating mode.");
+                        if (event.hasItem() && event.getItem().getType().equals(Material.EMERALD))
+                        {
+                            //Open spectate menu
+                            event.getPlayer().openInventory(arena.getGameManager().getPlayerManager().getSpectateMenuInventory());
+                        }
+                        else
+                        {
+                            //Let them know they can't interact in spectating mode
+                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot interact while you're in spectating mode.");
+                            event.setCancelled(true);
+                        }
                     }
                     else
                     {
@@ -459,9 +468,36 @@ public class PlayerListener implements Listener {
         {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()); //See if they're playing
 
-            if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
+            if (arena.getGameManager().isGameInProgress() && (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()) || (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isInSpectatingMode())))
             {
-                event.setCancelled(true); //Jason can't drop anything
+                event.setCancelled(true); //Jason and counselors in spectate mode can't drop anything
+            }
+
+        }
+        catch (PlayerNotPlayingException exception)
+        {
+            //Do nothing since in this case, we couldn't care
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick (InventoryClickEvent event)
+    {
+        try
+        {
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getWhoClicked().getUniqueId().toString()); //See if they're playing
+            Player player = (Player)event.getWhoClicked();
+
+            if (arena.getGameManager().isGameInProgress() && (arena.getGameManager().getPlayerManager().isCounselor(player) && arena.getGameManager().getPlayerManager().getCounselor(player).isInSpectatingMode()))
+            {
+                event.setCancelled(true);
+
+                if (event.getCurrentItem().getType().equals(Material.SKULL_ITEM))
+                {
+                    SkullMeta playerMetaData = (SkullMeta)event.getCurrentItem().getItemMeta();
+                    player.teleport(Bukkit.getPlayer(playerMetaData.getDisplayName()));
+                    player.closeInventory();
+                }
             }
 
         }
