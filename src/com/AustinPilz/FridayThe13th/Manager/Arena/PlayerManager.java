@@ -9,8 +9,6 @@ import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingExcept
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
-import org.bukkit.attribute.Attributable;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -431,7 +429,7 @@ public class PlayerManager
         }
 
         //Jason stuff
-        jason.prepapreForGameplay();
+        jason.prepareforGameplay();
 
         //Tell everyone who Jason is
         sendMessageToAllPlayers(ChatColor.AQUA + jason.getPlayer().getName() + ChatColor.WHITE + " is Jason.");

@@ -143,7 +143,7 @@ public class Jason
     /**
      * Performs all necessary tasks when the game begins
      */
-    public void prepapreForGameplay()
+    public void prepareforGameplay()
     {
         //Give jason his sword
         ItemStack sword = new ItemStack(Material.DIAMOND_AXE, 1);
