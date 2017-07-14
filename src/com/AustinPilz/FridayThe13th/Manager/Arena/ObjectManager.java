@@ -87,6 +87,24 @@ public class ObjectManager
     }
 
     /**
+     * Returns the number of item chests
+     * @return
+     */
+    public int getNumChestsItems()
+    {
+        return chestsItems.size();
+    }
+
+    /**
+     * Returns the number of weapon chests
+     * @return
+     */
+    public int getNumChestsWeapon()
+    {
+        return chestsWeapons.size();
+    }
+
+    /**
      * Randomly regenerates chests
      */
     public void regenerateChests()

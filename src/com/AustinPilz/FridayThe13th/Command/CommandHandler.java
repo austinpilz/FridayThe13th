@@ -200,7 +200,6 @@ public class CommandHandler implements CommandExecutor {
                             Arena arena = FridayThe13th.arenaController.getArena(arenaName);
 
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + "-----" + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE + " -----");
-                            sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
 
                             if (arena.getGameManager().isGameEmpty()) {
                                 sender.sendMessage("Game Status: " + ChatColor.RED + "Empty");
@@ -209,6 +208,11 @@ public class CommandHandler implements CommandExecutor {
                             } else if (arena.getGameManager().isGameInProgress()) {
                                 sender.sendMessage("Game Status: " + ChatColor.GREEN + "In Progress");
                             }
+
+                            sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
+                            sender.sendMessage("# Item Chests: " + arena.getObjectManager().getNumChestsItems());
+                            sender.sendMessage("# Weapon Chests: " + arena.getObjectManager().getNumChestsWeapon());
+
 
                         } catch (ArenaDoesNotExistException exception) {
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
