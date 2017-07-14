@@ -179,6 +179,17 @@ public class PlayerListener implements Listener {
                         {
                             event.setCancelled(true);
                         }
+                        else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.TRIPWIRE_HOOK))
+                        {
+                            if (arena.getObjectManager().getPhones().containsKey(event.getClickedBlock()))
+                            {
+                                arena.getObjectManager().getPhones().get(event.getClickedBlock()).callAttempt(event.getPlayer());
+                            }
+                            else
+                            {
+                                event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "This phone is not managed by the arena. Ask your admin to add this tripwire hook to the arena.");
+                            }
+                        }
                     }
                 }
                 else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
@@ -405,8 +416,10 @@ public class PlayerListener implements Listener {
                                         //Counselor is damaging Jason
                                         if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) || event.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE))
                                         {
-                                            //Counselor hit jason with a weapon, Jason is now stunned
-                                            event.setCancelled(false);
+                                            if (playerDamager.getItemInHand().getType().equals(Material.IRON_SWORD) || playerDamager.getItemInHand().getType().equals(Material.IRON_AXE) || playerDamager.getItemInHand().getType().equals(Material.WOOD_AXE))
+                                            {
+                                                arena.getGameManager().getPlayerManager().getJason().stun();
+                                            }
                                         }
                                     }
                                 }

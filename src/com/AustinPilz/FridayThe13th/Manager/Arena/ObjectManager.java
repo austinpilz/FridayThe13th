@@ -1,10 +1,7 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
-import com.AustinPilz.FridayThe13th.Components.ArenaChest;
-import com.AustinPilz.FridayThe13th.Components.ArenaDoor;
-import com.AustinPilz.FridayThe13th.Components.ArenaSwitch;
+import com.AustinPilz.FridayThe13th.Components.*;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
@@ -12,22 +9,22 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Lever;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ObjectManager
 {
     private Arena arena;
     private HashSet<ArenaChest> chestsWeapons;
     private HashSet<ArenaChest> chestsItems;
+    private HashMap<Block, ArenaPhone> phones;
 
     //Per Game Objects
     private HashMap<Block, ArenaDoor> doors;
@@ -43,6 +40,7 @@ public class ObjectManager
         this.arena = arena;
         this.chestsItems = new HashSet<>();
         this.chestsWeapons = new HashSet<>();
+        this.phones = new HashMap<>();
 
         //Per Game Objects
         doors = new HashMap<>();
@@ -59,6 +57,34 @@ public class ObjectManager
     {
         return this.arena;
     }
+
+    /**
+     * Adds phone
+     * @param phone
+     */
+    public void addPhone(ArenaPhone phone)
+    {
+        phones.put(phone.getLocation().getBlock(), phone);
+    }
+
+    /**
+     * Removes phone
+     * @param phone
+     */
+    public void removePhone(ArenaPhone phone)
+    {
+        phones.remove(phone.getLocation().getBlock());
+    }
+
+    /**
+     * Returns all phones
+     * @return
+     */
+    public HashMap<Block, ArenaPhone> getPhones()
+    {
+        return phones;
+    }
+
 
     /**
      * Adds a new chest
@@ -136,6 +162,9 @@ public class ObjectManager
         //Restore switches
         fixBrokenSwitches();
         brokenSwitches.clear();
+
+        //Phones
+        hideAllPhones();
 
         //Restore windows?
 
@@ -223,5 +252,41 @@ public class ObjectManager
             arenaSwitch.repairSwitch();
             it.remove();
         }
+    }
+
+    /**
+     * Hides all phones
+     */
+    private void hideAllPhones()
+    {
+        Iterator it = phones.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            ArenaPhone phone = (ArenaPhone) entry.getValue();
+            phone.hidePhone();
+        }
+    }
+
+    public void displayRandomPhone()
+    {
+        if (phones.size() > 0)
+        {
+            ArenaPhone[] pl = phones.values().toArray(new ArenaPhone[phones.size()]);
+
+            //Randomize starting points
+            Random rnd = ThreadLocalRandom.current();
+            for (int i = pl.length - 1; i > 0; i--) {
+                int index = rnd.nextInt(i + 1);
+
+                // Simple swap
+                ArenaPhone a = pl[index];
+                pl[index] = pl[i];
+                pl[i] = a;
+            }
+
+            pl[0].showPhone();
+        }
+
     }
 }

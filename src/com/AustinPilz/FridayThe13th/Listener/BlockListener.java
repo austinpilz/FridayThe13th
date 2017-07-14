@@ -2,8 +2,6 @@ package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
-import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
-import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
@@ -12,7 +10,6 @@ import com.AustinPilz.FridayThe13th.IO.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,7 +42,7 @@ public class BlockListener implements Listener
                         try
                         {
                             event.setCancelled(true);
-                            FridayThe13th.inputOutput.newSign(s, FridayThe13th.arenaController.getArena(lines[1]));
+                            FridayThe13th.inputOutput.storeSign(s, FridayThe13th.arenaController.getArena(lines[1]));
                             FridayThe13th.arenaController.getArena(lines[1]).getSignManager().addJoinSign(s);
                             FridayThe13th.arenaController.getArena(lines[1]).getSignManager().updateJoinSigns();
                         }

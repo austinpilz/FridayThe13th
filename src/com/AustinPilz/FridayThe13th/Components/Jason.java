@@ -14,10 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
+import org.bukkit.potion.*;
 
 public class Jason
 {
@@ -64,6 +61,11 @@ public class Jason
     private float originalFlySpeed;
     private boolean originalAllowFly;
 
+    //Stun Potions
+    private PotionEffect stun1;
+    private PotionEffect stun2;
+    private PotionEffect stun3;
+    private PotionEffect stun4;
 
     public Jason(Player p, Arena a)
     {
@@ -97,6 +99,12 @@ public class Jason
         warpLevelRegenerationRate = 0.03;
         warpInitialGenerationComplete = false;
         warpActive = false;
+
+        //Stun Potions
+        stun1 = new PotionEffect(PotionEffectType.WEAKNESS, 100, 20);
+        stun2 = new PotionEffect(PotionEffectType.CONFUSION, 100, 20);
+        stun3 = new PotionEffect(PotionEffectType.GLOWING, 100, 20);
+        stun4 = new PotionEffect(PotionEffectType.SLOW, 100, 20);
 
         //Restore Values
         originalWalkSpeed = player.getWalkSpeed();
@@ -154,7 +162,7 @@ public class Jason
 
         //Give him a bow
         ItemStack bow = new ItemStack(Material.BOW, 1);
-        ItemMeta bowMetaData = sword.getItemMeta();
+        ItemMeta bowMetaData = bow.getItemMeta();
         bowMetaData.addEnchant(Enchantment.ARROW_DAMAGE, 2, true);
         bowMetaData.setDisplayName(ChatColor.RED + "Jason's " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.JasonsBow", "Bow"));
         bow.setItemMeta(bowMetaData);
@@ -597,6 +605,17 @@ public class Jason
             player.setWalkSpeed(originalWalkSpeed);
             player.setAllowFlight(originalAllowFly);
         }
+    }
+
+    /**
+     * Stuns Jason
+     */
+    public void stun()
+    {
+        player.addPotionEffect(stun1);
+        player.addPotionEffect(stun2);
+        player.addPotionEffect(stun3);
+        player.addPotionEffect(stun4);
     }
 
 

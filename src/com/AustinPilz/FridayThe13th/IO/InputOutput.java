@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.IO;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.ArenaChest;
+import com.AustinPilz.FridayThe13th.Components.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Components.ChestType;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
@@ -127,6 +128,7 @@ public class InputOutput
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_spawn_points\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_signs\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_phones\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
 
             conn.commit();
             st.close();
@@ -445,7 +447,7 @@ public class InputOutput
      * @param chest
      * @throws SaveToDatabaseException
      */
-    public void newChest(ArenaChest chest) throws SaveToDatabaseException
+    public void storeChest(ArenaChest chest) throws SaveToDatabaseException
     {
         try
         {
@@ -506,7 +508,7 @@ public class InputOutput
      * @param sign
      * @throws SaveToDatabaseException
      */
-    public void newSign(Sign sign, Arena arena) throws SaveToDatabaseException
+    public void storeSign(Sign sign, Arena arena) throws SaveToDatabaseException
     {
         try
         {
@@ -625,7 +627,125 @@ public class InputOutput
         }
     }
 
+    /**
+     * Stores phone to the database
+     * @param phone
+     * @throws SaveToDatabaseException
+     */
+    public void storePhone(ArenaPhone phone) throws SaveToDatabaseException
+    {
+        try
+        {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "INSERT INTO f13_phones (`X`, `Y`, `Z`, `World`, `Arena`) VALUES (?,?,?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
 
+            preparedStatement.setDouble(1, phone.getLocation().getX());
+            preparedStatement.setDouble(2, phone.getLocation().getY());
+            preparedStatement.setDouble(3, phone.getLocation().getZ());
+            preparedStatement.setString(4, phone.getLocation().getWorld().getName());
+            preparedStatement.setString(5, phone.getArena().getArenaName());
+
+            preparedStatement.executeUpdate();
+            conn.commit();
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to store a phone to the database: " + e.getMessage());
+            throw new SaveToDatabaseException();
+        }
+    }
+
+    /**
+     * Removes a phone from the database
+     * @param X
+     * @param Y
+     * @param Z
+     * @param world
+     */
+    public void deletePhone(double X, double Y, double Z, String world)
+    {
+        try
+        {
+            Connection conn = InputOutput.getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_phones WHERE World = ? AND X = ? AND Y = ? AND Z = ?");
+            ps.setString(1, world);
+            ps.setDouble(2, X);
+            ps.setDouble(3, Y);
+            ps.setDouble(4, Z);
+            ps.executeUpdate();
+            conn.commit();
+            ps.close();
+
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove a phone from the database: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads phones from database into arena memory
+     */
+    public void loadPhones()
+    {
+        try
+        {
+            Connection conn;
+            PreparedStatement ps = null;
+            ResultSet result = null;
+            conn = getConnection();
+            ps = conn.prepareStatement("SELECT `World`, `X`, `Y`, `Z`, `Arena` FROM `f13_phones`");
+            result = ps.executeQuery();
+
+            int count = 0;
+            int removed = 0;
+            while (result.next())
+            {
+                Location location = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
+
+                if (location.getBlock().getType().equals(Material.TRIPWIRE_HOOK))
+                {
+                    try
+                    {
+                        Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
+                        arena.getObjectManager().addPhone(new ArenaPhone(arena, location));
+                        count++;
+                    }
+                    catch (ArenaDoesNotExistException exception)
+                    {
+                        deleteSign(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                        removed++;
+                    }
+                }
+                else
+                {
+                    //This location is no longer a chest, so remove it
+                    deletePhone(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                    removed++;
+                }
+            }
+
+            if (count > 0)
+            {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Loaded " + count + " phone(s).");
+            }
+
+            if (removed > 0)
+            {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Removed " + removed + " phone(s).");
+            }
+
+            conn.commit();
+            ps.close();
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to load signs from database: " + e.getMessage());
+        }
+    }
 
 }

@@ -55,6 +55,7 @@ public class Counselor
     //Warnings
     private boolean shownStaminaWarning = false;
     private boolean shownFearWarning = false;
+    private boolean isTommyJarvis = false;
 
     //Restore values
     private float originalWalkSpeed;
@@ -90,7 +91,7 @@ public class Counselor
         potionOutOfBreath = new PotionEffect(PotionEffectType.CONFUSION, 300, 1);
         potionFearBlind = new PotionEffect(PotionEffectType.BLINDNESS, 400, 1);
         potionSpectatingInvisibility = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
-        potionSenseByJason = new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1);
+        potionSenseByJason = new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 10);
 
         //Restore Values
         originalWalkSpeed = player.getWalkSpeed();
@@ -367,7 +368,15 @@ public class Counselor
         }
 
         //Ensure within boundaries
-        setFearLevel(Math.min(getMaxFearLevel(), fearLevel));
+        if (isTommyJarvis)
+        {
+            setFearLevel(0.0); //They're Tommy, so keep fear at 0
+        }
+        else
+        {
+            //They're not Tommy, so set fear level
+            setFearLevel(Math.min(getMaxFearLevel(), fearLevel));
+        }
 
         //Update effects
         updateFearLevelEffects();
@@ -530,6 +539,20 @@ public class Counselor
             player.setWalkSpeed(originalWalkSpeed);
             player.setAllowFlight(originalAllowFly);
         }
+    }
+
+    /**
+     * Sets this counselor as Tommy Jarvis
+     */
+    public void setTommyJarvis()
+    {
+        setFearLevel(0.0);
+        setStamina(getMaxStamina());
+        isTommyJarvis = true;
+        getPlayer().getInventory().clear();
+
+        getPlayer().getInventory().addItem(new ItemStack(Material.BOW, 1));
+        getPlayer().getInventory().addItem(new ItemStack(Material.SPECTRAL_ARROW, 1));
     }
 
 

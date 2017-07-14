@@ -8,6 +8,7 @@ import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaSetupSessionAlreadyInP
 import com.AustinPilz.FridayThe13th.Exceptions.Chest.ChestSetupSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
+import com.AustinPilz.FridayThe13th.Exceptions.PhoneSetupSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.SpawnPoint.SpawnPointSetupSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
@@ -120,6 +121,17 @@ public class CommandHandler implements CommandExecutor {
                                     //An arena with that name does not exist in the arena controller memory
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                                 }
+                            } else if (args[2].equalsIgnoreCase("phone")) {
+                                //All is good, begin the setup process handled by the ArenaCreation manager
+                                try {
+                                    FridayThe13th.phoneSetupManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName);
+                                } catch (PhoneSetupSessionAlreadyInProgressException exception) {
+                                    //They already have a setup session in progress
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addPhoneSessionExisting", "You already have an phone setup session in progress. You must finish that session before starting a new one."));
+                                } catch (ArenaDoesNotExistException exception) {
+                                    //An arena with that name does not exist in the arena controller memory
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                }
                             } else if (args[2].contains("chest")) {
                                 if (args[2].equalsIgnoreCase("chest:weapon")) {
                                     try {
@@ -212,6 +224,7 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
                             sender.sendMessage("# Item Chests: " + arena.getObjectManager().getNumChestsItems());
                             sender.sendMessage("# Weapon Chests: " + arena.getObjectManager().getNumChestsWeapon());
+                            sender.sendMessage("# Phones: " + arena.getObjectManager().getPhones().size());
 
 
                         } catch (ArenaDoesNotExistException exception) {
@@ -236,6 +249,8 @@ public class CommandHandler implements CommandExecutor {
                             FridayThe13th.spawnPointCreationManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
                         } else if (FridayThe13th.chestSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
                             FridayThe13th.chestSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
+                        } else if (FridayThe13th.phoneSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.phoneSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
                         } else {
                             //There is no active setup session
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noSetupSession", "You currently have no setup session in progress."));

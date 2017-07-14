@@ -11,6 +11,7 @@ import com.AustinPilz.FridayThe13th.Listener.BlockListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
+import com.AustinPilz.FridayThe13th.Manager.Setup.PhoneSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +28,7 @@ import java.util.logging.Logger;
 public class FridayThe13th extends JavaPlugin implements Listener
 {
     public static final String pluginName = "Friday The 13th";
-    public static final String pluginVersion = "1.2.2" +
+    public static final String pluginVersion = "1.3" +
             "";
     public static final String pluginPrefix = ChatColor.RED + "[F13] " + ChatColor.WHITE;
     public static final String pluginAdminPrefix = ChatColor.RED + "[F13:A] " + ChatColor.WHITE;
@@ -47,6 +48,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static ArenaCreationManager arenaCreationManager;
     public static SpawnPointCreationManager spawnPointCreationManager;
     public static ChestSetupManager chestSetupManager;
+    public static PhoneSetupManager phoneSetupManager;
     public static InputOutput inputOutput;
 
     //3rd Party Plugins
@@ -72,6 +74,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         arenaCreationManager = new ArenaCreationManager();
         spawnPointCreationManager = new SpawnPointCreationManager();
         chestSetupManager = new ChestSetupManager();
+        phoneSetupManager = new PhoneSetupManager();
 
         //InputOutput
         inputOutput = new InputOutput();
@@ -81,6 +84,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         inputOutput.loadSpawnPoints();
         inputOutput.loadChests();
         inputOutput.loadSigns();
+        inputOutput.loadPhones();
 
         //Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);

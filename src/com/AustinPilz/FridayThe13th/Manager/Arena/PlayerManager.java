@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Components.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Jason;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
@@ -671,6 +672,59 @@ public class PlayerManager
         return inventory;
     }
 
+    /**
+     * Selects a random spectating counselor to be Tommy Jarvis
+     */
+    public void spawnTommyJarvis()
+    {
+        //set players stamina higher and max fear higher
+        if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned())
+        {
+            if (getNumPlayersDead() > 0)
+            {
+                //Select a random dead player
+                String[] pl = getDeadPlayers().toArray(new String[getDeadPlayers().size()]);
+
+                //Randomize starting points
+                Random rnd = ThreadLocalRandom.current();
+                for (int i = pl.length - 1; i > 0; i--) {
+                    int index = rnd.nextInt(i + 1);
+
+                    // Simple swap
+                    String a = pl[index];
+                    pl[index] = pl[i];
+                    pl[i] = a;
+                }
+
+                //Randomize starting points
+                Location[] counselorLocations = arena.getLocationManager().getAvailableStartingPoints().toArray(new Location[arena.getLocationManager().getAvailableStartingPoints().size()]);
+                Random rnd2 = ThreadLocalRandom.current();
+                for (int i = counselorLocations.length - 1; i > 0; i--)
+                {
+                    int index = rnd.nextInt(i + 1);
+
+                    // Simple swap
+                    Location a = counselorLocations[index];
+                    counselorLocations[index] = counselorLocations[i];
+                    counselorLocations[i] = a;
+                }
+
+                getCounselor(pl[0]).leaveSpectatingMode();
+                getCounselor(pl[0]).prepareForGameplay();
+                getCounselor(pl[0]).getPlayer().teleport(counselorLocations[0]);
+                getCounselor(pl[0]).setTommyJarvis();
+                arena.getGameManager().setTommySpawned();
+
+                //Move from dead->alive hashmap
+                alivePlayers.add(getCounselor(pl[0]).getPlayer().getUniqueId().toString());
+                deadPlayers.remove(getCounselor(pl[0]).getPlayer().getUniqueId().toString());
+
+                //Message everyone
+                sendMessageToAllPlayers(ChatColor.AQUA + getCounselor(pl[0]).getPlayer().getName() + ChatColor.WHITE + " has risen from the dead as Tommy Jarvis.");
+            }
+        }
+    }
+
 
     /* SPECIALS */
 
@@ -694,7 +748,7 @@ public class PlayerManager
      * Sends in game message to all players
      * @param message
      */
-    private void sendMessageToAllPlayers(String message)
+    public void sendMessageToAllPlayers(String message)
     {
         Iterator it = getPlayers().entrySet().iterator();
         while (it.hasNext())

@@ -41,6 +41,10 @@ public class GameManager
     int gameCountdownTask = -1;
     int waitingCountdownTask = -1;
 
+    //Tommy Jarvis
+    private boolean tommyCalled;
+    private boolean tommySpawned;
+
 
     //Managers
     public PlayerManager playerManager;
@@ -159,6 +163,41 @@ public class GameManager
     {
         gameTimeLeftInSeconds = Math.max(0, value); //make sure it doesn't go below 0
     }
+
+    /**
+     * Marks that Tommy Jarvis was called
+     */
+    public void tommyCalled()
+    {
+        tommyCalled = true;
+    }
+
+    /**
+     * Returns if Tommy Jarvis has been called
+     * @return
+     */
+    public boolean hasTommyBeenCalled()
+    {
+        return tommyCalled;
+    }
+
+    /**
+     * Marks that Tommy Jarvis was spawned
+     */
+    public void setTommySpawned()
+    {
+        tommySpawned = true;
+    }
+
+    /**
+     * Returns if Tommy Jarvis has been spawned
+     * @return
+     */
+    public boolean hasTommyBeenSpawned()
+    {
+        return tommySpawned;
+    }
+
     /**
      * Resets the games internal statistics
      */
@@ -166,6 +205,8 @@ public class GameManager
     {
         setGameTimeLeft(getGameTimeMax());
         waitingTimeLeftInSeconds = getWaitingTimeMax();
+        tommyCalled = false;
+        tommySpawned = false;
     }
 
     /**
@@ -334,6 +375,9 @@ public class GameManager
 
         //Regenerate tests
         arena.getObjectManager().regenerateChests();
+
+        //Phone
+        arena.getObjectManager().displayRandomPhone();
 
         //Assign all players roles (maybe move these into the performInProgressActions() ?
         getPlayerManager().performInProgressActions();

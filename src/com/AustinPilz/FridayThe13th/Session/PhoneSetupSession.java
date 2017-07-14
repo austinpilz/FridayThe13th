@@ -2,7 +2,7 @@ package com.AustinPilz.FridayThe13th.Session;
 
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Components.ArenaChest;
-import com.AustinPilz.FridayThe13th.Components.ChestType;
+import com.AustinPilz.FridayThe13th.Components.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
@@ -14,21 +14,19 @@ import org.bukkit.entity.Player;
 import java.util.HashSet;
 import java.util.UUID;
 
-public class ChestSetupSession
+public class PhoneSetupSession
 {
     private Arena arena;
     private Player player;
     private String playerUUID;
     private int state;
-    private ChestType chestType;
 
-    public ChestSetupSession(Arena arena, String playerUUID, ChestType chestType)
+    public PhoneSetupSession(Arena arena, String playerUUID)
     {
         this.arena = arena;
         this.player = Bukkit.getPlayer(UUID.fromString(playerUUID));
         this.playerUUID = playerUUID;
         this.state = 0;
-        this.chestType = chestType;
         this.selectionMade();
     }
 
@@ -40,7 +38,7 @@ public class ChestSetupSession
                 beginSelection();
                 break;
             case 1:
-                chestSelected();
+                phoneSelected();
                 break;
         }
     }
@@ -50,28 +48,29 @@ public class ChestSetupSession
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
         this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
-        this.player.sendMessage(ChatColor.WHITE + "To add " + chestType.getFieldDescription().toLowerCase() + " chest, put chest in your crosshairs and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + ".");
+        this.player.sendMessage(ChatColor.WHITE + "To add phone, put it in your crosshairs and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + ".");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
         this.state++;
     }
 
-    private void chestSelected()
+    private void phoneSelected()
     {
-        Location chestLocation = player.getTargetBlock((HashSet<Material>)null, 10).getLocation();
+        Location phoneLocation = player.getTargetBlock((HashSet<Material>)null, 10).getLocation();
 
-        if (chestLocation.getBlock().getType().equals(Material.CHEST))
+        if (phoneLocation.getBlock().getType().equals(Material.TRIPWIRE_HOOK))
         {
-           try
+            try
             {
-                ArenaChest newChest = new ArenaChest(arena, chestLocation, chestType);
-                FridayThe13th.inputOutput.storeChest(newChest);
-                arena.getObjectManager().addChest(newChest);
+                ArenaPhone phone = new ArenaPhone(arena, phoneLocation);
+                arena.getObjectManager().addPhone(phone);
+                FridayThe13th.inputOutput.storePhone(phone);
+                FridayThe13th.phoneSetupManager.removePlayerSetupSession(playerUUID);
 
-                player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Success!" + ChatColor.WHITE + " You've added the " + chestType.getFieldDescription().toLowerCase() + " chest to " + arena.getArenaName() + ".");
+                player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Success!" + ChatColor.WHITE + " You've added the phone to " + arena.getArenaName() + ".");
             }
             catch (SaveToDatabaseException exception)
             {
-                player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! There was an issue while attempting to save chest to the database.");
+                player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! There was an issue while attempting to save phone to the database.");
             }
             finally
             {
@@ -81,8 +80,8 @@ public class ChestSetupSession
         else
         {
             //It's not a chest, so cancel
-            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! You can only add a chest and you're looking at " + ChatColor.AQUA + chestLocation.getBlock().getType().toString() + ChatColor.WHITE + ".");
-            FridayThe13th.chestSetupManager.removePlayerSetupSession(playerUUID);
+            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! You can only add a phone (Tripwire Hook) and you're looking at " + ChatColor.AQUA + phoneLocation.getBlock().getType().toString() + ChatColor.WHITE + ".");
+            FridayThe13th.phoneSetupManager.removePlayerSetupSession(playerUUID);
         }
     }
 

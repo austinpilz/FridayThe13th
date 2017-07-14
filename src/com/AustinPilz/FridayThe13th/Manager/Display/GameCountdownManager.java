@@ -67,6 +67,12 @@ public class GameCountdownManager
                     Player player = (Player) entry.getValue();
                     ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + mn + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.minutes", "minutes"), 60);
                 }
+
+                //Spawn tommy
+                if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned())
+                {
+                    arena.getGameManager().getPlayerManager().spawnTommyJarvis();
+                }
             }
             else if (mn == 0 && (sec == 30 || sec == 20 || sec == 10 || sec == 5))
             {
