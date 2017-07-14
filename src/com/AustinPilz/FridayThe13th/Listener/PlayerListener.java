@@ -87,7 +87,7 @@ public class PlayerListener implements Listener {
                 //In waiting, only teleporting can be to the waiting location
                 if (!event.getTo().equals(arena.getWaitingLocation())) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot teleport while playing.");
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "You cannot teleport while waiting.");
                 }
             } else if (arena.getGameManager().isGameInProgress()) {
                 if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
