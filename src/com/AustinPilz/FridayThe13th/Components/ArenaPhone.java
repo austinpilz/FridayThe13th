@@ -79,7 +79,7 @@ public class ArenaPhone
      */
     public void callAttempt(Player player)
     {
-        if ((++callAttempts/callAttemptsRequired) == 1.0)
+        if ((++callAttempts/callAttemptsRequired) == 1.0 && !arena.getGameManager().hasTommyBeenCalled())
         {
             hologram.getLine(0).removeLine();
             hologram.insertTextLine(0, "Tommy: " + ChatColor.GREEN + "CALLED");
