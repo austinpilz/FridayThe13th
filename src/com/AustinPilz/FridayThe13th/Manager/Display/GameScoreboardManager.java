@@ -74,8 +74,9 @@ public class GameScoreboardManager
         gameScoreboard.addEntry(new SidebarString("   "));
 
         //ALIVE
+        int alive = arena.getGameManager().getPlayerManager().getNumPlayersAlive()-1;
         gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.AliveDead", "Alive / Dead")));
-        gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + "" + arena.getGameManager().getPlayerManager().getNumPlayersAlive() + ChatColor.WHITE + " / " + ChatColor.RED + "" + arena.getGameManager().getPlayerManager().getNumPlayersDead()));
+        gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + "" + alive + ChatColor.WHITE + " / " + ChatColor.RED + "" + arena.getGameManager().getPlayerManager().getNumPlayersDead()));
 
         gameScoreboard.update();
     }
