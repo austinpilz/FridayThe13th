@@ -196,7 +196,7 @@ public class ArenaChest
         else
         {
             //It's no longer a chest
-            arena.getObjectManager().removeChest(this);
+            //arena.getObjectManager().removeChest(this);
             FridayThe13th.inputOutput.deleteChest(getLocation().getBlockX(), getLocation().getBlockY(), getLocation().getBlockZ(), getLocation().getWorld().getName());
         }
     }
