@@ -361,7 +361,8 @@ public class PlayerListener implements Listener {
         {
             try
             {
-                Player playerDamaged = (Player) event.getEntity();
+                Player temp = (Player) event.getEntity();
+                Player playerDamaged = Bukkit.getPlayer(temp.getUniqueId());
 
                 Arena arena = FridayThe13th.arenaController.getPlayerArena(playerDamaged.getUniqueId().toString()); //See if they're playing
 
@@ -410,12 +411,14 @@ public class PlayerListener implements Listener {
                         }
                     }
 
-
-                    if (playerDamaged.getHealth() <= event.getDamage())
+                    if (!event.isCancelled())
                     {
-                        //This blow would kill them
-                        event.setCancelled(true);
-                        arena.getGameManager().getPlayerManager().onPlayerDeath(playerDamaged);
+                        if (playerDamaged.getHealth() <= event.getDamage())
+                        {
+                            //This blow would kill them
+                            event.setCancelled(true);
+                            arena.getGameManager().getPlayerManager().onPlayerDeath(playerDamaged);
+                        }
                     }
                 }
                 else

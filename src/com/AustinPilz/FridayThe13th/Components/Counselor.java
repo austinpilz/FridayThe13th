@@ -421,14 +421,19 @@ public class Counselor
     {
         spectatingMode = true;
 
-        //Remove any potions frmo in game
+        //Remove any potions from in game
         removeAllPotionEffects();
 
+        //Set counselor stats to full to avoid messages
+        setFearLevel(0.0);
+        setStamina(getMaxStamina());
+        
         //Make them invisible
         getPlayer().addPotionEffect(potionSpectatingInvisibility);
 
         //Enter flight
         getPlayer().setAllowFlight(true);
+        getPlayer().setHealth(20);
 
         Location currentLocation = player.getLocation();
         getPlayer().teleport(new Location(currentLocation.getWorld(), currentLocation.getX(), currentLocation.getY()+10, currentLocation.getZ()));
