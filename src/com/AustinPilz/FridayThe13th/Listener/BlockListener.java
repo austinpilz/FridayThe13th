@@ -12,6 +12,7 @@ import com.AustinPilz.FridayThe13th.IO.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -143,7 +144,7 @@ public class BlockListener implements Listener
                         if (event.getPlayer().hasPermission("FridayThe13th.Admin"))
                         {
                             arena.getSignManager().removeJoinSign(sign);
-                            FridayThe13th.inputOutput.deleteSign(sign.getX(), sign.getY(), sign.getZ(), sign.getWorld().toString());
+                            FridayThe13th.inputOutput.deleteSign(sign.getX(), sign.getY(), sign.getZ(), sign.getWorld().getName());
                             event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(event.getPlayer(), "block.confirm.signBreak", "Sign removed successfully."));
                         }
                         else

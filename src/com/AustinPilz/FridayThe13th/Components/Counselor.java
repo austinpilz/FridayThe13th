@@ -427,7 +427,7 @@ public class Counselor
         //Set counselor stats to full to avoid messages
         setFearLevel(0.0);
         setStamina(getMaxStamina());
-        
+
         //Make them invisible
         getPlayer().addPotionEffect(potionSpectatingInvisibility);
 

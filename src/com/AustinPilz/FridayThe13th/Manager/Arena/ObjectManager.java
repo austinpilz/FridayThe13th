@@ -77,6 +77,16 @@ public class ObjectManager
     }
 
     /**
+     * Removes chest
+     * @param chest
+     */
+    public void removeChest(ArenaChest chest)
+    {
+        chestsWeapons.remove(chest);
+        chestsItems.remove(chest);
+    }
+
+    /**
      * Randomly regenerates chests
      */
     public void regenerateChests()
