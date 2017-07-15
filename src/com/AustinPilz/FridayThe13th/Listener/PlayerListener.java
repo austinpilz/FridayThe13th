@@ -116,6 +116,7 @@ public class PlayerListener implements Listener {
                         {
                             //Open spectate menu
                             event.getPlayer().openInventory(arena.getGameManager().getPlayerManager().getSpectateMenuInventory());
+                            event.setCancelled(true);
                         }
                         else
                         {

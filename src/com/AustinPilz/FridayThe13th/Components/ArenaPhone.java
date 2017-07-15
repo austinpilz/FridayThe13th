@@ -79,29 +79,28 @@ public class ArenaPhone
      */
     public void callAttempt(Player player)
     {
-        if ((++callAttempts/callAttemptsRequired) == 1.0 && !arena.getGameManager().hasTommyBeenCalled())
-        {
-            hologram.getLine(0).removeLine();
-            hologram.insertTextLine(0, "Tommy: " + ChatColor.GREEN + "CALLED");
+        if (!arena.getGameManager().hasTommyBeenCalled()) {
+            if ((++callAttempts / callAttemptsRequired) == 1.0) {
+                hologram.getLine(0).removeLine();
+                hologram.insertTextLine(0, "Tommy: " + ChatColor.GREEN + "CALLED");
 
-            //Fire firework
-            arena.getGameManager().getPlayerManager().fireFirework(player, Color.GREEN);
+                //Fire firework
+                arena.getGameManager().getPlayerManager().fireFirework(player, Color.GREEN);
 
-            arena.getGameManager().getPlayerManager().sendMessageToAllPlayers(ChatColor.AQUA + player.getName() + ChatColor.WHITE + " has called Tommy Jarvis.");
+                arena.getGameManager().getPlayerManager().sendMessageToAllPlayers(ChatColor.AQUA + player.getName() + ChatColor.WHITE + " has called Tommy Jarvis.");
 
-            arena.getGameManager().tommyCalled();
-            callAttempts++;
-        }
-        else
-        {
-            hologram.getLine(0).removeLine();
+                arena.getGameManager().tommyCalled();
+                callAttempts++;
+            } else {
+                hologram.getLine(0).removeLine();
 
-            float percentage = ((float) callAttempts) / callAttemptsRequired * 100;
-            percentage = Math.round(percentage);
-            String strPercent = String.format("%2.0f", percentage);
+                float percentage = ((float) callAttempts) / callAttemptsRequired * 100;
+                percentage = Math.round(percentage);
+                String strPercent = String.format("%2.0f", percentage);
 
-            String string = "Call Tommy: " + String.valueOf(strPercent) + "%";
-            hologram.insertTextLine(0, ChatColor.WHITE + string);
+                String string = "Call Tommy: " + String.valueOf(strPercent) + "%";
+                hologram.insertTextLine(0, ChatColor.WHITE + string);
+            }
         }
     }
 

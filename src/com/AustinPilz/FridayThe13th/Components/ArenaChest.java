@@ -116,13 +116,13 @@ public class ArenaChest
 
                 //Iron axe (AXE)
                 double ironAxeChance = Math.random() * 100;
-                if ((ironAxeChance -= 10) < 0) //3% of the time
+                if ((ironAxeChance -= 1) < 0) //3% of the time
                 {
                     ItemStack item = new ItemStack(Material.IRON_AXE, 1);
                     ItemMeta metaData = item.getItemMeta();
                     metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.HeavyAxe", "Heavy Axe"));
                     item.setItemMeta(metaData);
-                    item.setDurability((short) 60);
+                    item.setDurability((short) 20);
                     getChest().getBlockInventory().addItem(item);
                 }
 
