@@ -51,32 +51,47 @@ public class SignManager
     {
         for (Sign sign : joinSigns)
         {
-            sign.setLine(0, ChatColor.RED + FridayThe13th.signPrefix);
-            sign.setLine(1, arena.getArenaName());
-
-            if (arena.getGameManager().isGameEmpty())
-            {
-                sign.setLine(2, ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Empty", "Empty"));
-                sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
-            }
-            else if (arena.getGameManager().isGameWaiting())
-            {
-                sign.setLine(2, ChatColor.AQUA + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Waiting", "Waiting") + ChatColor.BLACK + " - " + arena.getGameManager().getWaitingTimeLeft() + "s");
-                sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
-            }
-            else if (arena.getGameManager().isGameInProgress())
-            {
-                sign.setLine(2, ChatColor.RED + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.InProgress", "In Progress"));
-
-                int rem = arena.getGameManager().getGameTimeLeft() % 3600;
-                int mn = rem / 60;
-                int sec = rem % 60;
-
-                sign.setLine(3, mn + " m " + sec + " sec");
-            }
-
-            sign.update();
+            updateSign(sign);
         }
+    }
+
+    private void updateSign(Sign sign)
+    {
+        sign.setLine(0, ChatColor.RED + FridayThe13th.signPrefix);
+        sign.setLine(1, arena.getArenaName());
+
+        if (arena.getGameManager().isGameEmpty())
+        {
+            if (arena.getGameManager().getPlayerManager().getNumPlayers() == 0)
+            {
+                //Display empty
+                sign.setLine(2, ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Empty", "Empty"));
+            }
+            else
+            {
+                //Display counter
+                sign.setLine(2, arena.getGameManager().getPlayerManager().getNumPlayers() + " / " + arena.getLocationManager().getNumberStartingPoints());
+            }
+
+            sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
+        }
+        else if (arena.getGameManager().isGameWaiting())
+        {
+            sign.setLine(2, ChatColor.AQUA + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Waiting", "Waiting") + ChatColor.BLACK + " - " + arena.getGameManager().getWaitingTimeLeft() + "s");
+            sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
+        }
+        else if (arena.getGameManager().isGameInProgress())
+        {
+            sign.setLine(2, ChatColor.RED + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.InProgress", "In Progress"));
+
+            int rem = arena.getGameManager().getGameTimeLeft() % 3600;
+            int mn = rem / 60;
+            int sec = rem % 60;
+
+            sign.setLine(3, mn + " m " + sec + " sec");
+        }
+
+        sign.update();
     }
 
     /**
