@@ -525,7 +525,7 @@ public class PlayerListener implements Listener {
             {
                 event.setCancelled(true);
 
-                if (event.getCurrentItem().getType().equals(Material.SKULL_ITEM))
+                if (event.getCurrentItem() != null && event.getCurrentItem().getType().equals(Material.SKULL_ITEM))
                 {
                     SkullMeta playerMetaData = (SkullMeta)event.getCurrentItem().getItemMeta();
                     player.teleport(Bukkit.getPlayer(playerMetaData.getDisplayName()));

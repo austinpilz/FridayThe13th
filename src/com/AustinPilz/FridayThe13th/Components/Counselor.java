@@ -497,12 +497,14 @@ public class Counselor
         ActionBarAPI.sendActionBar(getPlayer(), "");
         arena.getGameManager().getGameCountdownManager().hideFromPlayer(getPlayer());
 
-        //Make visible to all players
-        for (Player player : Bukkit.getOnlinePlayers())
+        if (player.isOnline())
         {
-            player.showPlayer(getPlayer());
+            //Make visible to all players
+            for (Player player : Bukkit.getOnlinePlayers())
+            {
+                player.showPlayer(getPlayer());
+            }
         }
-
     }
 
     /**

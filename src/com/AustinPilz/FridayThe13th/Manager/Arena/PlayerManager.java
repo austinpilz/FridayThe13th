@@ -274,6 +274,11 @@ public class PlayerManager
                     //Announce arrival
                     sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()));
 
+                    if (players.size() == 1)
+                    {
+                        arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
+                    }
+
                 } catch (PlayerAlreadyPlayingException exception) {
                     //They're already in the controller global player list
                     player.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinFailAR", "Failed to add you to game because you're already registered as playing a game."));
