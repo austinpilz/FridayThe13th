@@ -8,8 +8,11 @@ import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Runnable.CounselorWindowJump;
+import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -189,6 +192,21 @@ public class PlayerListener implements Listener {
                             else
                             {
                                 event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + "This phone is not managed by the arena. Ask your admin to add this tripwire hook to the arena.");
+                            }
+                        }
+                        else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.THIN_GLASS))
+                        {
+                            //Window jumping
+                            if (event.getPlayer().isSprinting())
+                            {
+                                //fast jump - breaks window
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true);
+                                arena.getObjectManager().breakWindow(event.getClickedBlock());
+                            }
+                            else
+                            {
+                                ActionBarAPI.sendActionBar(event.getPlayer(), FridayThe13th.language.get(event.getPlayer(), "actionBar.counselor.windowJumpWait", "Don't move! You'll jump in {0} seconds...", "2"), 40);
+                                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new CounselorWindowJump(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()), event.getPlayer().getLocation(), event.getClickedBlock()), 40);
                             }
                         }
                     }

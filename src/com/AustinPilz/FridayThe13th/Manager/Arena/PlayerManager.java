@@ -508,6 +508,8 @@ public class PlayerManager
         //Game ended
         sendMessageToAllPlayers(ChatColor.RED + "Game over! " + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
 
+        //Make all players visible to one another
+
         Iterator it = getPlayers().entrySet().iterator();
         while (it.hasNext())
         {

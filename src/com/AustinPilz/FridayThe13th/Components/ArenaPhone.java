@@ -45,6 +45,7 @@ public class ArenaPhone
     {
         hologram = HologramsAPI.createHologram(FridayThe13th.instance, location.getBlock().getRelative(BlockFace.UP).getLocation());
         hologram.appendTextLine(ChatColor.WHITE + "Call Tommy");
+        //hologram.getVisibilityManager().hideTo(arena.getGameManager().getPlayerManager().getJason().getPlayer());
     }
 
     /**

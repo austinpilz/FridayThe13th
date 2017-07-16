@@ -17,6 +17,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+
 public class Counselor
 {
     //Minecraft Objects
@@ -466,6 +470,15 @@ public class Counselor
 
         //Let them know
         ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.enterSpectatingMode", "You Died! {0}You are now in spectating mode.", ChatColor.WHITE), 300);
+
+        //Hide this player from everyone else
+        Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            Player hideFrom = (Player) entry.getValue();
+            hideFrom.hidePlayer(getPlayer());
+        }
     }
 
     /**
@@ -479,6 +492,12 @@ public class Counselor
         spectatingMode = false;
         ActionBarAPI.sendActionBar(getPlayer(), "");
         arena.getGameManager().getGameCountdownManager().hideFromPlayer(getPlayer());
+
+        //Make visible to all players
+        for (Player player : Bukkit.getOnlinePlayers())
+        {
+            player.showPlayer(getPlayer());
+        }
 
     }
 
@@ -555,5 +574,22 @@ public class Counselor
         getPlayer().getInventory().addItem(new ItemStack(Material.SPECTRAL_ARROW, 1));
     }
 
+    /**
+     * Teleports player through window
+     */
+    public void teleportThroughWindow(Block block, boolean damage)
+    {
+        //Teleport them
+        int direction = 1; //front
+        float newZ = (float)(player.getLocation().getZ() + (2 * Math.sin(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
+        float newX = (float)(player.getLocation().getX() + (2 * Math.cos(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
+        getPlayer().teleport(new Location(player.getLocation().getWorld(), (double)newX, player.getLocation().getY(), newZ));
+
+        //Damage the player
+        if (damage)
+        {
+            getPlayer().damage(6);
+        }
+    }
 
 }

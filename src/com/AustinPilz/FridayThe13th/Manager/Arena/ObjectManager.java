@@ -10,6 +10,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -166,7 +167,9 @@ public class ObjectManager
         //Phones
         hideAllPhones();
 
-        //Restore windows?
+        //Restore windows
+        fixBrokenWindows();
+        brokenWindows.clear();
 
     }
 
@@ -268,6 +271,9 @@ public class ObjectManager
         }
     }
 
+    /**
+     * Activates one random phone in the arena
+     */
     public void displayRandomPhone()
     {
         if (phones.size() > 0)
@@ -289,4 +295,26 @@ public class ObjectManager
         }
 
     }
+
+    /**
+     * Breaks window
+     * @param block
+     */
+    public void breakWindow(Block block)
+    {
+        brokenWindows.add(block);
+        block.setType(Material.IRON_FENCE);
+    }
+
+    /**
+     * Repairs all broken windows
+     */
+    public void fixBrokenWindows()
+    {
+        for (Block b : brokenWindows)
+        {
+            b.setType(Material.THIN_GLASS);
+        }
+    }
+
 }

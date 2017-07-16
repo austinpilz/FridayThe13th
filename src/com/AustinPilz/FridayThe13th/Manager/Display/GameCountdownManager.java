@@ -82,7 +82,7 @@ public class GameCountdownManager
                 {
                     Map.Entry entry = (Map.Entry) it.next();
                     Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + sec + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.seconds", "seconds"), 60);
+                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + sec + " " +  FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.seconds", "seconds"), 60);
                 }
             }
         }

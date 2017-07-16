@@ -89,35 +89,36 @@ public class BlockListener implements Listener
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event)
     {
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            event.setCancelled(true);
 
             if (arena.getGameManager().isGameInProgress())
             {
-                //Physical object interactions
-                if (event.getBlock().getState().getData() instanceof Door)
+                if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
                 {
-                    //Door broken
-                    arena.getObjectManager().getArenaDoor(event.getBlock()).blockBreak();
-                    event.setCancelled(true);
-                }
-                else if (event.getBlock().getState().getData() instanceof Lever)
-                {
-                    //Lever
-                    arena.getObjectManager().breakSwitch(event.getBlock());
-                    event.setCancelled(true);
-                }
-                else if (event.getBlock().getType().equals(Material.THIN_GLASS) || event.getBlock().getType().equals(Material.STAINED_GLASS_PANE))
-                {
-                    //Window
-                    event.setCancelled(true);
-                }
-                else
-                {
-                    event.setCancelled(true);
+                    //Physical object interactions
+                    if (event.getBlock().getState().getData() instanceof Door)
+                    {
+                        //Door broken
+                        arena.getObjectManager().getArenaDoor(event.getBlock()).blockBreak();
+                    }
+                    else if (event.getBlock().getState().getData() instanceof Lever)
+                    {
+                        //Lever
+                        if (!arena.getObjectManager().getBrokenSwitches().containsKey(event.getBlock()))
+                        {
+                            arena.getObjectManager().breakSwitch(event.getBlock());
+                        }
+                    }
+                    else if (event.getBlock().getType().equals(Material.THIN_GLASS))
+                    {
+                        //Window
+                        arena.getObjectManager().breakWindow(event.getBlock());
+                    }
                 }
             }
             else if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty())
