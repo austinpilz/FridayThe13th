@@ -5,6 +5,7 @@ import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
+import com.AustinPilz.FridayThe13th.Structures.GameSkin;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,6 +27,7 @@ public class Jason
 
     //Display
     private JasonAbilityDisplayManager abilityDisplayManager;
+    private SkinChange skin;
 
     //Tasks
     int taskAbilityDisplay = -1;
@@ -74,6 +76,7 @@ public class Jason
 
         //Display
         abilityDisplayManager = new JasonAbilityDisplayManager(this);
+        skin = new SkinChange(getPlayer()).withSkin(GameSkin.JASON);
 
         //Stalk Values
         stalkLevel = 0;
@@ -191,6 +194,9 @@ public class Jason
 
         //Display game-wide scoreboard
         arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
+
+        //Skin
+        skin.apply();
 
         //Schedule tasks
         scheduleTasks();
@@ -608,6 +614,14 @@ public class Jason
     }
 
     /**
+     * Removes Jason skin
+     */
+    public void removeSkin()
+    {
+        skin.revert();
+    }
+
+    /**
      * Stuns Jason
      */
     public void stun()
@@ -617,6 +631,4 @@ public class Jason
         player.addPotionEffect(stun3);
         player.addPotionEffect(stun4);
     }
-
-
 }

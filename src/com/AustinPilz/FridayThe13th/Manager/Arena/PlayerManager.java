@@ -1,13 +1,11 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
-import com.AustinPilz.FridayThe13th.Components.ArenaPhone;
-import com.AustinPilz.FridayThe13th.Components.Counselor;
-import com.AustinPilz.FridayThe13th.Components.Jason;
+import com.AustinPilz.FridayThe13th.Components.*;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Structures.GameSkin;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -579,6 +577,9 @@ public class PlayerManager
             {
                 //Stop tasks
                 jason.cancelTasks();
+
+                //Remove skin
+                jason.removeSkin();
 
                 //Stop Potions
                 jason.removePotionEffects();

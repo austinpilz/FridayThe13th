@@ -10,7 +10,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/ActionBarAPI-1.5.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/spigot-api-1.12-R0.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -19,7 +19,20 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/spigot-api-1.12-R0.1-SNAPSHOT.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/SidebarAPI.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/SidebarAPI.jar!/doc" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/SidebarAPI.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/LanguageAPI.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -37,23 +50,21 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/LanguageAPI.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/craftbukkit-1.12.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/craftbukkit-1.12.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/SidebarAPI.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/ActionBarAPI-1.5.3.jar!/" />
         </CLASSES>
-        <JAVADOC>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/SidebarAPI.jar!/doc" />
-        </JAVADOC>
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../../Minercaft Dev/SidebarAPI.jar!/" />
-        </SOURCES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>
