@@ -445,22 +445,29 @@ public class PlayerManager
      */
     private void assignGameRoles()
     {
-        Random generator = new Random();
-        Object[] playerArray = players.values().toArray();
-        int jasonCell = generator.nextInt(playerArray.length);
+        //Teleport counselors to starting points
+        Player[] players = getPlayers().values().toArray(new Player[getPlayers().size()]);
+
+        //Randomize starting points
+        Random rnd = ThreadLocalRandom.current();
+        for (int i = players.length - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+
+            // Simple swap
+            Player a = players[index];
+            players[index] = players[i];
+            players[i] = a;
+        }
 
         //Select Jason
-        Player jasonPlayer = (Player)playerArray[jasonCell];
-        this.jason = new Jason(jasonPlayer, arena);
+        this.jason = new Jason(players[0], arena);
 
         //Make everyone else counselors
-        for (int i = 0; i < playerArray.length; i++)
+        for (int i = 1; i < players.length; i++)
         {
-            if (i != jasonCell)
-            {
-                Player counselorPlayer = (Player)playerArray[i];
-                this.counselors.put(counselorPlayer.getUniqueId().toString(), new Counselor(counselorPlayer, arena));
-            }
+            Player counselorPlayer = players[i];
+            this.counselors.put(counselorPlayer.getUniqueId().toString(), new Counselor(counselorPlayer, arena));
         }
     }
 

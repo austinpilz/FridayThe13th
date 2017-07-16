@@ -31,6 +31,8 @@ public class CounselorWindowJump implements Runnable
         {
             ActionBarAPI.sendActionBar(counselor.getPlayer(), ChatColor.RED + FridayThe13th.language.get(counselor.getPlayer(), "actionBar.counselor.windowJumpFail", "Jump cancelled! {0}You moved before the jump was complete.", ChatColor.WHITE), 60);
         }
+
+        counselor.setAwaitingWindowJump(false); //Restore their ability to window jump
     }
 
 }

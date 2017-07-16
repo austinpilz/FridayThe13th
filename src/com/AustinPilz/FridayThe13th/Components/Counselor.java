@@ -66,6 +66,9 @@ public class Counselor
     private float originalFlySpeed;
     private boolean originalAllowFly;
 
+    //Etc
+    private boolean awaitingWindowJump;
+
     /**
      * Creates new counselor object
      * @param p Minecraft player object
@@ -101,6 +104,9 @@ public class Counselor
         originalWalkSpeed = player.getWalkSpeed();
         originalFlySpeed = player.getFlySpeed();
         originalAllowFly = player.getAllowFlight();
+
+        //Etc
+        awaitingWindowJump = false;
     }
 
     /**
@@ -581,8 +587,8 @@ public class Counselor
     {
         //Teleport them
         int direction = 1; //front
-        float newZ = (float)(player.getLocation().getZ() + (2 * Math.sin(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
-        float newX = (float)(player.getLocation().getX() + (2 * Math.cos(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
+        float newZ = (float)(block.getLocation().getZ() + (2 * Math.sin(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
+        float newX = (float)(block.getLocation().getX() + (2 * Math.cos(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
         getPlayer().teleport(new Location(player.getLocation().getWorld(), (double)newX, player.getLocation().getY(), newZ));
 
         //Damage the player
@@ -590,6 +596,24 @@ public class Counselor
         {
             getPlayer().damage(6);
         }
+    }
+
+    /**
+     * Sets if the counselor is awaiting a window jump
+     * @param value
+     */
+    public void setAwaitingWindowJump(boolean value)
+    {
+        awaitingWindowJump = value;
+    }
+
+    /**
+     * Returns if the counselor is awai
+     * @return
+     */
+    public boolean isAwaitingWindowJump()
+    {
+        return awaitingWindowJump;
     }
 
 }

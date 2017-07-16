@@ -75,11 +75,6 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        //
-    }
-
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         try {
@@ -199,14 +194,20 @@ public class PlayerListener implements Listener {
                             //Window jumping
                             if (event.getPlayer().isSprinting())
                             {
-                                //fast jump - breaks window
+                                //Fast jump - breaks window
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(true); //So that they don't spam window jumps
                                 arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true);
                                 arena.getObjectManager().breakWindow(event.getClickedBlock());
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(false);
                             }
                             else
                             {
-                                ActionBarAPI.sendActionBar(event.getPlayer(), FridayThe13th.language.get(event.getPlayer(), "actionBar.counselor.windowJumpWait", "Don't move! You'll jump in {0} seconds...", "2"), 40);
-                                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new CounselorWindowJump(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()), event.getPlayer().getLocation(), event.getClickedBlock()), 40);
+                                if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isAwaitingWindowJump())
+                                {
+                                    arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(true); //So that they don't spam window jumps
+                                    ActionBarAPI.sendActionBar(event.getPlayer(), FridayThe13th.language.get(event.getPlayer(), "actionBar.counselor.windowJumpWait", "Don't move! You'll jump in {0} seconds...", "2"), 40);
+                                    Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new CounselorWindowJump(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()), event.getPlayer().getLocation(), event.getClickedBlock()), 40);
+                                }
                             }
                         }
                     }
