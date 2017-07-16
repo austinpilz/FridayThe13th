@@ -5,16 +5,13 @@ import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Structures.GameSkin;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
@@ -565,7 +562,7 @@ public class PlayerManager
                 counselor.cancelTasks();
 
                 //Remove any potions
-                counselor.removeAllPotionEffects();
+                counselor.removePotionEffects();
                 counselor.restoreOriginalSpeeds();
 
                 //Leave spectating mode, if applicable

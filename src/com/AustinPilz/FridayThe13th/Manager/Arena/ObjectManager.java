@@ -302,8 +302,18 @@ public class ObjectManager
      */
     public void breakWindow(Block block)
     {
+        //Break the window
         brokenWindows.add(block);
         block.setType(Material.IRON_FENCE);
+
+        //Check to see if it's attached to any other glass panes, break them too
+        for (BlockFace blockface : BlockFace.values())
+        {
+            if (block.getRelative(blockface).getType().equals(Material.THIN_GLASS))
+            {
+                breakWindow(block.getRelative(blockface));
+            }
+        }
     }
 
     /**

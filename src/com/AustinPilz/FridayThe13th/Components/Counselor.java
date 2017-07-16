@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +18,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 public class Counselor
 {
@@ -445,7 +443,7 @@ public class Counselor
         spectatingMode = true;
 
         //Remove any potions from in game
-        removeAllPotionEffects();
+        removePotionEffects();
 
         //Set counselor stats to full to avoid messages
         setFearLevel(0.0);
@@ -510,7 +508,7 @@ public class Counselor
     /**
      * Removes potion effects from counselor
      */
-    public void removeAllPotionEffects()
+    public void removePotionEffects()
     {
         getPlayer().removePotionEffect(PotionEffectType.BLINDNESS); //Scared
         getPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
