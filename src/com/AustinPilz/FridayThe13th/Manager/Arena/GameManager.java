@@ -357,12 +357,11 @@ public class GameManager
 
             gameStatus = GameStatus.InProgress; //Change mode
 
-            //Schedule game countdown
-            gameCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameCountdown(arena),0, 20);
-
-
             //Start the game
             beginGame();
+
+            //Schedule game countdown
+            gameCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameCountdown(arena),0, 20);
         }
 
         arena.getSignManager().updateJoinSigns(); //update the join signs

@@ -660,8 +660,36 @@ public class PlayerManager
 
     public Inventory getSpectateMenuInventory()
     {
-       Inventory inventory = Bukkit.createInventory(null, 18, ChatColor.GREEN + "" + ChatColor.BOLD + "Spectate Selection");
-       int i = 0;
+        //Determine size
+        int size = 9;
+        if (getNumCounselors() > 9 && getNumCounselors() <= 18)
+        {
+            size = 18;
+        }
+        else if (getNumCounselors() > 18 && getNumCounselors() <= 27)
+        {
+            size = 27;
+        }
+        else if (getNumCounselors() > 27 && getNumCounselors() <= 36)
+        {
+            size = 36;
+        }
+        else if (getNumCounselors() > 36 && getNumCounselors() <= 45)
+        {
+            size = 45;
+        }
+        else if (getNumCounselors() > 45 && getNumCounselors() <= 54)
+        {
+            size = 54;
+        }
+        else if (getNumCounselors() > 27 && getNumCounselors() <= 63)
+        {
+            size = 63;
+        }
+
+
+        Inventory inventory = Bukkit.createInventory(null, size, ChatColor.GREEN + "" + ChatColor.BOLD + "Spectate Selection");
+        int i = 0;
 
         Iterator it = getCounselors().entrySet().iterator();
         while (it.hasNext())
@@ -669,15 +697,16 @@ public class PlayerManager
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
 
-            if (!counselor.isInSpectatingMode())
+            if (!counselor.isInSpectatingMode() && i <= size)
             {
-                ItemStack player = new ItemStack(Material.SKULL_ITEM, 1);
-                SkullMeta playerMetaData = (SkullMeta)player.getItemMeta();
-                playerMetaData.setOwner(counselor.getPlayer().getName());
-                playerMetaData.setDisplayName(counselor.getPlayer().getName());
-                player.setItemMeta(playerMetaData);
+                counselor.getPlayer().getName();
+                ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
+                SkullMeta meta = (SkullMeta)item.getItemMeta();
+                meta.setOwner(counselor.getPlayer().getName());
+                meta.setDisplayName(counselor.getPlayer().getName());
+                item.setItemMeta(meta);
 
-                inventory.setItem(i++, player);
+                inventory.setItem(i++, item);
             }
         }
 

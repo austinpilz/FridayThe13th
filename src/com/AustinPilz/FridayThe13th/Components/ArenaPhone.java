@@ -114,6 +114,8 @@ public class ArenaPhone
         {
             hologram.delete();
         }
+
+        isVisible = false;
     }
 
     /**
@@ -125,6 +127,8 @@ public class ArenaPhone
 
         //Reset values
         callAttempts = 0;
+
+        isVisible = true;
     }
 
     /**
