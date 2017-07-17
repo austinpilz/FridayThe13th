@@ -321,6 +321,13 @@ public class PlayerManager
                 }
             }
         }
+        else
+        {
+            if (players.size() == 1)
+            {
+                arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
+            }
+        }
 
 
         //Message everyone in game
@@ -349,6 +356,13 @@ public class PlayerManager
                     //They were the last one
                     arena.getGameManager().endGame();
                 }
+            }
+        }
+        else
+        {
+            if (players.size() == 1)
+            {
+                arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
             }
         }
 
