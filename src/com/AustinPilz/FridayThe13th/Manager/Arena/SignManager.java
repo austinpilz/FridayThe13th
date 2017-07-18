@@ -57,7 +57,7 @@ public class SignManager
 
     private void updateSign(Sign sign)
     {
-        sign.setLine(0, ChatColor.RED + FridayThe13th.signPrefix);
+        sign.setLine(0, ChatColor.RED + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.signPrefix", FridayThe13th.signPrefix));
         sign.setLine(1, arena.getArenaName());
 
         if (arena.getGameManager().isGameEmpty())
@@ -82,13 +82,12 @@ public class SignManager
         }
         else if (arena.getGameManager().isGameInProgress())
         {
-            sign.setLine(2, ChatColor.RED + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.InProgress", "In Progress"));
-
             int rem = arena.getGameManager().getGameTimeLeft() % 3600;
             int mn = rem / 60;
             int sec = rem % 60;
 
-            sign.setLine(3, mn + " m " + sec + " sec");
+            sign.setLine(2, ChatColor.DARK_RED + "" + mn + " m " + sec + " sec");
+            sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Spectate!"));
         }
 
         sign.update();

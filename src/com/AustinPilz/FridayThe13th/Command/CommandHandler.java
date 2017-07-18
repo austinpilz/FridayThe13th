@@ -12,7 +12,6 @@ import com.AustinPilz.FridayThe13th.Exceptions.PhoneSetupSessionAlreadyInProgres
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.SpawnPoint.SpawnPointSetupSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -203,6 +202,39 @@ public class CommandHandler implements CommandExecutor {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
                 }
+            } else if (args[0].equalsIgnoreCase("spectate")) {
+                if (sender.hasPermission("FridayThe13th.User")) {
+                    //Setup commands cannot be executed by the console
+                    if (sender instanceof Player) {
+                        //Correct Syntax: /f13 setup [arenaName] [object]
+                        if (args.length == 2) {
+                            String arenaName = args[1];
+
+                            //All is good, begin the play process handled by the ArenaCreation manager
+                            try {
+                                Arena arena = FridayThe13th.arenaController.getArena(arenaName);
+
+                                if (arena.getGameManager().isGameInProgress()) {
+                                    arena.getGameManager().getPlayerManager().becomeSpectator((Player) sender);
+                                } else {
+                                    //You can't spectate if the game isn't in progress
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.spectateNotInProgress", "The game in {0} is not in progress. You can't spectate until the game has begun.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                }
+                            } catch (ArenaDoesNotExistException exception) {
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                            }
+                        } else {
+                            //Incorrect play syntax
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.playSyntaxError", "Incorrect play syntax. Usage: {0}", ChatColor.AQUA + "/f13 play [arenaName]"));
+                        }
+                    } else {
+                        //The command was sent by something other than an in-game player
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.consoleSender", "This command must be executed by an in-game player, not the console."));
+                    }
+                } else {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
+                }
             } else if (args[0].equalsIgnoreCase("arena")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     if (args.length == 2) {
@@ -266,16 +298,12 @@ public class CommandHandler implements CommandExecutor {
                 if (sender.hasPermission("FridayThe13th.User")) {
                     //Setup commands cannot be executed by the console
                     if (sender instanceof Player) {
-                        try
-                        {
+                        try {
                             Arena arena = FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString());
-                            if (arena.getGameManager().getPlayerManager().isJustSpectator(((Player) sender).getUniqueId().toString()))
-                            {
+                            if (arena.getGameManager().getPlayerManager().isJustSpectator(((Player) sender).getUniqueId().toString())) {
                                 //They're only a spectator - not prev a player
                                 arena.getGameManager().getPlayerManager().leaveSpectator((Player) sender);
-                            }
-                            else
-                            {
+                            } else {
                                 arena.getGameManager().getPlayerManager().onplayerQuit(((Player) sender));
                             }
                         } catch (PlayerNotPlayingException exception) {
