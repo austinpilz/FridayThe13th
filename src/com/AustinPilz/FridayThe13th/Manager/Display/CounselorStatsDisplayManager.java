@@ -1,6 +1,6 @@
 package com.AustinPilz.FridayThe13th.Manager.Display;
 
-import com.AustinPilz.FridayThe13th.Components.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsDisplayUpdate;
 import org.bukkit.Bukkit;

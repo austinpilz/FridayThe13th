@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Session;
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
-import com.AustinPilz.FridayThe13th.Components.ArenaChest;
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Arena.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.ChestType;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;

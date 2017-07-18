@@ -1,6 +1,6 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import org.bukkit.Location;
 
 import java.util.HashSet;

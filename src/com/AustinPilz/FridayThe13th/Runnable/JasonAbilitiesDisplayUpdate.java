@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Runnable;
 
 
-import com.AustinPilz.FridayThe13th.Components.Jason;
+import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 
 public class JasonAbilitiesDisplayUpdate implements Runnable
 {

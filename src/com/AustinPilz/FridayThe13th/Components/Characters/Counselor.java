@@ -1,5 +1,7 @@
-package com.AustinPilz.FridayThe13th.Components;
+package com.AustinPilz.FridayThe13th.Components.Characters;
 
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.SkinChange;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
@@ -127,6 +129,9 @@ public class Counselor
      */
     public void prepareForGameplay()
     {
+        //Clear their inventory of any waiting room goodies
+        getPlayer().getInventory().clear();
+
         ///Display Status
         getStatsDisplayManager().displayStats();
 

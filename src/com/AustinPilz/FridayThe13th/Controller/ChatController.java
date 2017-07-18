@@ -1,8 +1,8 @@
 package com.AustinPilz.FridayThe13th.Controller;
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
-import com.AustinPilz.FridayThe13th.Components.Counselor;
-import com.AustinPilz.FridayThe13th.Components.Spectator;
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

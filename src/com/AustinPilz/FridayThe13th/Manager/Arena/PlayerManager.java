@@ -1,9 +1,10 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
-import com.AustinPilz.FridayThe13th.Components.Counselor;
-import com.AustinPilz.FridayThe13th.Components.Jason;
-import com.AustinPilz.FridayThe13th.Components.Spectator;
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
+import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
+import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
@@ -580,6 +581,9 @@ public class PlayerManager
         player.setHealth(20);
         player.setFoodLevel(10);
         player.getInventory().clear();
+
+        //Give them waiting room items
+        SpawnPreferenceMenu.addMenuOpenItem(player);
     }
 
     /**

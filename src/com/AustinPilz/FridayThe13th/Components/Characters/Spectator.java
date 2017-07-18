@@ -1,5 +1,6 @@
-package com.AustinPilz.FridayThe13th.Components;
+package com.AustinPilz.FridayThe13th.Components.Characters;
 
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
@@ -55,7 +56,7 @@ public class Spectator
         //Give them the selector
         ItemStack compass = new ItemStack(Material.EMERALD, 1);
         ItemMeta compassMetaData = compass.getItemMeta();
-        compassMetaData.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(player, "game.item.spectateSelector", "Spectate Selector", ChatColor.WHITE));
+        compassMetaData.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(player, "game.title.spectateMenu", "Select Player to Spectate"));
         compass.setItemMeta(compassMetaData);
         getPlayer().getInventory().addItem(compass);
 

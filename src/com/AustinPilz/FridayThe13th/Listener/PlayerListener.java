@@ -1,7 +1,8 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
-import com.AustinPilz.FridayThe13th.Components.Jason;
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
+import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
@@ -472,9 +473,11 @@ public class PlayerListener implements Listener {
         {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()); //See if they're playing
 
-            if (arena.getGameManager().isGameInProgress() && (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()) || arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())))
+            if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()))
             {
-                event.setCancelled(true); //Jason and spectators can't drop anything
+                event.setCancelled(false); //Regular counselors can drop items
+            } else {
+                event.setCancelled(true);
             }
 
         }
@@ -506,6 +509,15 @@ public class PlayerListener implements Listener {
                         SkullMeta playerMetaData = (SkullMeta) event.getCurrentItem().getItemMeta();
                         player.teleport(Bukkit.getPlayer(playerMetaData.getDisplayName()));
                         player.closeInventory();
+                    }
+                }
+            } else {
+                //The game is in the waiting room phase
+                if (event.getCurrentItem() != null) {
+                    if (event.getCurrentItem().getType().equals(Material.EMPTY_MAP)) //They're trying to open the spawn preference menu
+                    {
+                        //Open spectate menu
+                        SpawnPreferenceMenu.openMenu(player);
                     }
                 }
             }

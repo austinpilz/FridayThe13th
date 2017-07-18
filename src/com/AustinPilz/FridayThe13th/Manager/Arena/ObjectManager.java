@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 
-import com.AustinPilz.FridayThe13th.Components.*;
+import com.AustinPilz.FridayThe13th.Components.Arena.*;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;

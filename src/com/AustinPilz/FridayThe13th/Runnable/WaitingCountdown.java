@@ -1,6 +1,6 @@
 package com.AustinPilz.FridayThe13th.Runnable;
 
-import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 
 public class WaitingCountdown implements Runnable
 {

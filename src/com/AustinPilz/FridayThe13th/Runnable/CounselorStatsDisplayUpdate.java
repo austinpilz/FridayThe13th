@@ -1,6 +1,6 @@
 package com.AustinPilz.FridayThe13th.Runnable;
 
-import com.AustinPilz.FridayThe13th.Components.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 
 public class CounselorStatsDisplayUpdate implements Runnable {
 

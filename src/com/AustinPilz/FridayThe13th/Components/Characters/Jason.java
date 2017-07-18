@@ -1,5 +1,7 @@
-package com.AustinPilz.FridayThe13th.Components;
+package com.AustinPilz.FridayThe13th.Components.Characters;
 
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.SkinChange;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
@@ -180,6 +182,7 @@ public class Jason
         sensePotion.setItemMeta(sensePotionMeta);
 
         //Put them in inventory
+        getPlayer().getInventory().clear(); //clear inventory before hand
         getPlayer().getInventory().addItem(sword);
         getPlayer().getInventory().addItem(bow);
         getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 2));

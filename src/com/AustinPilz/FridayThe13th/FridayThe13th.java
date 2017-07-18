@@ -1,9 +1,10 @@
 package com.AustinPilz.FridayThe13th;
 
 import com.AustinPilz.FridayThe13th.Command.CommandHandler;
-import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
 import com.AustinPilz.FridayThe13th.Controller.ChatController;
+import com.AustinPilz.FridayThe13th.Controller.PlayerController;
 import com.AustinPilz.FridayThe13th.IO.InputOutput;
 import com.AustinPilz.FridayThe13th.IO.LanguageWrapper;
 import com.AustinPilz.FridayThe13th.IO.MetricsLite;
@@ -41,6 +42,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     //Game Components
     public static ArenaController arenaController;
     public static ChatController chatController;
+    public static PlayerController playerController;
     public static SpigotUpdateChecker updateChecker;
 
     //Global Managers
@@ -72,6 +74,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //Initialize Game Components
         arenaController = new ArenaController();
         chatController = new ChatController();
+        playerController = new PlayerController();
         arenaCreationManager = new ArenaCreationManager();
         spawnPointCreationManager = new SpawnPointCreationManager();
         chestSetupManager = new ChestSetupManager();

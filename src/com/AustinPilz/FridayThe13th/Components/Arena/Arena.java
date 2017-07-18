@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Components;
+package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.Manager.Arena.GameManager;
 import com.AustinPilz.FridayThe13th.Manager.Arena.LocationManager;

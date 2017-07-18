@@ -46,9 +46,7 @@ public class SkinChange {
 
         if (!skin.getValue().equals(playerCurrentSkinValue) && !reverted) //Don't set skin if it's the same one as before
         {
-            player.sendMessage("skin update for new skin");
             if (originalTextures == null) {
-                player.sendMessage("1st skin");
                 this.originalTextures = new String[]{playerCurrentSkinValue, playerCurrentSkinSignature};
             }
 
