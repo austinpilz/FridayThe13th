@@ -741,6 +741,9 @@ public class PlayerManager
                 //Hide the stats bars
                 counselor.getStatsDisplayManager().hideStats();
 
+                //Remove skin
+                counselor.removeSkin();
+
                 //Remove from counselors
                 counselors.remove(playerUUID);
             }

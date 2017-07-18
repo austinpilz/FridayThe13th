@@ -78,7 +78,7 @@ public class Jason
 
         //Display
         abilityDisplayManager = new JasonAbilityDisplayManager(this);
-        skin = new SkinChange(getPlayer()).withSkin(GameSkin.JASON);
+        skin = new SkinChange(getPlayer());
 
         //Stalk Values
         stalkLevel = 0;
@@ -198,7 +198,7 @@ public class Jason
         arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
 
         //Skin
-        skin.apply();
+        skin.apply(GameSkin.JASON);
 
         //Schedule tasks
         scheduleTasks();

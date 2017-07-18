@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th.Components;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
+import com.AustinPilz.FridayThe13th.Structures.GameSkin;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
@@ -39,6 +40,7 @@ public class Counselor
 
     //Managers
     private CounselorStatsDisplayManager statsDisplayManager;
+    private SkinChange skin;
 
     //Tasks
     int statsUpdateTask = -1;
@@ -100,6 +102,7 @@ public class Counselor
 
         //Etc
         awaitingWindowJump = false;
+        skin = new SkinChange(getPlayer());
     }
 
     /**
@@ -132,6 +135,9 @@ public class Counselor
 
         //Start All Counselor Tasks
         scheduleTasks();
+
+        //Skin
+        skin.apply(GameSkin.COUNSELOR_BASE);
     }
 
     /**
@@ -538,6 +544,44 @@ public class Counselor
     public boolean isAwaitingWindowJump()
     {
         return awaitingWindowJump;
+    }
+
+    /**
+     * Updates skin based on health level
+     */
+    public void updateSkin() {
+        double percentage = getHealthPercentage();
+
+        if (percentage == 1) {
+            //Full Health
+            skin.apply(GameSkin.COUNSELOR_BASE);
+        } else if (percentage < 1 && percentage > 0.5) {
+            //Minor Damage
+            skin.apply(GameSkin.COUSENLOR_BLOOD_1);
+        } else if (percentage <= 0.5 && percentage > 0.3) {
+            //Some damage
+            skin.apply(GameSkin.COUSENLOR_BLOOD_2);
+        } else {
+            //Major damage
+            skin.apply(GameSkin.COUSENLOR_BLOOD_3);
+        }
+    }
+
+
+    /**
+     * Reverts counselor skin back to the players default skin
+     */
+    public void removeSkin() {
+        skin.revert();
+    }
+
+    /**
+     * Returns player health percentage
+     *
+     * @return
+     */
+    private double getHealthPercentage() {
+        return getPlayer().getHealth() / getPlayer().getMaxHealth();
     }
 
 }

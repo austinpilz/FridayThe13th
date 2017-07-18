@@ -110,8 +110,7 @@ public class PlayerListener implements Listener {
                         //Let them know they can't interact in spectating mode
                         event.setCancelled(true);
                     }
-                }
-                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
+                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
                 {
                     //They're in regular play mode
                     if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Door)
@@ -356,12 +355,12 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer().getUniqueId().toString())) {
             if (!event.getMessage().toLowerCase().startsWith("/f13")) {
                 event.setCancelled(true);
-                event.getPlayer().setDisplayName(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.commandsDisabled", "Only Friday the 13th commands are available during gameplay. If you'd like to leave, execute {0} /f13 leave", ChatColor.AQUA));
+                event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.commandsDisabled", "Only Friday the 13th commands are available during gameplay. If you'd like to leave, execute {0} /f13 leave", ChatColor.AQUA));
             }
         }
     }
@@ -496,11 +495,18 @@ public class PlayerListener implements Listener {
             {
                 event.setCancelled(true);
 
-                if (event.getCurrentItem() != null && event.getCurrentItem().getType().equals(Material.SKULL_ITEM))
+                if (event.getCurrentItem() != null)
                 {
-                    SkullMeta playerMetaData = (SkullMeta)event.getCurrentItem().getItemMeta();
-                    player.teleport(Bukkit.getPlayer(playerMetaData.getDisplayName()));
-                    player.closeInventory();
+                    if (event.getCurrentItem().getType().equals(Material.EMERALD)) //They're picking item to open spectate menu
+                    {
+                        //Open spectate menu
+                        player.openInventory(arena.getGameManager().getPlayerManager().getSpectator(player).getSpectateMenuInventory());
+                    } else if (event.getCurrentItem().getType().equals(Material.SKULL_ITEM)) //They're picking a player head to spectate
+                    {
+                        SkullMeta playerMetaData = (SkullMeta) event.getCurrentItem().getItemMeta();
+                        player.teleport(Bukkit.getPlayer(playerMetaData.getDisplayName()));
+                        player.closeInventory();
+                    }
                 }
             }
 
