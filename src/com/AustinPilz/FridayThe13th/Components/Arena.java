@@ -1,6 +1,9 @@
 package com.AustinPilz.FridayThe13th.Components;
 
-import com.AustinPilz.FridayThe13th.Manager.Arena.*;
+import com.AustinPilz.FridayThe13th.Manager.Arena.GameManager;
+import com.AustinPilz.FridayThe13th.Manager.Arena.LocationManager;
+import com.AustinPilz.FridayThe13th.Manager.Arena.ObjectManager;
+import com.AustinPilz.FridayThe13th.Manager.Arena.SignManager;
 import org.bukkit.Location;
 
 import java.util.Arrays;
@@ -144,9 +147,6 @@ public class Arena
         dim[0] = getBoundary1().getZ();
         dim[1] = getBoundary2().getZ();
         Arrays.sort(dim);
-        if(inQuestion.getZ() > dim[1] || inQuestion.getZ() < dim[0])
-            return false;
-
-        return true;
+        return !(inQuestion.getZ() > dim[1] || inQuestion.getZ() < dim[0]);
     }
 }

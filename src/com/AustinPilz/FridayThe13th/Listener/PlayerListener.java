@@ -59,7 +59,7 @@ public class PlayerListener implements Listener {
 
                 //This should NEVER happen, it should always look for damage
 
-                Player player = (Player) event.getEntity();
+                Player player = event.getEntity();
                 FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()).getGameManager().getPlayerManager().onPlayerDeath(player); //See if they're playing
             }
         } catch (PlayerNotPlayingException exception) {

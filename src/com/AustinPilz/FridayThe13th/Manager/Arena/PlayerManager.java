@@ -1,6 +1,9 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
-import com.AustinPilz.FridayThe13th.Components.*;
+import com.AustinPilz.FridayThe13th.Components.Arena;
+import com.AustinPilz.FridayThe13th.Components.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Jason;
+import com.AustinPilz.FridayThe13th.Components.Spectator;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
@@ -9,12 +12,7 @@ import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -151,14 +149,7 @@ public class PlayerManager
         if (isSpectator(uuid))
         {
             Spectator spectator = getSpectator(uuid);
-            if (isCounselor(spectator.getPlayer()) || isJason(spectator.getPlayer()))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return !(isCounselor(spectator.getPlayer()) || isJason(spectator.getPlayer()));
         }
         else
         {
@@ -227,14 +218,7 @@ public class PlayerManager
      */
     public boolean isJason(Player player)
     {
-        if (jason != null && jason.getPlayer().equals(player))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return jason != null && jason.getPlayer().equals(player);
     }
 
     /**
@@ -301,26 +285,13 @@ public class PlayerManager
         if (arena.getLocationManager().getNumberStartingPoints() >= 8)
         {
             //We don't have to worry about spawn points
-            if (getNumPlayers() < 9) //Games capped at 8 counselors + Jason.
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            //Games capped at 8 counselors + Jason.
+            return getNumPlayers() < 9;
         }
         else
         {
             //They're are less than 8 spawn points for counselors
-            if (arena.getLocationManager().getNumberStartingPoints() - getNumPlayers() + 1 > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return arena.getLocationManager().getNumberStartingPoints() - getNumPlayers() + 1 > 0;
         }
     }
 
@@ -916,7 +887,7 @@ public class PlayerManager
 
     public void fireFirework(Player player, Color color)
     {
-        Firework f = (Firework) player.getWorld().spawn(player.getWorld().getHighestBlockAt(player.getLocation()).getLocation(), Firework.class);
+        Firework f = player.getWorld().spawn(player.getWorld().getHighestBlockAt(player.getLocation()).getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder()
                 .flicker(true)

@@ -5,16 +5,15 @@ import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.Iterator;
-import java.util.Map;
 
 public class Counselor
 {
@@ -459,14 +458,7 @@ public class Counselor
      */
     private boolean canBeSensedByJason()
     {
-        if ((getFearLevelPercentage() > .25 || isTommyJarvis) && !arena.getGameManager().getPlayerManager().isSpectator(getPlayer().getUniqueId().toString()))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (getFearLevelPercentage() > .25 || isTommyJarvis) && !arena.getGameManager().getPlayerManager().isSpectator(getPlayer().getUniqueId().toString());
     }
 
     /**

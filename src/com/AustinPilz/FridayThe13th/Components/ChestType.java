@@ -6,7 +6,7 @@ public enum ChestType {
 
     private final String fieldDescription;
 
-    private ChestType(String value) {
+    ChestType(String value) {
         fieldDescription = value;
     }
 

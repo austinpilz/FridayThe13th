@@ -266,14 +266,7 @@ public class GameManager
      */
     public boolean isGameEmpty()
     {
-        if (gameStatus.equals(GameStatus.Empty))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return gameStatus.equals(GameStatus.Empty);
     }
 
     /**
@@ -282,14 +275,7 @@ public class GameManager
      */
     public boolean isGameWaiting()
     {
-        if (gameStatus.equals(GameStatus.Waiting))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return gameStatus.equals(GameStatus.Waiting);
     }
 
     /**
@@ -298,14 +284,7 @@ public class GameManager
      */
     public boolean isGameInProgress()
     {
-        if (gameStatus.equals(GameStatus.InProgress))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return gameStatus.equals(GameStatus.InProgress);
     }
 
     /**

@@ -20,8 +20,8 @@ public enum Setting {
 	
 	private String name;
 	private Object def;
-	
-	private Setting(String Name, Object Def)
+
+	Setting(String Name, Object Def)
 	{
 		name = Name;
 		def = Def;

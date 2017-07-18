@@ -59,14 +59,7 @@ public class ArenaChest
      */
     public boolean isWeaponChest()
     {
-        if (getChestType().equals(ChestType.Weapon))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return getChestType().equals(ChestType.Weapon);
     }
 
     /**
@@ -75,14 +68,7 @@ public class ArenaChest
      */
     public boolean isItemChest()
     {
-        if (getChestType().equals(ChestType.Item))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return getChestType().equals(ChestType.Item);
     }
 
     /**

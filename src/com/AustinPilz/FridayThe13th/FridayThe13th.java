@@ -16,7 +16,6 @@ import com.AustinPilz.FridayThe13th.Manager.Setup.PhoneSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -120,8 +119,8 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //Check for Update
         try
         {
-            this.updateChecker = new SpigotUpdateChecker();
-            this.updateChecker.checkUpdate(this.pluginVersion);
+            updateChecker = new SpigotUpdateChecker();
+            updateChecker.checkUpdate(pluginVersion);
 
             if (updateChecker.isUpdateNeeded())
             {
@@ -161,6 +160,6 @@ public class FridayThe13th extends JavaPlugin implements Listener
         }
 
         //Close database connection
-        inputOutput.freeConnection();
+        InputOutput.freeConnection();
     }
 }

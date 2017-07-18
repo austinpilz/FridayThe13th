@@ -10,7 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Lever;
 
 public class ArenaSwitch
@@ -49,7 +48,7 @@ public class ArenaSwitch
             hologram.delete();
 
             //Remove redstone from players inventory
-            InventoryActions.remove((Inventory)player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
+            InventoryActions.remove(player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
 
             //Fire firework
             arena.getGameManager().getPlayerManager().fireFirework(player, Color.ORANGE);

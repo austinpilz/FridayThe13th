@@ -70,7 +70,11 @@ public class SignManager
             else
             {
                 //Display counter
-                sign.setLine(2, arena.getGameManager().getPlayerManager().getNumPlayers() + " / " + (arena.getLocationManager().getNumberStartingPoints()+1));
+                if (arena.getLocationManager().getNumberStartingPoints() >= 8) {
+                    sign.setLine(2, arena.getGameManager().getPlayerManager().getNumPlayers() + " / 9");
+                } else {
+                    sign.setLine(2, arena.getGameManager().getPlayerManager().getNumPlayers() + " / " + (arena.getLocationManager().getNumberStartingPoints() + 1));
+                }
             }
 
             sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
@@ -87,7 +91,7 @@ public class SignManager
             int sec = rem % 60;
 
             sign.setLine(2, ChatColor.DARK_RED + "" + mn + " m " + sec + " sec");
-            sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Spectate!"));
+            sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToSpectate", "Click To Spectate!"));
         }
 
         sign.update();

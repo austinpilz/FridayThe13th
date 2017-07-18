@@ -39,8 +39,9 @@ public class Spectator
      */
     public void enterSpectatingMode()
     {
-        //Show countdown bar
+        //Show countdown bar & scoreboard
         arena.getGameManager().getGameCountdownManager().showForPlayer(getPlayer());
+        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
 
         //Enter flight
         getPlayer().setAllowFlight(true);
@@ -83,6 +84,7 @@ public class Spectator
         //Clear the action bar and hide spectator displays
         ActionBarAPI.sendActionBar(getPlayer(), "");
         arena.getGameManager().getGameCountdownManager().hideFromPlayer(getPlayer());
+        arena.getGameManager().getGameScoreboardManager().hideFromPlayer(getPlayer());
 
         //Make them visible to everyone again
         if (getPlayer().isOnline())

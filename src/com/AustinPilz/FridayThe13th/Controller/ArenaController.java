@@ -146,14 +146,7 @@ public class ArenaController
      */
     public boolean isPlayerPlaying(String playerUUID)
     {
-        if (players.containsKey(playerUUID))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return players.containsKey(playerUUID);
     }
 
     /**

@@ -2,7 +2,6 @@ package com.AustinPilz.FridayThe13th.Components;
 
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
-import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
 import com.AustinPilz.FridayThe13th.Structures.GameSkin;
@@ -15,7 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.*;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 public class Jason
 {
@@ -319,14 +321,7 @@ public class Jason
      */
     public boolean canStalk()
     {
-        if (getStalkLevel() > 0 && hasInitialStalkGenerationCompleted())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return getStalkLevel() > 0 && hasInitialStalkGenerationCompleted();
     }
 
     /**
@@ -405,14 +400,7 @@ public class Jason
      */
     public boolean canSense()
     {
-        if (getSenseLevelPercentage() == 1 && hasInitialSenseGenerationCompleted())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return getSenseLevelPercentage() == 1 && hasInitialSenseGenerationCompleted();
     }
 
     /**
@@ -515,14 +503,7 @@ public class Jason
 
     public boolean canWarp()
     {
-        if (getWarpLevelPercentage() > 0 && hasInitialWarpGenerationCompleted())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return getWarpLevelPercentage() > 0 && hasInitialWarpGenerationCompleted();
     }
 
     private double getWarpLevel()

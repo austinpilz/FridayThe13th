@@ -12,6 +12,7 @@ import com.AustinPilz.FridayThe13th.Exceptions.PhoneSetupSessionAlreadyInProgres
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.SpawnPoint.SpawnPointSetupSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -225,7 +226,7 @@ public class CommandHandler implements CommandExecutor {
                             }
                         } else {
                             //Incorrect play syntax
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.playSyntaxError", "Incorrect play syntax. Usage: {0}", ChatColor.AQUA + "/f13 play [arenaName]"));
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.spectateSyntaxError", "Incorrect spectate syntax. Usage: {0}", ChatColor.AQUA + "/f13 spectate [arenaName]"));
                         }
                     } else {
                         //The command was sent by something other than an in-game player
@@ -265,6 +266,64 @@ public class CommandHandler implements CommandExecutor {
                     } else {
                         //Incorrect setup syntax
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaSyntaxError", "Incorrect arena syntax. Usage: {0}", ChatColor.AQUA + "/f13 arena [arenaName]"));
+                    }
+                } else {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
+                }
+            } else if (args[0].equalsIgnoreCase("end")) {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    if (args.length == 2) {
+                        String arenaName = args[1];
+
+                        try {
+                            Arena arena = FridayThe13th.arenaController.getArena(arenaName);
+
+                            if (arena.getGameManager().isGameInProgress()) {
+                                arena.getGameManager().gameTimeUp();
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.gameEnded", "Game in {0} ended.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                            } else {
+                                //The game is not in progress, thus we can't end it
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noGameToEnd", "There is no in progress game in {0} to end.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                            }
+                        } catch (ArenaDoesNotExistException exception) {
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                        }
+                    } else {
+                        //Incorrect setup syntax
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.endSyntaxError", "Incorrect end syntax. Usage: {0}", ChatColor.AQUA + "/f13 end [arenaName]"));
+                    }
+                } else {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
+                }
+            } else if (args[0].equalsIgnoreCase("kick")) {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    if (args.length == 2) {
+                        String playerName = args[1];
+
+                        if (Bukkit.getOfflinePlayer(playerName).isOnline()) {
+                            //The player is online
+                            try {
+                                Player player = (Player) Bukkit.getOfflinePlayer(playerName);
+
+                                FridayThe13th.arenaController.getPlayerArena(Bukkit.getOfflinePlayer(playerName).getUniqueId().toString()).getGameManager().getPlayerManager().onplayerQuit(player);
+
+                                //Let the kicker know we kicked them, let the kickee know they were kicked
+                                player.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(player, "command.playerWasKicked", "You were kicked from your game."));
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + playerName + " " + FridayThe13th.language.get(sender, "command.playerKicked", "has been kicked from their game."));
+                            } catch (PlayerNotPlayingException exception) {
+                                //The player is not playing
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + playerName + " " + FridayThe13th.language.get(sender, "command.error.kickPlayerNotPlaying", "is not currently playing F13."));
+                            }
+                        } else {
+                            //The player is not online
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + playerName + " " + FridayThe13th.language.get(sender, "command.error.kickPlayerNotOnline", "is not online."));
+                        }
+
+                    } else {
+                        //Incorrect kick syntax
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.kickSyntaxError", "Incorrect kick syntax. Usage: {0}", ChatColor.AQUA + "/f13 kick [playerName]"));
                     }
                 } else {
                     //No permissions

@@ -6,7 +6,7 @@ public enum GameStatus {
 
     private final String fieldDescription;
 
-    private GameStatus(String value) {
+    GameStatus(String value) {
         fieldDescription = value;
     }
 

@@ -17,27 +17,13 @@ public class SpigotUpdateChecker {
     private boolean updateNeeded;
 
     public boolean checkHigher(String currentVersion, String newVersion) {
-       if (currentVersion.equals(newVersion))
-       {
-           return false;
-       }
-       else
-       {
-           return true;
-       }
+        return !currentVersion.equals(newVersion);
     }
 
     public void checkUpdate(String currentVersion) throws Exception {
         latestVersion = getVersion("98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4", 43321);
 
-        if (this.checkHigher(currentVersion, latestVersion))
-        {
-            this.updateNeeded = true;
-        }
-        else
-        {
-            this.updateNeeded = false;
-        }
+        this.updateNeeded = this.checkHigher(currentVersion, latestVersion);
     }
 
     public String getLatestVersion() {
