@@ -128,6 +128,10 @@ public class ArenaPhone
         //Reset values
         callAttempts = 0;
 
+        //Hide from Jason
+        hologram.getVisibilityManager().hideTo(arena.getGameManager().getPlayerManager().getJason().getPlayer());
+
+        //Set that this is the visible phone
         isVisible = true;
     }
 

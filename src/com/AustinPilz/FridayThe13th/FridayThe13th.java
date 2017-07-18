@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Command.CommandHandler;
 import com.AustinPilz.FridayThe13th.Components.Arena;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
+import com.AustinPilz.FridayThe13th.Controller.ChatController;
 import com.AustinPilz.FridayThe13th.IO.InputOutput;
 import com.AustinPilz.FridayThe13th.IO.LanguageWrapper;
 import com.AustinPilz.FridayThe13th.IO.MetricsLite;
@@ -28,20 +29,19 @@ import java.util.logging.Logger;
 public class FridayThe13th extends JavaPlugin implements Listener
 {
     public static final String pluginName = "Friday The 13th";
-    public static final String pluginVersion = "1.4.3" +
-            "";
+    public static final String pluginVersion = "1.5";
     public static final String pluginPrefix = ChatColor.RED + "[F13] " + ChatColor.WHITE;
     public static final String pluginAdminPrefix = ChatColor.RED + "[F13:A] " + ChatColor.WHITE;
     public static final String signPrefix = ChatColor.RED + "[F13]";
     public static final String consolePrefix = "[FridayThe13th] ";
     public static final String pluginURL = "";
     public static FridayThe13th instance;
-    public static LanguageWrapper language;
 
     public static final Logger log = Logger.getLogger("Minecraft");
 
     //Game Components
     public static ArenaController arenaController;
+    public static ChatController chatController;
     public static SpigotUpdateChecker updateChecker;
 
     //Global Managers
@@ -52,6 +52,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static InputOutput inputOutput;
 
     //3rd Party Plugins
+    public static LanguageWrapper language;
 
     @Override
     public void onLoad()
@@ -71,6 +72,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
         //Initialize Game Components
         arenaController = new ArenaController();
+        chatController = new ChatController();
         arenaCreationManager = new ArenaCreationManager();
         spawnPointCreationManager = new SpawnPointCreationManager();
         chestSetupManager = new ChestSetupManager();

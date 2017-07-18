@@ -27,7 +27,7 @@ public class GameScoreboardManager
     public GameScoreboardManager(Arena a)
     {
         arena = a;
-        gameScoreboard = new Sidebar(ChatColor.RED + "" + ChatColor.BOLD + "Friday the 13th", FridayThe13th.instance, 60);
+        gameScoreboard = new Sidebar(ChatColor.RED + "" + ChatColor.BOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.scoreboard.title", "Friday The 13th"), FridayThe13th.instance, 60);
         timeLeftValue = new SidebarString("");
         jasonValue = new SidebarString("");
     }

@@ -266,8 +266,18 @@ public class CommandHandler implements CommandExecutor {
                 if (sender.hasPermission("FridayThe13th.User")) {
                     //Setup commands cannot be executed by the console
                     if (sender instanceof Player) {
-                        try {
-                            FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString()).getGameManager().getPlayerManager().onplayerQuit(((Player) sender));
+                        try
+                        {
+                            Arena arena = FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString());
+                            if (arena.getGameManager().getPlayerManager().isJustSpectator(((Player) sender).getUniqueId().toString()))
+                            {
+                                //They're only a spectator - not prev a player
+                                arena.getGameManager().getPlayerManager().leaveSpectator((Player) sender);
+                            }
+                            else
+                            {
+                                arena.getGameManager().getPlayerManager().onplayerQuit(((Player) sender));
+                            }
                         } catch (PlayerNotPlayingException exception) {
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.senderNotPlaying", "You are not currently playing."));
                         }

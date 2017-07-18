@@ -1,11 +1,11 @@
 name: FridayThe13th
 main: com.AustinPilz.FridayThe13th.FridayThe13th
-version: 1.4.3
+version: 1.5
 description: Classic Friday The 13th Gameplay
 author: Austin Pilz
 website: http://austinpilz.com
 load: POSTWORLD
-softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, ActionBarAPI, LanguageAPI, SidebarAPI]
+softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, ActionBarAPI, LanguageAPI, SidebarAPI, ProtocolLib]
 commands:
     f13:
         description: Friday The 13th commands

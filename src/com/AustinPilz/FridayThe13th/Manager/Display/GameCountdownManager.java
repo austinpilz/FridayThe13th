@@ -34,11 +34,6 @@ public class GameCountdownManager
         {
             Map.Entry entry = (Map.Entry) counselorIterator.next();
             Counselor counselor = (Counselor) entry.getValue();
-
-            if (counselor.isInSpectatingMode())
-            {
-                gameCountdownBar.addPlayer(counselor.getPlayer());
-            }
         }
 
 
@@ -89,11 +84,20 @@ public class GameCountdownManager
     }
 
     /**
+     * Shows the time left bar for the specified player
+     * @param p
+     */
+    public void showForPlayer(Player p) { gameCountdownBar.addPlayer(p); }
+
+    /**
      * Removes the time left bar from the specified player
      * @param p
      */
     public void hideFromPlayer(Player p) { gameCountdownBar.removePlayer(p); }
 
+    /**
+     * Hides the time left bar from everyone
+     */
     public void hideCountdownBar()
     {
         gameCountdownBar.removeAll();

@@ -64,7 +64,10 @@ public class SkinChange {
 
         Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, () -> {
             player.teleport(player.getLocation().add(0, 0.1, 0));
-            Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.showPlayer(Bukkit.getPlayer(this.uuid)));
+            if (Bukkit.getOfflinePlayer(this.uuid).isOnline())
+            {
+                Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.showPlayer(Bukkit.getPlayer(this.uuid)));
+            }
             entityPlayer.playerConnection.sendPacket(new PacketPlayOutRespawn(entityPlayer.dimension, entityPlayer.getWorld().getDifficulty(), entityPlayer.getWorld().getWorldData().getType(), entityPlayer.playerInteractManager.getGameMode()));
             player.updateInventory();
         }, 1);

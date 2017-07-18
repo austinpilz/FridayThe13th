@@ -94,6 +94,9 @@ public class ArenaChest
         return (Chest)getLocation().getBlock().getState();
     }
 
+    /**
+     * Randomly regenerates the chest's inventory based on its type
+     */
     public void randomlyGenerate()
     {
         if (getLocation().getBlock().getType().equals(Material.CHEST))
@@ -199,5 +202,14 @@ public class ArenaChest
             //arena.getObjectManager().removeChest(this);
             FridayThe13th.inputOutput.deleteChest(getLocation().getBlockX(), getLocation().getBlockY(), getLocation().getBlockZ(), getLocation().getWorld().getName());
         }
+    }
+
+    public void placeRadio()
+    {
+        ItemStack item = new ItemStack(Material.NETHER_STAR, 1);
+        ItemMeta metaData = item.getItemMeta();
+        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
+        item.setItemMeta(metaData);
+        getChest().getBlockInventory().addItem(item);
     }
 }

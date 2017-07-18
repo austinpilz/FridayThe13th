@@ -321,16 +321,14 @@ public class GameManager
             Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
             Bukkit.getScheduler().cancelTask(gameCountdownTask);
 
-            if (isGameWaiting())
+            if (isGameWaiting() && getPlayerManager().getNumPlayers() == 0)
             {
                 getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
+                getPlayerManager().resetPlayerStorage(); //Resets all data structures with players since there are none left
             }
-
 
             gameStatus = GameStatus.Empty; //Change mode
             resetGameStatistics();
-            getPlayerManager().resetPlayerStorage(); //Resets all data structures with players
-
         }
         else if (status.equals(GameStatus.Waiting)) //Changing to waiting (can only go from empty -> in waiting)
         {
@@ -367,19 +365,22 @@ public class GameManager
         arena.getSignManager().updateJoinSigns(); //update the join signs
     }
 
+    /**
+     * Performs actions to begin the game
+     */
     private void beginGame()
     {
         //Reset location manager spawn point availability
         arena.getLocationManager().resetAvailableStartingPoints();
 
-        //Regenerate tests
+        //Assign all players roles
+        getPlayerManager().performInProgressActions();
+
+        //Regenerate chests
         arena.getObjectManager().regenerateChests();
 
         //Phone
         arena.getObjectManager().displayRandomPhone();
-
-        //Assign all players roles (maybe move these into the performInProgressActions() ?
-        getPlayerManager().performInProgressActions();
 
     }
 
@@ -390,6 +391,8 @@ public class GameManager
     {
         //Remove all players
         getPlayerManager().performEndGameActions();
+
+        //GET RID OF THE SPECTATORS
 
         //Make countdown bar for any counselors disappear
         getGameCountdownManager().hideCountdownBar();

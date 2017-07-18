@@ -70,7 +70,7 @@ public class SignManager
             else
             {
                 //Display counter
-                sign.setLine(2, arena.getGameManager().getPlayerManager().getNumPlayers() + " / " + arena.getLocationManager().getNumberStartingPoints());
+                sign.setLine(2, arena.getGameManager().getPlayerManager().getNumPlayers() + " / " + (arena.getLocationManager().getNumberStartingPoints()+1));
             }
 
             sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));

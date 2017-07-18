@@ -166,5 +166,13 @@ public class ArenaController
         return isPlayerPlaying(player.getUniqueId().toString());
     }
 
+    /**
+     * Returns hashmap of player UUID string and Arena objects
+     * @return
+     */
+    public HashMap<String, Arena> getPlayers()
+    {
+        return players;
+    }
 
 }

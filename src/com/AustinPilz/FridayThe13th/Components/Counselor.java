@@ -31,7 +31,6 @@ public class Counselor
     private double staminaRegenerationRate; //Has to be higher since done every second, not every movement
     private double walkSpeed;
     private boolean moving = false;
-    private boolean spectatingMode = false;
 
     //Fear
     private double fearLevel;
@@ -424,21 +423,10 @@ public class Counselor
     }
 
     /**
-     * Returns if the counselor is in spectating mode
-     * @return
+     * Transitions the counselor to spectating mode
      */
-    public boolean isInSpectatingMode()
+    public void transitionToSpectatingMode()
     {
-        return spectatingMode;
-    }
-
-    /**
-     * Enters the counselor into spectating mode
-     */
-    public void enterSpectatingMode()
-    {
-        spectatingMode = true;
-
         //Remove any potions from in game
         removePotionEffects();
 
@@ -446,62 +434,9 @@ public class Counselor
         setFearLevel(0.0);
         setStamina(getMaxStamina());
 
-        //Make them invisible
-        getPlayer().addPotionEffect(potionSpectatingInvisibility);
-
-        //Enter flight
-        getPlayer().setAllowFlight(true);
-        getPlayer().setHealth(20);
-
-        Location currentLocation = player.getLocation();
-        getPlayer().teleport(new Location(currentLocation.getWorld(), currentLocation.getX(), currentLocation.getY()+10, currentLocation.getZ()));
-        getPlayer().setFlying(true);
-        getPlayer().getInventory().clear();
-
         //Stop stats since they're dead
         getStatsDisplayManager().hideStats();
         cancelTasks();
-
-        //Give them the compass
-        ItemStack compass = new ItemStack(Material.EMERALD, 1);
-        ItemMeta compassMetaData = compass.getItemMeta();
-        compassMetaData.setDisplayName(ChatColor.GREEN + "Spectate Selector");
-        compass.setItemMeta(compassMetaData);
-        getPlayer().getInventory().addItem(compass);
-
-        //Let them know
-        ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.enterSpectatingMode", "You Died! {0}You are now in spectating mode.", ChatColor.WHITE), 300);
-
-        //Hide this player from everyone else
-        Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-        while (it.hasNext())
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player hideFrom = (Player) entry.getValue();
-            hideFrom.hidePlayer(getPlayer());
-        }
-    }
-
-    /**
-     * Removes the counselor from spectating mode
-     */
-    public void leaveSpectatingMode()
-    {
-        //removes abilities and stuff
-        getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
-        getPlayer().setAllowFlight(false);
-        spectatingMode = false;
-        ActionBarAPI.sendActionBar(getPlayer(), "");
-        arena.getGameManager().getGameCountdownManager().hideFromPlayer(getPlayer());
-
-        if (player.isOnline())
-        {
-            //Make visible to all players
-            for (Player player : Bukkit.getOnlinePlayers())
-            {
-                player.showPlayer(getPlayer());
-            }
-        }
     }
 
     /**
@@ -524,7 +459,7 @@ public class Counselor
      */
     private boolean canBeSensedByJason()
     {
-        if (getFearLevelPercentage() > .25 && !isInSpectatingMode())
+        if ((getFearLevelPercentage() > .25 || isTommyJarvis) && !arena.getGameManager().getPlayerManager().isSpectator(getPlayer().getUniqueId().toString()))
         {
             return true;
         }
