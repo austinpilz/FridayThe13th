@@ -383,7 +383,10 @@ public class GameManager
         //Remove Hologram
         for (Hologram hologram: HologramsAPI.getHolograms(FridayThe13th.instance))
         {
-            hologram.delete();
+            if (arena.isLocationWithinArenaBoundaries(hologram.getLocation())) {
+                hologram.delete();
+
+            }
         }
 
         //Remove any dropped items on the ground

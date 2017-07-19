@@ -10,6 +10,7 @@ import com.AustinPilz.FridayThe13th.IO.LanguageWrapper;
 import com.AustinPilz.FridayThe13th.IO.MetricsLite;
 import com.AustinPilz.FridayThe13th.IO.SpigotUpdateChecker;
 import com.AustinPilz.FridayThe13th.Listener.BlockListener;
+import com.AustinPilz.FridayThe13th.Listener.F13EventsListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
@@ -93,6 +94,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
+        getServer().getPluginManager().registerEvents(new F13EventsListener(), this);
 
         //Register Command Handlers
         getCommand("f13").setExecutor(new CommandHandler());
@@ -115,6 +117,12 @@ public class FridayThe13th extends JavaPlugin implements Listener
         if (!Bukkit.getPluginManager().isPluginEnabled("SidebarAPI"))
         {
             log.log(Level.SEVERE, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.sideBarAPI", "Sidebar API not found - required for gameplay."));
+            this.setEnabled(false);
+            return;
+        }
+
+        if (!Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
+            log.log(Level.SEVERE, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.protocolLib", "ProtocolLib not found - required for gameplay."));
             this.setEnabled(false);
             return;
         }

@@ -1,12 +1,14 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.IO.Setting;
 import com.AustinPilz.FridayThe13th.IO.Settings;
+import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,10 +19,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class BlockListener implements Listener
@@ -75,17 +79,37 @@ public class BlockListener implements Listener
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event)
     {
-        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer()))
+        try
         {
-            event.setCancelled(true);
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
-            if (Settings.getGlobalBoolean(Setting.gameplayWarnOnPlace))
+            //Check to see if the item has hidden data
+            if (event.getPlayer().getInventory().getItemInMainHand() != null && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
+                //It has meta, so it must be one of the F13 selections
+                ItemMeta meta = event.getPlayer().getInventory().getItemInMainHand().getItemMeta();
+                List<String> lore = meta.getLore();
+
+                if (lore != null && lore.size() > 0 && HiddenStringsUtil.hasHiddenString(lore.get(0))) {
+                    //It's a F13 menu item - call custom event
+                    F13BlockPlacedEvent newEvent = new F13BlockPlacedEvent(event.getPlayer(), arena, event.getBlock(), event.getBlockReplacedState().getType(), HiddenStringsUtil.extractHiddenString(lore.get(0)));
+                    Bukkit.getServer().getPluginManager().callEvent(newEvent);
+
+                    event.setCancelled(newEvent.isCancelled());
+                }
+            } else {
+                event.setCancelled(true);
+            }
+
+            //Warn them if we cancelled the event
+            if (event.isCancelled() && Settings.getGlobalBoolean(Setting.gameplayWarnOnPlace))
             {
                 event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.blockPlace", "You cannot place blocks while playing."));
             }
+        } catch (PlayerNotPlayingException exception) {
+            //Then we don't care
         }
     }
 

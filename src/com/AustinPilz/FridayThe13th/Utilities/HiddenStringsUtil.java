@@ -6,8 +6,8 @@ import java.nio.charset.Charset;
 
 public class HiddenStringsUtil {
 
-    private static final String SEQUENCE_HEADER = "F13S" + ChatColor.RESET + ChatColor.UNDERLINE + ChatColor.RESET;
-    private static final String SEQUENCE_FOOTER = "F13E" + ChatColor.RESET + ChatColor.ITALIC + ChatColor.RESET;
+    private static final String SEQUENCE_HEADER = "      " + ChatColor.RESET + ChatColor.UNDERLINE + ChatColor.RESET;
+    private static final String SEQUENCE_FOOTER = "  " + ChatColor.RESET + ChatColor.ITALIC + ChatColor.RESET;
 
 
     public static String encodeString(String hiddenString) {

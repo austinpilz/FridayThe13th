@@ -2,7 +2,8 @@ package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
-import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
+import com.AustinPilz.FridayThe13th.Components.TrapType;
+import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
@@ -30,9 +31,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.Chest;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -102,7 +100,11 @@ public class PlayerListener implements Listener {
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
-            if (arena.getGameManager().isGameInProgress())
+            if (event.hasItem() && event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore() && event.getItem().getItemMeta().getLore().size() > 0 && HiddenStringsUtil.hasHiddenString(event.getItem().getItemMeta().getLore().get(0))) {
+                F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(event.getPlayer(), HiddenStringsUtil.extractHiddenString(event.getItem().getItemMeta().getLore().get(0)), event.getMaterial());
+                Bukkit.getServer().getPluginManager().callEvent(newEvent);
+                event.setCancelled(newEvent.isCancelled());
+            } else if (arena.getGameManager().isGameInProgress())
             {
                 if (arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer().getUniqueId().toString()))
                 {
@@ -203,6 +205,11 @@ public class PlayerListener implements Listener {
                                 Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new CounselorWindowJump(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()), event.getPlayer().getLocation(), event.getClickedBlock()), 40);
                             }
                         }
+                    } else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.CARPET)) {
+                        if (arena.getObjectManager().isATrap(event.getClickedBlock()) && arena.getObjectManager().getTrap(event.getClickedBlock()).getTrapType().equals(TrapType.Counselor) && !arena.getObjectManager().getTrap(event.getClickedBlock()).isActivated()) {
+                            //They're clicking a counselor trap
+                            arena.getObjectManager().getTrap(event.getClickedBlock()).activationAttempt();
+                        }
                     }
                 }
                 else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
@@ -247,12 +254,8 @@ public class PlayerListener implements Listener {
                         }
                     }
                 }
-            }
-            else if (arena.getGameManager().isGameWaiting())
-            {
-                event.setCancelled(true); //Disable interaction while in the waiting room
-
-                //Spawn Preference
+            } else {
+                event.setCancelled(true); //Disable interaction in the waiting room
             }
         } catch (PlayerNotPlayingException exception)
         {
@@ -298,6 +301,8 @@ public class PlayerListener implements Listener {
                 if (arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
                     //
                 } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer())) {
+
+                    //Check their movement for their stats
                     if (event.getFrom().distance(event.getTo()) > 0) {
                         if (event.getPlayer().isSprinting()) {
                             if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getStaminaPercentage() == 0) {
@@ -317,6 +322,11 @@ public class PlayerListener implements Listener {
                             //Must just be walking
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
                         }
+                    }
+
+                    //Check to see if they're on a trap
+                    if (arena.getObjectManager().isATrap(event.getPlayer().getLocation().getBlock()) && arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).getTrapType().equals(TrapType.Jason)) {
+                        arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).steppedOn(event.getPlayer());
                     }
 
                 }
@@ -342,6 +352,11 @@ public class PlayerListener implements Listener {
                     } else {
                         //Must just be walking
                         arena.getGameManager().getPlayerManager().getJason().setWalking(true);
+                    }
+
+                    //Check to see if they're on a trap
+                    if (arena.getObjectManager().isATrap(event.getPlayer().getLocation().getBlock()) && arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).getTrapType().equals(TrapType.Counselor)) {
+                        arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).steppedOn(event.getPlayer());
                     }
                 }
             }
@@ -413,11 +428,10 @@ public class PlayerListener implements Listener {
                                         //Counselor is damaging Jason
                                         if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) || event.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE))
                                         {
-                                            if (playerDamager.getItemInHand().getType().equals(Material.IRON_SWORD) || playerDamager.getItemInHand().getType().equals(Material.IRON_AXE) || playerDamager.getItemInHand().getType().equals(Material.WOOD_AXE))
+                                            if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE))
                                             {
                                                 arena.getGameManager().getPlayerManager().getJason().stun();
-                                            }
-                                            else if (playerDamager.getItemInHand().getType().equals(Material.POTION) || playerDamager.getItemInHand().getType().equals(Material.REDSTONE) || playerDamager.getItemInHand().getType().equals(Material.NETHER_STAR))
+                                            } else if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.POTION) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.REDSTONE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.NETHER_STAR))
                                             {
                                                 event.setCancelled(true); //Counselors can't hurt Jason with items not meant for combat
                                             }
@@ -449,7 +463,6 @@ public class PlayerListener implements Listener {
                     //You can't get damaged while waiting
                     event.setCancelled(true);
                 }
-
             }
             catch (PlayerNotPlayingException exception)
             {
@@ -528,34 +541,10 @@ public class PlayerListener implements Listener {
                         List<String> lore = meta.getLore();
 
                         if (lore != null && lore.size() > 0 && HiddenStringsUtil.hasHiddenString(lore.get(0))) {
-                            event.setCancelled(true);
-
-                            //It has hidden data
-                            String str = HiddenStringsUtil.extractHiddenString(lore.get(0));
-
-                            try {
-                                JSONParser parser = new JSONParser();
-                                JSONObject json = (JSONObject) parser.parse(str);
-
-                                if (json.containsKey("Menu")) {
-                                    //Opening a menu
-                                    String action = (String) json.get("Menu");
-
-                                    if (action.equals("SpawnPref")) {
-                                        SpawnPreferenceMenu.openMenu(player);
-                                    }
-                                } else if (json.containsKey("SpawnPrefSelect")) {
-                                    //They're changing their spawn preference
-                                    String action = (String) json.get("SpawnPrefSelect");
-                                    if (action.equals("J")) {
-                                        FridayThe13th.playerController.getPlayer(player).setSpawnPreferenceJason();
-                                    } else if (action.equals("C")) {
-                                        FridayThe13th.playerController.getPlayer(player).setSpawnPreferenceCounselor();
-                                    }
-                                }
-                            } catch (ParseException exception) {
-                                //Probably a transmission error, just ignore event
-                            }
+                            //It's a F13 menu item - call custom event
+                            F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(player, HiddenStringsUtil.extractHiddenString(lore.get(0)), event.getCurrentItem().getType());
+                            Bukkit.getServer().getPluginManager().callEvent(newEvent);
+                            event.setCancelled(newEvent.isCancelled());
                         }
                     }
                 }

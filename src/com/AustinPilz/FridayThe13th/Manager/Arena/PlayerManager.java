@@ -15,6 +15,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -844,6 +845,11 @@ public class PlayerManager
 
                 //Clear inventory
                 player.getInventory().clear();
+
+                //Remove all potion effects
+                for (PotionEffect effect : player.getActivePotionEffects()) {
+                    player.removePotionEffect(effect.getType());
+                }
             }
         }
     }

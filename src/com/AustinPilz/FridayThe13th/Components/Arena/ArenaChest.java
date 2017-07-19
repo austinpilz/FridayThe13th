@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.ChestType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,6 +14,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArenaChest
 {
@@ -191,6 +195,20 @@ public class ArenaChest
                     item.setItemMeta(metaData);
                     getChest().getBlockInventory().addItem(item);
                 }
+
+                //Trap
+                double trapChance = Math.random() * 100;
+                if ((trapChance -= 20) < 0) {
+                    ItemStack counselorTrap = new ItemStack(Material.CARPET, 1, (byte) 8);
+                    ItemMeta counselorTrapMeta = counselorTrap.getItemMeta();
+                    counselorTrapMeta.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.counselorTraps", "Trap"));
+                    List<String> counselorTrapLore = new ArrayList<>();
+                    counselorTrapLore.add(HiddenStringsUtil.encodeString("{\"PlaceItem\": \"CounselorTrap\"}"));
+                    counselorTrapMeta.setLore(counselorTrapLore);
+                    counselorTrap.setItemMeta(counselorTrapMeta);
+
+                    getChest().getBlockInventory().addItem(counselorTrap);
+                }
             }
         }
         else
@@ -201,8 +219,10 @@ public class ArenaChest
         }
     }
 
-    public void placeRadio()
-    {
+    /**
+     * Places a radio in the chest
+     */
+    public void placeRadio() {
         ItemStack item = new ItemStack(Material.NETHER_STAR, 1);
         ItemMeta metaData = item.getItemMeta();
         metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));

@@ -75,6 +75,6 @@ public class SpawnPreferenceMenu {
         menuItemLore.add(HiddenStringsUtil.encodeString("{\"Menu\": \"SpawnPref\"}"));
         itemMeta.setLore(menuItemLore);
         item.setItemMeta(itemMeta);
-        player.getInventory().addItem(item);
+        player.getInventory().setItem(1, item);
     }
 }

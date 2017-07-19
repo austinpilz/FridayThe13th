@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 
 import com.AustinPilz.FridayThe13th.Components.Arena.*;
+import com.AustinPilz.FridayThe13th.Components.TrapType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
@@ -30,7 +31,8 @@ public class ObjectManager
     private HashSet<Block> brokenDoors;
     private HashMap<Block, ArenaSwitch> brokenSwitches;
     private HashSet<Block> brokenWindows;
-    
+    private HashMap<Block, Trap> traps;
+
 
     /**
      * @param arena Arena object
@@ -47,6 +49,7 @@ public class ObjectManager
         brokenDoors = new HashSet<>();
         brokenSwitches = new HashMap<>();
         brokenWindows = new HashSet<>();
+        traps = new HashMap<>();
 
         //Globals
         windowBlockFaces = new HashSet<>();
@@ -95,6 +98,10 @@ public class ObjectManager
         //Restore windows
         fixBrokenWindows();
         brokenWindows.clear();
+
+        //Restore traps
+        removeTraps();
+        traps.clear();
     }
 
     /**
@@ -363,11 +370,59 @@ public class ObjectManager
     /**
      * Repairs all broken windows
      */
-    public void fixBrokenWindows()
+    private void fixBrokenWindows()
     {
         for (Block b : brokenWindows)
         {
             b.setType(Material.THIN_GLASS);
+        }
+    }
+
+    public HashMap<Block, Trap> getTraps() {
+        return traps;
+    }
+
+    /**
+     * Returns if the supplied block is a trap
+     *
+     * @param b
+     * @return
+     */
+    public boolean isATrap(Block b) {
+        return traps.containsKey(b);
+    }
+
+    public Trap getTrap(Block b) {
+        return traps.get(b);
+    }
+
+    /**
+     * Creates new Jason trap object and activates it
+     *
+     * @param b
+     */
+    public void placeJasonTrap(Block b, Material o) {
+        traps.put(b, new Trap(arena, b, o, TrapType.Jason));
+    }
+
+    /**
+     * Creates new Counselor trap object
+     *
+     * @param b
+     */
+    public void placeCounselorTrap(Block b, Material o) {
+        traps.put(b, new Trap(arena, b, o, TrapType.Counselor));
+    }
+
+    /**
+     * Removes all Jason traps from the arena
+     */
+    private void removeTraps() {
+        Iterator it = traps.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            Trap trap = (Trap) entry.getValue();
+            trap.remove();
         }
     }
 

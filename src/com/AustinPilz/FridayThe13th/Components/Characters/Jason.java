@@ -7,6 +7,7 @@ import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
 import com.AustinPilz.FridayThe13th.Structures.GameSkin;
+import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +21,9 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Jason
 {
@@ -181,12 +185,22 @@ public class Jason
         sensePotionMeta.setDisplayName(ChatColor.GREEN + "Sense " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.SenseAbility", "Ability"));
         sensePotion.setItemMeta(sensePotionMeta);
 
+        //Jason's Traps
+        ItemStack jasonTraps = new ItemStack(Material.CARPET, 5, (byte) 12);
+        ItemMeta jasonTrapsMeta = jasonTraps.getItemMeta();
+        jasonTrapsMeta.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.JasonsTraps", "Trap"));
+        List<String> jasonTrapLore = new ArrayList<String>();
+        jasonTrapLore.add(HiddenStringsUtil.encodeString("{\"PlaceItem\": \"JasonTrap\"}"));
+        jasonTrapsMeta.setLore(jasonTrapLore);
+        jasonTraps.setItemMeta(jasonTrapsMeta);
+
         //Put them in inventory
         getPlayer().getInventory().clear(); //clear inventory before hand
         getPlayer().getInventory().addItem(sword);
         getPlayer().getInventory().addItem(bow);
         getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 2));
         getPlayer().getInventory().addItem(sensePotion);
+        getPlayer().getInventory().addItem(jasonTraps);
 
         //He walks a little slower
         getPlayer().setWalkSpeed(0.12f);
