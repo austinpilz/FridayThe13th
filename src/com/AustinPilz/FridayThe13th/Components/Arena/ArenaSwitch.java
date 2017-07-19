@@ -1,8 +1,8 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.IO.InventoryActions;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
+import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.*;

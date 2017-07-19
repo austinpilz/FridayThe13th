@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.IO;
+package com.AustinPilz.FridayThe13th.Utilities;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;

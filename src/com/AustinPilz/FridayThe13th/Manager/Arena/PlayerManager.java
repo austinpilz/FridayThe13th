@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Characters.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
@@ -618,31 +619,89 @@ public class PlayerManager
      */
     private void assignGameRoles()
     {
-        //Teleport counselors to starting points
-        Player[] players = getPlayers().values().toArray(new Player[getPlayers().size()]);
 
-        //Randomize starting points
-        Random rnd = ThreadLocalRandom.current();
-        for (int i = players.length - 1; i > 0; i--)
+        //Populate role preference data
+        List<Player> preferJason = new ArrayList<>();
+        List<Player> preferCounselor = new ArrayList<>();
+        List<Player> noPreference = new ArrayList<>();
+
+        for (Player player : players.values())
         {
-            int index = rnd.nextInt(i + 1);
-
-            // Simple swap
-            Player a = players[index];
-            players[index] = players[i];
-            players[i] = a;
+            F13Player f13p = FridayThe13th.playerController.getPlayer(player);
+            if (f13p.isSpawnPreferenceJason()) {
+                preferJason.add(player);
+            } else if (f13p.isSpawnPreferenceCounselor()) {
+                preferCounselor.add(player);
+            } else {
+                //No preference set
+                noPreference.add(player);
+            }
         }
 
-        //Select Jason
-        this.jason = new Jason(players[0], arena);
+        //Determine who Jason is going to be
+        if (preferJason.size() > 0) {
+            //There is at least one person who prefers to be jason
+            if (preferJason.size() > 1) {
+                //More than one person who prefer to be jason
+                assignJason(pickRandomPlayer(preferJason));
+            } else {
+                //There's just one person who prefers to be Jason, so they become Jason
+                assignJason(preferJason.get(0));
+            }
+        } else {
+            //There's nobody who has it set that they want to be Jason
+            if (noPreference.size() > 0) {
+                //There's at least one person with no preference set, so they'll be Jason
+                if (noPreference.size() > 1) {
+                    //There's more than one person with no preference, choose someone random
+                    assignJason(pickRandomPlayer(noPreference));
+                } else {
+                    //There's just one person with no preference, so they get Jason
+                    assignJason(noPreference.get(0));
+                }
+            } else {
+                //Everyone prefers counselor, but tough shit at this point, choose a random counselor
+                assignJason(pickRandomPlayer(preferCounselor));
+            }
+        }
 
-        //Make everyone else counselors
-        for (int i = 1; i < players.length; i++)
-        {
-            Player counselorPlayer = players[i];
-            this.counselors.put(counselorPlayer.getUniqueId().toString(), new Counselor(counselorPlayer, arena));
+        //Set everyone who is not Jason as a counselor
+        for (Player player : players.values()) {
+            if (!isJason(player)) {
+                assignCounselor(player);
+            }
         }
     }
+
+    /**
+     * Assigns the provided player as Jason
+     *
+     * @param player
+     */
+    private void assignJason(Player player) {
+        this.jason = new Jason(player, arena);
+    }
+
+    /**
+     * Assigns the provided player as a counselor
+     *
+     * @param player
+     */
+    private void assignCounselor(Player player) {
+        this.counselors.put(player.getUniqueId().toString(), new Counselor(player, arena));
+    }
+
+    /**
+     * Picks a random player from supplied player list
+     *
+     * @param players
+     * @return
+     */
+    private Player pickRandomPlayer(List<Player> players) {
+        int randomNum = ThreadLocalRandom.current().nextInt(0, players.size() - 1);
+        return players.get(randomNum);
+    }
+
 
     /**
      * Assigns and teleports players and jason to their spawn locations
@@ -722,6 +781,7 @@ public class PlayerManager
                 //Teleport them to the return point
                 teleportPlayerToReturnPoint(Bukkit.getPlayer(UUID.fromString(playerUUID)));
                 arena.getGameManager().getWaitingCountdownDisplayManager().hideForPlayer(Bukkit.getPlayer(UUID.fromString(playerUUID)));
+                Bukkit.getPlayer(UUID.fromString(playerUUID)).getInventory().clear();
             }
         }
         else

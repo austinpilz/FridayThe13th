@@ -30,6 +30,7 @@ public class ObjectManager
     private HashSet<Block> brokenDoors;
     private HashMap<Block, ArenaSwitch> brokenSwitches;
     private HashSet<Block> brokenWindows;
+    
 
     /**
      * @param arena Arena object

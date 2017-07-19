@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -513,6 +514,13 @@ public class Counselor
 
         getPlayer().getInventory().addItem(new ItemStack(Material.BOW, 1));
         getPlayer().getInventory().addItem(new ItemStack(Material.SPECTRAL_ARROW, 1));
+
+        //Give them radio
+        ItemStack item = new ItemStack(Material.NETHER_STAR, 1);
+        ItemMeta metaData = item.getItemMeta();
+        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
+        item.setItemMeta(metaData);
+        getPlayer().getInventory().addItem(item);
     }
 
     /**

@@ -181,6 +181,16 @@ public class ArenaChest
                     item.setItemMeta(metaData);
                     getChest().getBlockInventory().addItem(item);
                 }
+
+                //Map
+                double mapChance = Math.random() * 100;
+                if ((mapChance -= 20) < 0) {
+                    ItemStack item = new ItemStack(Material.EMPTY_MAP, 1);
+                    ItemMeta metaData = item.getItemMeta();
+                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Map", "Camp Map"));
+                    item.setItemMeta(metaData);
+                    getChest().getBlockInventory().addItem(item);
+                }
             }
         }
         else
