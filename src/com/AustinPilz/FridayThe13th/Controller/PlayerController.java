@@ -2,7 +2,6 @@ package com.AustinPilz.FridayThe13th.Controller;
 
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -36,7 +35,6 @@ public class PlayerController {
             FridayThe13th.inputOutput.loadPlayer(uuid);
 
             if (!doesPlayerExist(uuid)) {
-                Bukkit.broadcastMessage("DNE SO ADDING TO DB");
                 //They weren't in the DB, so make new object and store them in DB
                 F13Player player = new F13Player(uuid);
                 player.storeToDB();
