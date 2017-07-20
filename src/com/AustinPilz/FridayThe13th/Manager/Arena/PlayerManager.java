@@ -390,7 +390,7 @@ public class PlayerManager
         //Hurry and see if we can teleport them out and clear inventory
         Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
         player.teleport(arena.getReturnLocation());
-        player.getInventory().clear();
+        player.getInventory().clear(); 
 
         if (!isJustSpectator(playerUUID)) {
             //Cleanup
