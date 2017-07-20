@@ -700,7 +700,7 @@ public class PlayerManager
      * @param players
      * @return
      */
-    private Player pickRandomPlayer(List<Player> players) {
+    public Player pickRandomPlayer(List<Player> players) {
         int randomNum = ThreadLocalRandom.current().nextInt(0, players.size() - 1);
         return players.get(randomNum);
     }

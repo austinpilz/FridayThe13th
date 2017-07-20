@@ -1,17 +1,13 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -52,15 +48,11 @@ public class Spectator
         getPlayer().setGameMode(GameMode.SURVIVAL);
 
         //Location
-        getPlayer().teleport(arena.getJasonStartLocation());
+        getPlayer().teleport(arena.getLocationManager().getAvailableStartingPoints().iterator().next()); //Random starting point
         getPlayer().getInventory().clear();
 
         //Give them the selector
-        ItemStack compass = new ItemStack(Material.EMERALD, 1);
-        ItemMeta compassMetaData = compass.getItemMeta();
-        compassMetaData.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(player, "game.title.spectateMenu", "Select Player to Spectate"));
-        compass.setItemMeta(compassMetaData);
-        getPlayer().getInventory().addItem(compass);
+        SpectateMenu.addMenuOpenItem(getPlayer());
 
         //Let them know
         ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.becomeSpectator", "You are now in spectating mode.", ChatColor.WHITE), 300);
@@ -78,9 +70,9 @@ public class Spectator
         Iterator spectatorIterator = arena.getGameManager().getPlayerManager().getSpectators().entrySet().iterator();
         while (spectatorIterator.hasNext()) {
             Map.Entry entry = (Map.Entry) spectatorIterator.next();
-            Player toHide = (Player) entry.getValue();
+            Spectator toHide = (Spectator) entry.getValue();
             if (!player.equals(toHide)) {
-                player.hidePlayer(toHide);
+                player.hidePlayer(toHide.getPlayer());
             }
         }
 
@@ -109,64 +101,5 @@ public class Spectator
                 player.showPlayer(getPlayer());
             }
         }
-    }
-
-    /**
-     * Returns the spectator selector inventory
-     * @return
-     */
-    public Inventory getSpectateMenuInventory()
-    {
-        //Determine size
-        int size = 9;
-        if (arena.getGameManager().getPlayerManager().getNumCounselors() > 9 && arena.getGameManager().getPlayerManager().getNumCounselors() <= 18)
-        {
-            size = 18;
-        }
-        else if (arena.getGameManager().getPlayerManager().getNumCounselors() > 18 && arena.getGameManager().getPlayerManager().getNumCounselors() <= 27)
-        {
-            size = 27;
-        }
-        else if (arena.getGameManager().getPlayerManager().getNumCounselors() > 27 && arena.getGameManager().getPlayerManager().getNumCounselors() <= 36)
-        {
-            size = 36;
-        }
-        else if (arena.getGameManager().getPlayerManager().getNumCounselors() > 36 && arena.getGameManager().getPlayerManager().getNumCounselors() <= 45)
-        {
-            size = 45;
-        }
-        else if (arena.getGameManager().getPlayerManager().getNumCounselors() > 45 && arena.getGameManager().getPlayerManager().getNumCounselors() <= 54)
-        {
-            size = 54;
-        }
-        else if (arena.getGameManager().getPlayerManager().getNumCounselors() > 27 && arena.getGameManager().getPlayerManager().getNumCounselors() <= 63)
-        {
-            size = 63;
-        }
-
-
-        Inventory inventory = Bukkit.createInventory(null, size, ChatColor.GREEN + "" + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.SpectateSelectionItem", "Spectate Selection"));
-        int i = 0;
-
-        Iterator it = arena.getGameManager().getPlayerManager().getCounselors().entrySet().iterator();
-        while (it.hasNext())
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            Counselor counselor = (Counselor) entry.getValue();
-
-            if (i <= size && arena.getGameManager().getPlayerManager().isAlive(counselor.getPlayer()))
-            {
-                counselor.getPlayer().getName();
-                ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
-                SkullMeta meta = (SkullMeta)item.getItemMeta();
-                meta.setOwner(counselor.getPlayer().getName());
-                meta.setDisplayName(counselor.getPlayer().getName());
-                item.setItemMeta(meta);
-
-                inventory.setItem(i++, item);
-            }
-        }
-
-        return inventory;
     }
 }

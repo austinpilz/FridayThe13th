@@ -83,6 +83,5 @@ public class SpawnPreferenceMenu {
             //They do not have their preference set, so put it in slot 0 so it'll most likely auto-open
             player.getInventory().setItem(0, item);
         }
-
     }
 }

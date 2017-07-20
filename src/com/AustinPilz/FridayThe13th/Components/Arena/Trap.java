@@ -150,7 +150,12 @@ public class Trap {
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 100, 20));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 20));
             player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 100, 20));
-            player.damage(6);
+
+            if (getTrapType().equals(TrapType.Jason)) {
+                //Only counselors get damaged
+                player.damage(6);
+            }
+
 
             //Send player action bar message
             ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "game.message.caughtInTrap", "You are caught in a trap."), 100);

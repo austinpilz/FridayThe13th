@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
+import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
@@ -16,6 +17,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.util.UUID;
+
 public class F13EventsListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onF13MenuItemClicked(F13MenuItemClickedEvent event) {
@@ -28,8 +31,11 @@ public class F13EventsListener implements Listener {
                 String action = (String) json.get("Menu");
 
                 if (action.equals("SpawnPref")) {
+                    //Open the spawn preference menu
                     SpawnPreferenceMenu.openMenu(event.getPlayer());
-
+                } else if (action.equals("Spectate")) {
+                    //Open the spectate selection  menu
+                    SpectateMenu.openMenu(event.getPlayer(), event.getArena());
                 }
                 event.setCancelled(true);
             } else if (json.containsKey("SpawnPrefSelect")) {
@@ -48,15 +54,20 @@ public class F13EventsListener implements Listener {
             } else if (json.containsKey("TrapTeleport")) {
                 //Jason teleport to trapped player
                 String playerName = (String) json.get("TrapTeleport");
-                if (Bukkit.getOfflinePlayer(playerName).isOnline()) {
+
+                //Ensure that the trapped player we're going to teleport to is still online, still paying & is alive
+                if (Bukkit.getOfflinePlayer(playerName).isOnline() && event.getArena().getGameManager().getPlayerManager().isAlive(Bukkit.getPlayer(playerName))) {
                     event.getPlayer().teleport(Bukkit.getPlayer(playerName).getLocation());
                     InventoryActions.remove(event.getPlayer().getInventory(), event.getItem(), 1, (short) -1);
                 }
                 event.setCancelled(true);
+            } else if (json.containsKey("SpectateTeleport")) {
+                event.getPlayer().teleport(Bukkit.getPlayer(UUID.fromString((String) json.get("SpectateTeleport"))).getLocation().add(1, 1, 0));
+                event.setCancelled(true);
             } else if (json.containsKey("PlaceItem")) {
-                event.setCancelled(false); //All place items are handled by a different event
+                event.setCancelled(false); //All place items are handled by a different event but need to be ignored by this one
             } else {
-                event.setCancelled(false); //Unknown object
+                event.setCancelled(false); //Unknown object so we'll ignore it
             }
         } catch (ParseException exception) {
             //Probably a transmission error, just ignore event

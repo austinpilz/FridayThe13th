@@ -27,7 +27,6 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.Chest;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
@@ -101,25 +100,11 @@ public class PlayerListener implements Listener {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
             if (event.hasItem() && event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore() && event.getItem().getItemMeta().getLore().size() > 0 && HiddenStringsUtil.hasHiddenString(event.getItem().getItemMeta().getLore().get(0))) {
-                F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(event.getPlayer(), HiddenStringsUtil.extractHiddenString(event.getItem().getItemMeta().getLore().get(0)), event.getMaterial());
+                F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(event.getPlayer(), arena, HiddenStringsUtil.extractHiddenString(event.getItem().getItemMeta().getLore().get(0)), event.getMaterial());
                 Bukkit.getServer().getPluginManager().callEvent(newEvent);
                 event.setCancelled(newEvent.isCancelled());
-            } else if (arena.getGameManager().isGameInProgress())
-            {
-                if (arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer().getUniqueId().toString()))
-                {
-                    if (event.hasItem() && event.getItem().getType().equals(Material.EMERALD))
-                    {
-                        //Open spectate menu
-                        event.getPlayer().openInventory(arena.getGameManager().getPlayerManager().getSpectator(event.getPlayer()).getSpectateMenuInventory());
-                        event.setCancelled(true);
-                    }
-                    else
-                    {
-                        //Let them know they can't interact in spectating mode
-                        event.setCancelled(true);
-                    }
-                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
+            } else if (arena.getGameManager().isGameInProgress()) {
+                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
                 {
                     //They're in regular play mode
                     if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Door)
@@ -253,6 +238,9 @@ public class PlayerListener implements Listener {
                             event.setCancelled(true);
                         }
                     }
+                } else {
+                    //They're a spectator and trying to interact without using one of their special objects
+                    event.setCancelled(true);
                 }
             } else {
                 event.setCancelled(true); //Disable interaction in the waiting room
@@ -514,42 +502,20 @@ public class PlayerListener implements Listener {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getWhoClicked().getUniqueId().toString()); //See if they're playing
             Player player = (Player)event.getWhoClicked();
 
-            if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isSpectator(player))
-            {
-                event.setCancelled(true);
+            if (event.getCurrentItem() != null) {
+                if (event.getCurrentItem().hasItemMeta()) {
+                    //It has meta, so it must be one of the F13 selections
+                    ItemMeta meta = event.getCurrentItem().getItemMeta();
+                    List<String> lore = meta.getLore();
 
-                if (event.getCurrentItem() != null)
-                {
-                    if (event.getCurrentItem().getType().equals(Material.EMERALD)) //They're picking item to open spectate menu
-                    {
-                        //Open spectate menu
-                        player.openInventory(arena.getGameManager().getPlayerManager().getSpectator(player).getSpectateMenuInventory());
-                    } else if (event.getCurrentItem().getType().equals(Material.SKULL_ITEM)) //They're picking a player head to spectate
-                    {
-                        SkullMeta playerMetaData = (SkullMeta) event.getCurrentItem().getItemMeta();
-                        player.teleport(Bukkit.getPlayer(playerMetaData.getDisplayName()));
-                        player.closeInventory();
-                    }
-                }
-            } else {
-                //The game is in the waiting room phase
-                if (event.getCurrentItem() != null) {
-                    if (event.getCurrentItem().hasItemMeta())
-                    {
-                        //It has meta, so it must be one of the F13 selections
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        List<String> lore = meta.getLore();
-
-                        if (lore != null && lore.size() > 0 && HiddenStringsUtil.hasHiddenString(lore.get(0))) {
-                            //It's a F13 menu item - call custom event
-                            F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(player, HiddenStringsUtil.extractHiddenString(lore.get(0)), event.getCurrentItem().getType());
-                            Bukkit.getServer().getPluginManager().callEvent(newEvent);
-                            event.setCancelled(newEvent.isCancelled());
-                        }
+                    if (lore != null && lore.size() > 0 && HiddenStringsUtil.hasHiddenString(lore.get(0))) {
+                        //It's a F13 menu item - call custom event
+                        F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(player, arena, HiddenStringsUtil.extractHiddenString(lore.get(0)), event.getCurrentItem().getType());
+                        Bukkit.getServer().getPluginManager().callEvent(newEvent);
+                        event.setCancelled(newEvent.isCancelled());
                     }
                 }
             }
-
         }
         catch (PlayerNotPlayingException exception)
         {
