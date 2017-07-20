@@ -7,6 +7,6 @@ For Friday the 13th documentation, setup guides and additional information, plea
 To install the Friday the 13th plugin on your Minecraft server, please download the JAR from the [Friday the 13th Spigot Page](https://www.spigotmc.org/resources/friday-the-13th.43321/) or via the GitHub releases for this repository.
 
 ## License
-Implementation Copyright (C) 2017 Austin Pilz austinpilz@gmail.com
+Copyright (C) 2017 Austin Pilz austinpilz@gmail.com
 
-You are permitted to use this plugin for use on your server, regardless of size. You are not permitted to redistribute the plugin to another website, whether you claim it is your own or not. You are also not permitted to sell the plugin, it it always to be free.
+You are permitted to use this plugin for use on your server, regardless of size. You are not permitted to redistribute and/or post the plugin to another site for download, whether you claim it is your own or not. You also not permitted to sell the plugin, it it always to be free.
