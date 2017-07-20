@@ -109,6 +109,42 @@ public class CommandHandler implements CommandExecutor {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
                 }
+            } else if (args[0].equalsIgnoreCase("tutorial")) {
+                if (sender.hasPermission("FridayThe13th.User")) {
+                    //Setup commands cannot be executed by the console
+                    if (args.length == 2) {
+                        if (args[1].equalsIgnoreCase("jason")) {
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jasonHeader", "--- F13 Jason Tutorial ---"));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason1", "- You are Jason Voorhees. Your mission is to kill all of the counselors."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason2", "- Stalk by crouching to vanish and sneak up on counselors."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason3", "- Use sense potion to see players through terrain."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason4", "- Fly to use warp."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason5", "- Use your axe to break down doors, power switches and windows."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason6", "- Set traps to ensnare counselors."));
+                        } else if (args[1].equalsIgnoreCase("counselor")) {
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselorHeader", "--- F13 Counselor Tutorial ---"));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor1", "- You are a counselor. Run, hide, and fight for your life."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor2", "- Chat is proximity based. Spectators can hear you, but you cannot hear them."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor3", "- Your fear level is calculated by the light level and distance from Jason. When you're scared, Jason can sense you."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor4", "- Be mindful of your stamina level."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor5", "- Loot chests for items and weapons. Hitting Jason with a weapon will temporarily stun him."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor6", "- Jump through windows by interacting with them and standing still for 2 seconds. Sprint and interact to immediately jump."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor7", "- Find radios to communicate with other radio wielding counselors regardless of distance."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor8", "- Find the active phone and call Tommy Jarvis to bring a player back from the dead."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor9", "- Repair broken items with repair wire."));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor10", "- Have fun."));
+                        } else {
+                            //Incorrect syntax
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.tutorialSyntaxError", "Incorrect tutorial syntax. Usage: {0}", ChatColor.AQUA + "/f13 tutorial [jason/counselor]"));
+                        }
+                    } else {
+                        //Incorrect syntax
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.tutorialSyntaxError", "Incorrect tutorial syntax. Usage: {0}", ChatColor.AQUA + "/f13 tutorial [jason/counselor]"));
+                    }
+                } else {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
+                }
             } else if (args[0].equalsIgnoreCase("add")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     //Setup commands cannot be executed by the console
