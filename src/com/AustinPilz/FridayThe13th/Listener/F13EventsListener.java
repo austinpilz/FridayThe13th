@@ -7,6 +7,7 @@ import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -75,7 +76,7 @@ public class F13EventsListener implements Listener {
 
                 if (action.equals("JasonTrap") || action.equals("CounselorTrap")) {
                     //Make sure they're not stacking traps
-                    if (!event.getArena().getObjectManager().isATrap(event.getBlock().getRelative(BlockFace.DOWN)) && !event.getArena().getObjectManager().isATrap(event.getBlock().getRelative(BlockFace.UP))) {
+                    if (!event.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.CARPET) && !event.getBlock().getRelative(BlockFace.UP).getType().equals(Material.CARPET)) {
                         if (action.equals("JasonTrap")) {
                             event.getArena().getObjectManager().placeJasonTrap(event.getBlock(), event.getOriginalMaterial());
                         } else if (action.equals("CounselorTrap")) {

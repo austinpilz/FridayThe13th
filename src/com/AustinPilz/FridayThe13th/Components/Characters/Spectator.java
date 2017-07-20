@@ -5,6 +5,7 @@ import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -46,11 +47,12 @@ public class Spectator
 
         //Enter flight
         getPlayer().setAllowFlight(true);
+        getPlayer().setFlying(true);
         getPlayer().setHealth(20);
+        getPlayer().setGameMode(GameMode.SURVIVAL);
 
         //Location
         getPlayer().teleport(arena.getJasonStartLocation());
-        getPlayer().setFlying(true);
         getPlayer().getInventory().clear();
 
         //Give them the selector
@@ -71,6 +73,17 @@ public class Spectator
             Player hideFrom = (Player) entry.getValue();
             hideFrom.hidePlayer(getPlayer());
         }
+
+        //Hide existing spectators from this person
+        Iterator spectatorIterator = arena.getGameManager().getPlayerManager().getSpectators().entrySet().iterator();
+        while (spectatorIterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) spectatorIterator.next();
+            Player toHide = (Player) entry.getValue();
+            if (!player.equals(toHide)) {
+                player.hidePlayer(toHide);
+            }
+        }
+
     }
 
     /**

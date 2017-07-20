@@ -392,35 +392,37 @@ public class PlayerManager
         player.teleport(arena.getReturnLocation());
         player.getInventory().clear();
 
-        //Cleanup
-        performPlayerCleanupActions(playerUUID);
+        if (!isJustSpectator(playerUUID)) {
+            //Cleanup
+            performPlayerCleanupActions(playerUUID);
 
-        if (arena.getGameManager().isGameInProgress()) {
+            if (arena.getGameManager().isGameInProgress()) {
 
-            if (isJason(player)) {
-                //Jason logged off, so end the game
-                sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getName()));
-                arena.getGameManager().endGame();
-            } else {
-                //They're a counselor
-                if (getNumPlayersAlive() <= 1) {
-                    //They were the last one
+                if (isJason(player)) {
+                    //Jason logged off, so end the game
+                    sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getName()));
                     arena.getGameManager().endGame();
+                } else {
+                    //They're a counselor
+                    if (getNumPlayersAlive() <= 1) {
+                        //They were the last one
+                        arena.getGameManager().endGame();
+                    }
+                }
+            } else {
+                if (players.size() == 0) {
+                    arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
                 }
             }
-        }
-        else
-        {
-            if (players.size() == 0)
-            {
-                arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
-            }
-        }
 
 
-        //Message everyone in game
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
-        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutBroadcast", "{0} has logged out and left the game.", player.getName()));
+            //Message everyone in game
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
+            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutBroadcast", "{0} has logged out and left the game.", player.getName()));
+        } else {
+            //Just a spectator who logged out
+            leaveSpectator(player);
+        }
     }
 
     /**
@@ -746,8 +748,7 @@ public class PlayerManager
         //Game ended
         sendMessageToAllPlayers(ChatColor.RED + "Game over! " + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
 
-        //Make all players visible to one another
-
+        //Clean everyone up
         Iterator it = getPlayers().entrySet().iterator();
         while (it.hasNext())
         {
