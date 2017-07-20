@@ -4,6 +4,7 @@ import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Components.ChestType;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
@@ -129,6 +130,7 @@ public class InputOutput
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_signs\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_phones\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR)");
 
             conn.commit();
             st.close();
@@ -745,6 +747,105 @@ public class InputOutput
         catch (SQLException e)
         {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to load signs from database: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads player from database into controller memory
+     */
+    public void loadPlayer(String UUID) {
+        try {
+            Connection conn;
+            PreparedStatement ps = null;
+            ResultSet result = null;
+            conn = getConnection();
+            ps = conn.prepareStatement("SELECT `SpawnPreference` FROM `f13_players` WHERE `UUID` = ?");
+            ps.setString(1, UUID);
+            result = ps.executeQuery();
+
+            while (result.next()) {
+                F13Player player = new F13Player(UUID);
+                FridayThe13th.playerController.addPlayer(player);
+
+                if (result.getString("SpawnPreference").equals("J")) {
+                    player.setSpawnPreferenceJason();
+                } else if (result.getString("SpawnPreference").equals("C")) {
+                    player.setSpawnPreferenceCounselor();
+                }
+            }
+
+            conn.commit();
+            ps.close();
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to load F13 player from database: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Stores phone to the database
+     *
+     * @param player
+     * @throws SaveToDatabaseException
+     */
+    public void storePlayer(F13Player player) throws SaveToDatabaseException {
+        try {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "INSERT INTO f13_players (`UUID`, `SpawnPreference`) VALUES (?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+            preparedStatement.setString(1, player.getPlayerUUID());
+
+            //Spawn Preference
+            if (player.isSpawnPreferenceJason()) {
+                preparedStatement.setString(2, "J");
+            } else if (player.isSpawnPreferenceCounselor()) {
+                preparedStatement.setString(2, "C");
+            } else {
+                preparedStatement.setString(2, "None");
+            }
+
+            preparedStatement.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, e.getMessage());
+            throw new SaveToDatabaseException();
+        }
+    }
+
+    /**
+     * Updates player in the database
+     *
+     * @param player
+     */
+    public void updatePlayer(F13Player player) {
+        try {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "UPDATE `f13_players` SET `SpawnPreference` = ? WHERE `UUID` = ?";
+            //updateInDatabase
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+            if (player.isSpawnPreferenceJason()) {
+                preparedStatement.setString(1, "J");
+            } else if (player.isSpawnPreferenceCounselor()) {
+                preparedStatement.setString(1, "C");
+            } else {
+                preparedStatement.setString(1, "None");
+            }
+
+            preparedStatement.setString(2, player.getPlayerUUID());
+            preparedStatement.executeUpdate();
+            connection.commit();
+
+            conn.commit();
+
+
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to update player in DB: " + e.getMessage());
         }
     }
 

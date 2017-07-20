@@ -588,8 +588,16 @@ public class PlayerListener implements Listener {
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
-            if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
-                event.setCancelled(true); //Spectators can't pick things up
+            if (arena.getGameManager().isGameInProgress()) {
+                if (arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                    event.setCancelled(true); //Spectators can't pick things up
+                } else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer())) {
+                    if (!event.getItem().getType().equals(Material.ARROW)) {
+                        //Jason can only pickup arrows
+                        event.setCancelled(true);
+                    }
+                }
+
             }
         } catch (PlayerNotPlayingException exception) {
             //

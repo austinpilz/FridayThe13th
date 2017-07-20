@@ -1,6 +1,8 @@
 package com.AustinPilz.FridayThe13th.Controller;
 
-import com.AustinPilz.FridayThe13th.Components.Characters.F13Player;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -30,7 +32,17 @@ public class PlayerController {
      */
     public F13Player getPlayer(String uuid) {
         if (!doesPlayerExist(uuid)) {
-            addPlayer(new F13Player(uuid));
+            //They're not in memory, so let's check the database to see if they exist
+            FridayThe13th.inputOutput.loadPlayer(uuid);
+
+            if (!doesPlayerExist(uuid)) {
+                Bukkit.broadcastMessage("DNE SO ADDING TO DB");
+                //They weren't in the DB, so make new object and store them in DB
+                F13Player player = new F13Player(uuid);
+                player.storeToDB();
+                addPlayer(player);
+                return player;
+            }
         }
 
         return players.get(uuid);
@@ -53,5 +65,23 @@ public class PlayerController {
      */
     private boolean doesPlayerExist(String uuid) {
         return players.containsKey(uuid);
+    }
+
+    /**
+     * Returns the number of F13 players in memory
+     *
+     * @return
+     */
+    public int getNumPlayers() {
+        return players.size();
+    }
+
+    /**
+     * Updates all players in the database
+     */
+    public void updatePlayers() {
+        for (F13Player player : players.values()) {
+            player.updateDB();
+        }
     }
 }

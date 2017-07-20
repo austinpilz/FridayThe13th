@@ -1,11 +1,12 @@
-package com.AustinPilz.FridayThe13th.Components.Characters;
+package com.AustinPilz.FridayThe13th.Components;
 
+import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class F13Player {
     private String playerUUID;
@@ -32,9 +33,7 @@ public class F13Player {
     public void setSpawnPreferenceJason() {
         spawnPreferenceCounselor = false;
         spawnPreferenceJason = true;
-
-        getPlayer().closeInventory();
-        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "game.menu.spawnPrefSetJason", "Your spawn preference has been set as {0}jason{1}.", ChatColor.RED, ChatColor.WHITE));
+        updateDB();
     }
 
     /**
@@ -43,20 +42,42 @@ public class F13Player {
     public void setSpawnPreferenceCounselor() {
         spawnPreferenceCounselor = true;
         spawnPreferenceJason = false;
-
-        getPlayer().closeInventory();
-        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "game.menu.spawnPrefSetCounselor", "Your spawn preference has been set as a {0}counselor{1}.", ChatColor.DARK_GREEN, ChatColor.WHITE));
+        updateDB();
     }
 
     /**
-     * Returns if the player prefers
+     * Returns if the player prefers to play as Jason
      */
     public boolean isSpawnPreferenceJason() {
         return spawnPreferenceJason;
     }
 
+    /**
+     * Returns if the player prefers to play as a counselor
+     *
+     * @return
+     */
     public boolean isSpawnPreferenceCounselor() {
         return spawnPreferenceCounselor;
+    }
+
+    /**
+     * Stores the player in the database
+     */
+    public void storeToDB() {
+        try {
+            FridayThe13th.inputOutput.storePlayer(this);
+        } catch (SaveToDatabaseException exception) {
+            //Ruh-roh raggy. Couldn't save them, probably means they already exist
+            FridayThe13th.log.log(Level.WARNING, "Encountered an unexpected error while attempting to save F13 player to database.");
+        }
+    }
+
+    /**
+     * Updates player in the database
+     */
+    public void updateDB() {
+        FridayThe13th.inputOutput.updatePlayer(this);
     }
 
     /**

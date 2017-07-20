@@ -6,6 +6,7 @@ import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,8 +36,12 @@ public class F13EventsListener implements Listener {
                 String action = (String) json.get("SpawnPrefSelect");
                 if (action.equals("J")) {
                     FridayThe13th.playerController.getPlayer(event.getPlayer()).setSpawnPreferenceJason();
+                    event.getPlayer().closeInventory();
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.menu.spawnPrefSetJason", "Your spawn preference has been set as {0}Jason{1}.", ChatColor.RED + "" + ChatColor.BOLD, ChatColor.RESET + "" + ChatColor.WHITE));
                 } else if (action.equals("C")) {
                     FridayThe13th.playerController.getPlayer(event.getPlayer()).setSpawnPreferenceCounselor();
+                    event.getPlayer().closeInventory();
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.menu.spawnPrefSetCounselor", "Your spawn preference has been set as a {0}counselor{1}.", ChatColor.DARK_GREEN, ChatColor.WHITE));
                 }
                 event.setCancelled(true);
             } else if (json.containsKey("TrapTeleport")) {
