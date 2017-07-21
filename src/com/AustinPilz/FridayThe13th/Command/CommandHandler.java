@@ -65,7 +65,9 @@ public class CommandHandler implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("memory")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
-                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "# F13 players: " + FridayThe13th.playerController.getNumPlayers());
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "-- F13 Active Memory Storage --");
+                    sender.sendMessage("# F13 Players: " + FridayThe13th.playerController.getNumPlayers());
+                    sender.sendMessage("# Arenas: " + FridayThe13th.arenaController.getNumberOfArenas());
                 } else {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
@@ -295,6 +297,14 @@ public class CommandHandler implements CommandExecutor {
                                 sender.sendMessage("Game Status: " + ChatColor.GOLD + "Waiting");
                             } else if (arena.getGameManager().isGameInProgress()) {
                                 sender.sendMessage("Game Status: " + ChatColor.GREEN + "In Progress");
+
+                                int rem = arena.getGameManager().getGameTimeLeft() % 3600;
+                                int mn = rem / 60;
+                                int sec = rem % 60;
+                                sender.sendMessage("Time Left: " + mn + "m " + sec + "sec");
+                                sender.sendMessage("# Players: " + arena.getGameManager().getPlayerManager().getNumPlayers());
+                                sender.sendMessage("# Spectators: " + arena.getGameManager().getPlayerManager().getNumSpectators());
+                                sender.sendMessage("--------------");
                             }
 
                             sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());

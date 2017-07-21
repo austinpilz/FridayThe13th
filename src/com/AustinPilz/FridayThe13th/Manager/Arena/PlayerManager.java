@@ -124,6 +124,14 @@ public class PlayerManager
      */
     public Spectator getSpectator(Player player) { return spectators.get(player.getUniqueId().toString()); }
 
+    /**
+     * Returns the number of spectators
+     *
+     * @return
+     */
+    public int getNumSpectators() {
+        return spectators.size();
+    }
 
     /**
      * Returns if the player with supplied uuid is a spectator

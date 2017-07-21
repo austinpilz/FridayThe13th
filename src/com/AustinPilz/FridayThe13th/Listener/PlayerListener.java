@@ -104,7 +104,7 @@ public class PlayerListener implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(newEvent);
                 event.setCancelled(newEvent.isCancelled());
             } else if (arena.getGameManager().isGameInProgress()) {
-                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()))
+                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()))
                 {
                     //They're in regular play mode
                     if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Door)
@@ -456,6 +456,9 @@ public class PlayerListener implements Listener {
             {
                 //Do nothing since in this case, we couldn't care
             }
+        } else {
+            //It's not a player being hurt, so cancel it
+            event.setCancelled(true);
         }
     }
 

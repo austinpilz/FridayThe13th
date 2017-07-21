@@ -42,10 +42,10 @@ public class Spectator
         arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
 
         //Enter flight
+        getPlayer().setGameMode(GameMode.SURVIVAL);
         getPlayer().setAllowFlight(true);
         getPlayer().setFlying(true);
         getPlayer().setHealth(20);
-        getPlayer().setGameMode(GameMode.SURVIVAL);
 
         //Location
         getPlayer().teleport(arena.getLocationManager().getAvailableStartingPoints().iterator().next()); //Random starting point
@@ -71,8 +71,8 @@ public class Spectator
         while (spectatorIterator.hasNext()) {
             Map.Entry entry = (Map.Entry) spectatorIterator.next();
             Spectator toHide = (Spectator) entry.getValue();
-            if (!player.equals(toHide)) {
-                player.hidePlayer(toHide.getPlayer());
+            if (!getPlayer().equals(toHide)) {
+                getPlayer().hidePlayer(toHide.getPlayer());
             }
         }
 
