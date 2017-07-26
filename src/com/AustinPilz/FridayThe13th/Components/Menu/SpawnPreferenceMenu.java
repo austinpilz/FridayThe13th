@@ -68,7 +68,7 @@ public class SpawnPreferenceMenu {
      * @param player
      */
     public static void addMenuOpenItem(Player player) {
-        ItemStack item = new ItemStack(Material.EMPTY_MAP, 1);
+        ItemStack item = new ItemStack(Material.BED, 1);
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(ChatColor.WHITE + FridayThe13th.language.get(player, "game.item.SpawnPreference", "Spawn Preference"));
         List<String> menuItemLore = new ArrayList<String>();

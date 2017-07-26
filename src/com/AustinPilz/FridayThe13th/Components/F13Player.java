@@ -15,6 +15,10 @@ public class F13Player {
     private boolean spawnPreferenceJason;
     private boolean spawnPreferenceCounselor;
 
+    //Statistics
+    private int experiencePoints;
+    private int voorheePoints;
+
     public F13Player(String uuid) {
         this.playerUUID = uuid;
 

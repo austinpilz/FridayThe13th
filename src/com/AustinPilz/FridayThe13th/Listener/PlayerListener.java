@@ -573,4 +573,29 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+        try {
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            event.setCancelled(true);
+        } catch (PlayerNotPlayingException exception) {
+            //
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityInteract(PlayerInteractAtEntityEvent event) {
+        try {
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+
+            if (event.getRightClicked() instanceof Player) {
+                event.setCancelled(false);
+            } else {
+                //They shouldn't be able to interact with anything that isn't a player
+                event.setCancelled(true);
+            }
+        } catch (PlayerNotPlayingException exception) {
+            //
+        }
+    }
 }
