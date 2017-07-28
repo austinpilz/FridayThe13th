@@ -181,17 +181,18 @@ public class Trap {
                     jasonItem.setItemMeta(jasonItemMeta);
                     arena.getGameManager().getPlayerManager().getJason().getPlayer().getInventory().addItem(jasonItem);
 
-                    //Schedule to remove the transport item
-                    Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new Runnable() {
-                        @Override
-                        public void run() {
-                            InventoryActions.remove(arena.getGameManager().getPlayerManager().getJason().getPlayer().getInventory(), Material.EYE_OF_ENDER, 1, (short) -1);
-                        }
-                    }, 100);
                 } else {
                     arena.getGameManager().getPlayerManager().getJason().getPlayer().sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + player.getName() + ChatColor.WHITE + FridayThe13th.language.get(arena.getGameManager().getPlayerManager().getJason().getPlayer(), "game.message.counselorKilledInTrap", " stepped on one of your traps and was killed."));
                 }
             }
+
+            //Schedule to remove the transport item
+            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new Runnable() {
+                @Override
+                public void run() {
+                    InventoryActions.remove(arena.getGameManager().getPlayerManager().getJason().getPlayer().getInventory(), Material.EYE_OF_ENDER, 1, (short) -1);
+                }
+            }, 100);
         }
     }
 }
