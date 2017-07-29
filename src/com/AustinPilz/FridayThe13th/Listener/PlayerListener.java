@@ -104,10 +104,10 @@ public class PlayerListener implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(newEvent);
                 event.setCancelled(newEvent.isCancelled());
             } else if (arena.getGameManager().isGameInProgress()) {
+                //Check to see if they're trampling anything
                 if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL) {
                     event.setCancelled(true);
-                }
-                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()))
+                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()))
                 {
                     //They're in regular play mode
                     if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Door)
@@ -308,6 +308,7 @@ public class PlayerListener implements Listener {
                             } else {
                                 //Sprinting
                                 arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
+                                event.setCancelled(true);
                             }
                         } else if (event.getPlayer().isSneaking()) {
                             //Sneaking
@@ -420,31 +421,28 @@ public class PlayerListener implements Listener {
                                     {
                                         //The damage is a counselor in spectate mode
                                         event.setCancelled(true);
-                                    }
-                                    else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isJason(playerDamaged))
+                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager))
                                     {
                                         //Counselor is damaging Jason
-                                        if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK) || event.getCause().equals(EntityDamageEvent.DamageCause.PROJECTILE))
+                                        if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
                                         {
-                                            if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE))
+                                            if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.STICK))
                                             {
                                                 arena.getGameManager().getPlayerManager().getJason().stun();
 
                                                 //Register counselor XP
                                                 arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
-                                            } else if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.POTION) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.REDSTONE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.NETHER_STAR))
+                                            } else
                                             {
-                                                event.setCancelled(true); //Counselors can't hurt Jason with items not meant for combat
+                                                event.setCancelled(true); //Counselors can't hurt unless they have a special item
                                             }
                                         }
-                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged)) {
-                                        //Friendly hit
+                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
+                                        //Friendly kill
                                         arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addFriendlyHit();
-                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && arena.getGameManager().getPlayerManager().isJason(playerDamager)) {
-                                        if (playerDamaged.getHealth() <= event.getDamage()) {
-                                            //Jason kills a counselor
-                                            arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
-                                        }
+                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && arena.getGameManager().getPlayerManager().isJason(playerDamager) && playerDamaged.getHealth() <= event.getDamage()) {
+                                        //Jason kills a counselor
+                                        arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
                                     }
                                 }
                                 else
@@ -477,9 +475,6 @@ public class PlayerListener implements Listener {
             {
                 //Do nothing since in this case, we couldn't care
             }
-        } else {
-            //It's not a player being hurt, so cancel it
-            event.setCancelled(true);
         }
     }
 

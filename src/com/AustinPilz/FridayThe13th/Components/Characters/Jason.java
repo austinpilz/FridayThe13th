@@ -647,7 +647,7 @@ public class Jason
     public void awardXP() {
         int gameXP = getXPManager().calculateXP();
         int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
-        int newXP = currentXP + gameXP;
+        int newXP = Math.max(currentXP, currentXP + gameXP);
 
         getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
 

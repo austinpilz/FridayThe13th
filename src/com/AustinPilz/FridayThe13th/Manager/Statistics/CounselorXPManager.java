@@ -123,6 +123,9 @@ public class CounselorXPManager {
         //Remove friendly hits
         xp -= statsFriendlyHits * 1000;
 
+        //For completing a match and staying
+        xp += 100;
+
         return xp;
     }
 }

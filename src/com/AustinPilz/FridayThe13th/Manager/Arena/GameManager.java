@@ -420,5 +420,6 @@ public class GameManager
     private void calculateGameTime() {
         double secondsPer = Math.max(arena.getMinutesPerCounselor(), 1.8);
         gameTimeLeftInSeconds = (int) Math.ceil((secondsPer * arena.getGameManager().getPlayerManager().getNumCounselors()) * 60);
+        gameTimeMax = gameTimeLeftInSeconds;
     }
 }
