@@ -158,7 +158,7 @@ public class Arena
      *
      * @param value
      */
-    public void setMinutesPerCounselor(int value) {
+    public void setMinutesPerCounselor(double value) {
         minutesPerCounselor = value;
         updateInDB();
     }

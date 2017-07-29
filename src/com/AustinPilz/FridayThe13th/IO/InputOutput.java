@@ -338,16 +338,19 @@ public class InputOutput
             int removed = 0;
             while (result.next())
             {
-                Location spawnLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
+                if (Bukkit.getWorld(result.getString("World")) != null) {
+                    Location spawnLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"));
 
-                try
-                {
-                    Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
-                    arena.getLocationManager().addStartingPoint(spawnLocation);
-                    count++;
-                }
-                catch (ArenaDoesNotExistException exception)
-                {
+                    try {
+                        Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
+                        arena.getLocationManager().addStartingPoint(spawnLocation);
+                        count++;
+                    } catch (ArenaDoesNotExistException exception) {
+                        deleteSpawnPoint(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"), result.getString("Arena"));
+                        removed++;
+                    }
+                } else {
+                    //The world no longer exists
                     deleteSpawnPoint(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"), result.getString("Arena"));
                     removed++;
                 }
@@ -445,39 +448,36 @@ public class InputOutput
             int removed = 0;
             while (result.next())
             {
-                Location chestLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
+                if (Bukkit.getWorld(result.getString("World")) != null) {
+                    Location chestLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"));
 
-                if (chestLocation.getBlock().getType().equals(Material.CHEST))
-                {
-                    try
-                    {
-                        //Determine chest type
-                        ChestType type = ChestType.Item; //default
+                    if (chestLocation.getBlock().getType().equals(Material.CHEST)) {
+                        try {
+                            //Determine chest type
+                            ChestType type = ChestType.Item; //default
 
-                        if (result.getString("Type").equals("Item"))
-                        {
-                            type = ChestType.Item;
+                            if (result.getString("Type").equals("Item")) {
+                                type = ChestType.Item;
+                            } else if (result.getString("Type").equals("Weapon")) {
+                                type = ChestType.Weapon;
+                            }
+
+
+                            Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
+                            arena.getObjectManager().addChest(new ArenaChest(arena, chestLocation, type));
+                            count++;
+                        } catch (ArenaDoesNotExistException exception) {
+                            deleteChest(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
+                            removed++;
                         }
-                        else if (result.getString("Type").equals("Weapon"))
-                        {
-                            type = ChestType.Weapon;
-                        }
-
-
-                        Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
-                        arena.getObjectManager().addChest(new ArenaChest(arena, chestLocation, type));
-                        count++;
-                    }
-                    catch (ArenaDoesNotExistException exception)
-                    {
-                        deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                    } else {
+                        //This location is no longer a chest, so remove it
+                        deleteChest(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
                         removed++;
                     }
-                }
-                else
-                {
-                    //This location is no longer a chest, so remove it
-                    deleteChest(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                } else {
+                    //The world was deleted
+                    deleteChest(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
                     removed++;
                 }
             }
@@ -642,27 +642,27 @@ public class InputOutput
             int removed = 0;
             while (result.next())
             {
-                Location signLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
+                if (Bukkit.getWorld(result.getString("World")) != null) {
+                    Location signLocation = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"));
 
-                if (signLocation.getBlock().getType().equals(Material.SIGN_POST) || signLocation.getBlock().getType().equals(Material.WALL_SIGN))
-                {
-                    try
-                    {
-                        Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
-                        arena.getSignManager().addJoinSign((Sign)signLocation.getBlock().getState());
-                        count++;
-                    }
-                    catch (ArenaDoesNotExistException exception)
-                    {
-                        FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load sign in arena ("+result.getString("Arena")+"), arena does not exist in memory.");
-                        deleteSign(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                    if (signLocation.getBlock().getType().equals(Material.SIGN_POST) || signLocation.getBlock().getType().equals(Material.WALL_SIGN)) {
+                        try {
+                            Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
+                            arena.getSignManager().addJoinSign((Sign) signLocation.getBlock().getState());
+                            count++;
+                        } catch (ArenaDoesNotExistException exception) {
+                            FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load sign in arena (" + result.getString("Arena") + "), arena does not exist in memory.");
+                            deleteSign(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
+                            removed++;
+                        }
+                    } else {
+                        //This location is no longer a chest, so remove it
+                        deleteSign(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
                         removed++;
                     }
-                }
-                else
-                {
-                    //This location is no longer a chest, so remove it
-                    deleteSign(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                } else {
+                    //The world was deleted
+                    deleteSign(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
                     removed++;
                 }
             }
@@ -764,25 +764,25 @@ public class InputOutput
             int removed = 0;
             while (result.next())
             {
-                Location location = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"));
+                if (Bukkit.getWorld(result.getString("World")) != null) {
+                    Location location = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"));
 
-                if (location.getBlock().getType().equals(Material.TRIPWIRE_HOOK))
-                {
-                    try
-                    {
-                        Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
-                        arena.getObjectManager().addPhone(new ArenaPhone(arena, location));
-                        count++;
-                    }
-                    catch (ArenaDoesNotExistException exception)
-                    {
-                        deleteSign(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
+                    if (location != null && location.getBlock() != null && location.getBlock().getType().equals(Material.TRIPWIRE_HOOK)) {
+                        try {
+                            Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
+                            arena.getObjectManager().addPhone(new ArenaPhone(arena, location));
+                            count++;
+                        } catch (ArenaDoesNotExistException exception) {
+                            deleteSign(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
+                            removed++;
+                        }
+                    } else {
+                        //This location is no longer a chest, so remove it
+                        deletePhone(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
                         removed++;
                     }
-                }
-                else
-                {
-                    //This location is no longer a chest, so remove it
+                } else {
+                    //The world no longer exists, so remove the phone
                     deletePhone(result.getDouble("X"),result.getDouble("Y"),result.getDouble("Z"), result.getString("World"));
                     removed++;
                 }

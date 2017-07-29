@@ -229,8 +229,11 @@ public class CommandHandler implements CommandExecutor {
                             if (args[2].equalsIgnoreCase("tpc")) {
                                 //Setting time per counselor
                                 try {
-                                    arena.setMinutesPerCounselor(Integer.parseInt(args[3]));
-                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setField", "Success! Minutes per counselor in {0} have been set to {1}.", ChatColor.AQUA + arena.getArenaName() + ChatColor.WHITE, ChatColor.GREEN + args[3] + ChatColor.WHITE));
+                                    Double minutes = Double.parseDouble(args[3]);
+                                    minutes = Math.max(1.8, minutes);
+
+                                    arena.setMinutesPerCounselor(minutes);
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setField", "Success! Minutes per counselor in {0} have been set to {1}.", ChatColor.AQUA + arena.getArenaName() + ChatColor.WHITE, ChatColor.GREEN + "" + minutes + ChatColor.WHITE));
                                 } catch (NumberFormatException e) {
                                     //They didn't provide numbers
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setValueSyntaxError", "Error. The value of the field must be a number."));
