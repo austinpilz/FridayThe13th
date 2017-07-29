@@ -107,7 +107,7 @@ public class ChatController
         }
 
         //Final message
-        String finalMessage = wasHeard + prefix + sender.getName() + ChatColor.WHITE + ": " + message;
+        String finalMessage = wasHeard + prefix + " " + sender.getName() + ChatColor.WHITE + ": " + message;
 
         //Send it
         for (Player player : recipients)

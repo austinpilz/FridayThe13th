@@ -4,6 +4,7 @@ import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.SkinChange;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
+import com.AustinPilz.FridayThe13th.Manager.Statistics.JasonXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
 import com.AustinPilz.FridayThe13th.Structures.GameSkin;
@@ -35,6 +36,7 @@ public class Jason
 
     //Display
     private JasonAbilityDisplayManager abilityDisplayManager;
+    private JasonXPManager xpManager;
     private SkinChange skin;
 
     //Tasks
@@ -84,6 +86,7 @@ public class Jason
 
         //Display
         abilityDisplayManager = new JasonAbilityDisplayManager(this);
+        xpManager = new JasonXPManager(this, arena);
         skin = new SkinChange(getPlayer());
 
         //Stalk Values
@@ -138,6 +141,15 @@ public class Jason
     public JasonAbilityDisplayManager getAbilityDisplayManager()
     {
         return abilityDisplayManager;
+    }
+
+    /**
+     * Returns the XP manager for Jason
+     *
+     * @return
+     */
+    public JasonXPManager getXPManager() {
+        return xpManager;
     }
 
     /**
@@ -622,11 +634,23 @@ public class Jason
     /**
      * Stuns Jason
      */
-    public void stun()
-    {
+    public void stun() {
         player.addPotionEffect(stun1);
         player.addPotionEffect(stun2);
         player.addPotionEffect(stun3);
         player.addPotionEffect(stun4);
+    }
+
+    /**
+     * Awards Jason their XP
+     */
+    public void awardXP() {
+        int gameXP = getXPManager().calculateXP();
+        int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
+        int newXP = currentXP + gameXP;
+
+        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
+
+        FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
     }
 }

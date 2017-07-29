@@ -93,7 +93,7 @@ public class ArenaPhone
                 callAttempts++;
 
                 //Register Tommy called for XP
-                arena.getGameManager().getPlayerManager().getCounselor(player).getCounselorXPManager().addTommyCalled();
+                arena.getGameManager().getPlayerManager().getCounselor(player).getXPManager().addTommyCalled();
             } else {
                 hologram.getLine(0).removeLine();
 

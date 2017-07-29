@@ -762,7 +762,12 @@ public class PlayerManager
             counselor.awardXP();
         }
 
-        //TODO JASON AWARD XP
+        //If Jason killed all of the players, he gets a time bonus
+        if (getNumPlayersAlive() > 0) {
+            getJason().getXPManager().setTimeLeftMinutes(arena.getGameManager().getGameTimeLeft() / 60);
+        }
+
+        getJason().awardXP();
 
 
         //Clean everyone up

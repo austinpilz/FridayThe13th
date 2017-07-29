@@ -90,7 +90,7 @@ public class Trap {
             activate();
 
             //Register trap activated for XP
-            counselor.getCounselorXPManager().addTrapActivated();
+            counselor.getXPManager().addTrapActivated();
         } else {
             hologram.clearLines();
 
@@ -170,8 +170,8 @@ public class Trap {
 
             //Remove the trap if it's a Jason rap
             if (getTrapType().equals(TrapType.Jason)) {
-                //Remove the trap
-                remove();
+                //Give him the XP
+                arena.getGameManager().getPlayerManager().getJason().getXPManager().addTrapEnsnarement();
 
                 if (arena.getGameManager().getPlayerManager().isAlive(player)) {
                     //Notify Jason
@@ -193,6 +193,9 @@ public class Trap {
                     arena.getGameManager().getPlayerManager().getJason().getPlayer().sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + player.getName() + ChatColor.WHITE + FridayThe13th.language.get(arena.getGameManager().getPlayerManager().getJason().getPlayer(), "game.message.counselorKilledInTrap", " stepped on one of your traps and was killed."));
                 }
             }
+
+            //Remove the trap
+            remove();
 
             //Schedule to remove the transport item
             Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new Runnable() {

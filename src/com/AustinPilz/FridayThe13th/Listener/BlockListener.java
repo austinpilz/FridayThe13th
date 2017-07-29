@@ -139,12 +139,14 @@ public class BlockListener implements Listener
                         if (!arena.getObjectManager().getBrokenSwitches().containsKey(event.getBlock()))
                         {
                             arena.getObjectManager().breakSwitch(event.getBlock());
+                            arena.getGameManager().getPlayerManager().getJason().getXPManager().addSwitchBreak();
                         }
                     }
                     else if (event.getBlock().getType().equals(Material.THIN_GLASS))
                     {
                         //Window
                         arena.getObjectManager().breakWindow(event.getBlock());
+                        arena.getGameManager().getPlayerManager().getJason().getXPManager().addWindowBreak();
                     }
                 }
             }

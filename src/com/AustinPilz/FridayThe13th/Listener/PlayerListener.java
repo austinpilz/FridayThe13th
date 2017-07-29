@@ -128,7 +128,7 @@ public class PlayerListener implements Listener {
                             //Door isn't broken
                             if (door.isOpen()) {
                                 //They're closing a door - register for XP
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getCounselorXPManager().addDoorClosed();
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addDoorClosed();
                             }
                         }
                     }
@@ -186,7 +186,7 @@ public class PlayerListener implements Listener {
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true);
                             arena.getObjectManager().breakWindow(event.getClickedBlock());
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(false);
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getCounselorXPManager().addWindowSprint(); //Register event for XP
+                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addWindowSprint(); //Register event for XP
                         }
                         else
                         {
@@ -428,7 +428,7 @@ public class PlayerListener implements Listener {
                                                 arena.getGameManager().getPlayerManager().getJason().stun();
 
                                                 //Register counselor XP
-                                                arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getCounselorXPManager().addJasonStuns();
+                                                arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
                                             } else if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.POTION) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.REDSTONE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.NETHER_STAR))
                                             {
                                                 event.setCancelled(true); //Counselors can't hurt Jason with items not meant for combat
@@ -436,7 +436,12 @@ public class PlayerListener implements Listener {
                                         }
                                     } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged)) {
                                         //Friendly hit
-                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getCounselorXPManager().addFriendlyHit();
+                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addFriendlyHit();
+                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && arena.getGameManager().getPlayerManager().isJason(playerDamager)) {
+                                        if (playerDamaged.getHealth() <= event.getDamage()) {
+                                            //Jason kills a counselor
+                                            arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
+                                        }
                                     }
                                 }
                                 else

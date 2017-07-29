@@ -50,6 +50,9 @@ public class ArenaDoor
             {
                 arena.getObjectManager().getBrokenDoors().add(doorBlock);
             }
+
+            //Door is broken, add XP to Jason
+            arena.getGameManager().getPlayerManager().getJason().getXPManager().addDoorBreak();
         }
     }
 

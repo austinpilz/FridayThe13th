@@ -133,7 +133,7 @@ public class Counselor
      *
      * @return
      */
-    public CounselorXPManager getCounselorXPManager() {
+    public CounselorXPManager getXPManager() {
         return counselorXPManager;
     }
 
@@ -614,12 +614,12 @@ public class Counselor
      * Awards the counselor their XP
      */
     public void awardXP() {
-        int gameXP = getCounselorXPManager().calculateXP();
+        int gameXP = getXPManager().calculateXP();
         int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
+        int newXP = currentXP + gameXP;
 
-        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + currentXP + ChatColor.RESET));
+        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
 
         FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
     }
-
 }
