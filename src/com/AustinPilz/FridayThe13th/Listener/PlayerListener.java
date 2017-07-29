@@ -104,6 +104,9 @@ public class PlayerListener implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(newEvent);
                 event.setCancelled(newEvent.isCancelled());
             } else if (arena.getGameManager().isGameInProgress()) {
+                if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL) {
+                    event.setCancelled(true);
+                }
                 if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()))
                 {
                     //They're in regular play mode
