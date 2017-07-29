@@ -1,5 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
+import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Arena.GameManager;
 import com.AustinPilz.FridayThe13th.Manager.Arena.LocationManager;
 import com.AustinPilz.FridayThe13th.Manager.Arena.ObjectManager;
@@ -18,6 +19,7 @@ public class Arena
     private Location waitingLocation;
     private Location returnLocation;
     private Location jasonStartLocation;
+    private double minutesPerCounselor;
 
     //Arena Managers
     private LocationManager locationManager; //Manages important locations such as counselor spawn locations
@@ -25,7 +27,7 @@ public class Arena
     private GameManager gameManager; //Manages the active game, players, etc.
     private SignManager signManager;
 
-    public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation)
+    public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation, double minPerCounselor)
     {
         //Values
         this.arenaName = arenaName;
@@ -34,6 +36,7 @@ public class Arena
         this.waitingLocation = waitingLocation;
         this.returnLocation = returnLocation;
         this.jasonStartLocation = jasonStartLocation;
+        this.minutesPerCounselor = minPerCounselor;
 
         //Initialize
         locationManager = new LocationManager(this);
@@ -148,5 +151,31 @@ public class Arena
         dim[1] = getBoundary2().getZ();
         Arrays.sort(dim);
         return !(inQuestion.getZ() > dim[1] || inQuestion.getZ() < dim[0]);
+    }
+
+    /**
+     * Sets the number of minutes per counselor in the arena
+     *
+     * @param value
+     */
+    public void setMinutesPerCounselor(int value) {
+        minutesPerCounselor = value;
+        updateInDB();
+    }
+
+    /**
+     * Returns the number of minutes per counselor in the arena
+     *
+     * @return
+     */
+    public double getMinutesPerCounselor() {
+        return minutesPerCounselor;
+    }
+
+    /**
+     * Updates the arena values in the database
+     */
+    private void updateInDB() {
+        FridayThe13th.inputOutput.updateArena(this);
     }
 }

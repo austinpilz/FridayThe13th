@@ -124,6 +124,12 @@ public class PlayerListener implements Listener {
                             //They're trying to interact with a broken door
                             event.setCancelled(true);
                             event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.doorBroken", "That door has been broken by Jason."));
+                        } else {
+                            //Door isn't broken
+                            if (door.isOpen()) {
+                                //They're closing a door - register for XP
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getCounselorXPManager().addDoorClosed();
+                            }
                         }
                     }
                     else if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Lever)
@@ -180,6 +186,7 @@ public class PlayerListener implements Listener {
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true);
                             arena.getObjectManager().breakWindow(event.getClickedBlock());
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(false);
+                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getCounselorXPManager().addWindowSprint(); //Register event for XP
                         }
                         else
                         {
@@ -193,7 +200,7 @@ public class PlayerListener implements Listener {
                     } else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.CARPET)) {
                         if (arena.getObjectManager().isATrap(event.getClickedBlock()) && arena.getObjectManager().getTrap(event.getClickedBlock()).getTrapType().equals(TrapType.Counselor) && !arena.getObjectManager().getTrap(event.getClickedBlock()).isActivated()) {
                             //They're clicking a counselor trap
-                            arena.getObjectManager().getTrap(event.getClickedBlock()).activationAttempt();
+                            arena.getObjectManager().getTrap(event.getClickedBlock()).activationAttempt(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()));
                         }
                     }
                 }
@@ -419,11 +426,17 @@ public class PlayerListener implements Listener {
                                             if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE))
                                             {
                                                 arena.getGameManager().getPlayerManager().getJason().stun();
+
+                                                //Register counselor XP
+                                                arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getCounselorXPManager().addJasonStuns();
                                             } else if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.POTION) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.REDSTONE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.NETHER_STAR))
                                             {
                                                 event.setCancelled(true); //Counselors can't hurt Jason with items not meant for combat
                                             }
                                         }
+                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged)) {
+                                        //Friendly hit
+                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getCounselorXPManager().addFriendlyHit();
                                     }
                                 }
                                 else

@@ -78,11 +78,19 @@ public class Trap {
         return type;
     }
 
-    public void activationAttempt() {
+    /**
+     * Interact event with trap in order to activate it
+     *
+     * @param counselor
+     */
+    public void activationAttempt(Counselor counselor) {
         activationAttempts++;
 
         if (getActivationProgressPercent() == 1) {
             activate();
+
+            //Register trap activated for XP
+            counselor.getCounselorXPManager().addTrapActivated();
         } else {
             hologram.clearLines();
 

@@ -218,6 +218,39 @@ public class CommandHandler implements CommandExecutor {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
                 }
+            } else if (args[0].equalsIgnoreCase("set")) {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    //Correct Syntax: /f13 setup [arenaName] [object]
+                    if (args.length == 4) {
+                        String arenaName = args[1];
+                        try {
+                            Arena arena = FridayThe13th.arenaController.getArena(arenaName);
+
+                            if (args[2].equalsIgnoreCase("tpc")) {
+                                //Setting time per counselor
+                                try {
+                                    arena.setMinutesPerCounselor(Integer.parseInt(args[3]));
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setField", "Success! Minutes per counselor in {0} have been set to {1}.", ChatColor.AQUA + arena.getArenaName() + ChatColor.WHITE, ChatColor.GREEN + args[3] + ChatColor.WHITE));
+                                } catch (NumberFormatException e) {
+                                    //They didn't provide numbers
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setValueSyntaxError", "Error. The value of the field must be a number."));
+                                }
+                            } else {
+                                //Unknown field
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setFieldSyntaxError", "Unknown field to set."));
+                            }
+                        } catch (ArenaDoesNotExistException exception) {
+                            //Arena does not exist
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                        }
+                    } else {
+                        //Incorrect set syntax
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setSyntaxError", "Incorrect set syntax. Usage: {0}", ChatColor.AQUA + "/f13 set [arenaName] [field] [value]"));
+                    }
+                } else {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
+                }
             } else if (args[0].equalsIgnoreCase("play") || args[0].equalsIgnoreCase("join")) {
                 if (sender.hasPermission("FridayThe13th.User")) {
                     //Setup commands cannot be executed by the console
@@ -311,6 +344,7 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage("# Item Chests: " + arena.getObjectManager().getNumChestsItems());
                             sender.sendMessage("# Weapon Chests: " + arena.getObjectManager().getNumChestsWeapon());
                             sender.sendMessage("# Phones: " + arena.getObjectManager().getPhones().size());
+                            sender.sendMessage("# Minutes per Counselor: " + arena.getMinutesPerCounselor());
 
 
                         } catch (ArenaDoesNotExistException exception) {

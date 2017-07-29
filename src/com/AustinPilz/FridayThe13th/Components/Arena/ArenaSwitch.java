@@ -55,6 +55,9 @@ public class ArenaSwitch
 
             //Play Sound for Jason
             arena.getGameManager().getPlayerManager().getJason().getPlayer().playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 1F, 2F);
+
+            //Register switch fix for XP
+            arena.getGameManager().getPlayerManager().getCounselor(player).getCounselorXPManager().addSwitchFix();
         }
         else
         {

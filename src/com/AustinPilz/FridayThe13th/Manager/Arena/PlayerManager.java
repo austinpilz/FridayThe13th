@@ -572,8 +572,6 @@ public class PlayerManager
     }
 
 
-
-
     /* Player Preparation Actions */
 
     /**
@@ -755,6 +753,17 @@ public class PlayerManager
     {
         //Game ended
         sendMessageToAllPlayers(ChatColor.RED + "Game over! " + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
+
+        //Award XP to Counselors and Jason
+        Iterator counselorIterator = getCounselors().entrySet().iterator();
+        while (counselorIterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) counselorIterator.next();
+            Counselor counselor = (Counselor) entry.getValue();
+            counselor.awardXP();
+        }
+
+        //TODO JASON AWARD XP
+
 
         //Clean everyone up
         Iterator it = getPlayers().entrySet().iterator();

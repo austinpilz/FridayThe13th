@@ -17,7 +17,6 @@ public class F13Player {
 
     //Statistics
     private int experiencePoints;
-    private int voorheePoints;
 
     public F13Player(String uuid) {
         this.playerUUID = uuid;
@@ -25,6 +24,7 @@ public class F13Player {
         //Spawn Preferences
         spawnPreferenceJason = false;
         spawnPreferenceCounselor = false;
+        experiencePoints = 0;
     }
 
     public String getPlayerUUID() {
@@ -91,5 +91,33 @@ public class F13Player {
      */
     public Player getPlayer() {
         return Bukkit.getPlayer(UUID.fromString(getPlayerUUID()));
+    }
+
+    /**
+     * Returns the player's experience points
+     *
+     * @return
+     */
+    public int getXP() {
+        return experiencePoints;
+    }
+
+    /**
+     * Adds XP to the player's XP balance
+     *
+     * @param value
+     */
+    public void addXP(int value) {
+        experiencePoints += value;
+        updateDB();
+    }
+
+    /**
+     * Sets the player's XP
+     *
+     * @param value
+     */
+    public void setXP(int value) {
+        experiencePoints = value;
     }
 }

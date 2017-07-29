@@ -4,6 +4,7 @@ import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.SkinChange;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
+import com.AustinPilz.FridayThe13th.Manager.Statistics.CounselorXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Structures.GameSkin;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+
 public class Counselor
 {
     //Minecraft Objects
@@ -32,17 +34,16 @@ public class Counselor
     private double maxStamina;
     private double staminaDepletionRate;
     private double staminaRegenerationRate; //Has to be higher since done every second, not every movement
-    private double walkSpeed;
     private boolean moving = false;
 
     //Fear
     private double fearLevel;
     private double maxFearLevel;
     private LightLevelList lightHistory;
-    private int lightHistoryMax = 20; //how many light histories are a part of the average
 
     //Managers
     private CounselorStatsDisplayManager statsDisplayManager;
+    private CounselorXPManager counselorXPManager;
     private SkinChange skin;
 
     //Tasks
@@ -67,6 +68,7 @@ public class Counselor
     //Etc
     private boolean awaitingWindowJump;
 
+
     /**
      * Creates new counselor object
      * @param p Minecraft player object
@@ -88,6 +90,7 @@ public class Counselor
 
         //Initialize Manager
         statsDisplayManager = new CounselorStatsDisplayManager(this);
+        counselorXPManager = new CounselorXPManager(this, arena);
 
         //Fear
         lightHistory = new LightLevelList(20);
@@ -123,6 +126,15 @@ public class Counselor
     public CounselorStatsDisplayManager getStatsDisplayManager()
     {
         return statsDisplayManager;
+    }
+
+    /**
+     * Returns counselor's XP manager
+     *
+     * @return
+     */
+    public CounselorXPManager getCounselorXPManager() {
+        return counselorXPManager;
     }
 
     /**
@@ -595,6 +607,19 @@ public class Counselor
      */
     private double getHealthPercentage() {
         return getPlayer().getHealth() / getPlayer().getMaxHealth();
+    }
+
+
+    /**
+     * Awards the counselor their XP
+     */
+    public void awardXP() {
+        int gameXP = getCounselorXPManager().calculateXP();
+        int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
+
+        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + currentXP + ChatColor.RESET));
+
+        FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
     }
 
 }

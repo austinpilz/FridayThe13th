@@ -125,12 +125,12 @@ public class InputOutput
         try
         {
             st = conn.createStatement();
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_arenas\" (\"Name\" VARCHAR PRIMARY KEY NOT NULL, \"B1X\" DOUBLE, \"B1Y\" DOUBLE, \"B1Z\" DOUBLE, \"B2X\" DOUBLE, \"B2Y\" DOUBLE, \"B2Z\" DOUBLE, \"ArenaWorld\" VARCHAR, \"WaitX\" DOUBLE, \"WaitY\" DOUBLE, \"WaitZ\" DOUBLE, \"WaitWorld\" VARCHAR, \"ReturnX\" DOUBLE, \"ReturnY\" DOUBLE, \"ReturnZ\" DOUBLE, \"ReturnWorld\" VARCHAR, \"JasonX\" DOUBLE, \"JasonY\" DOUBLE, \"JasonZ\" DOUBLE)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_arenas\" (\"Name\" VARCHAR PRIMARY KEY NOT NULL, \"B1X\" DOUBLE, \"B1Y\" DOUBLE, \"B1Z\" DOUBLE, \"B2X\" DOUBLE, \"B2Y\" DOUBLE, \"B2Z\" DOUBLE, \"ArenaWorld\" VARCHAR, \"WaitX\" DOUBLE, \"WaitY\" DOUBLE, \"WaitZ\" DOUBLE, \"WaitWorld\" VARCHAR, \"ReturnX\" DOUBLE, \"ReturnY\" DOUBLE, \"ReturnZ\" DOUBLE, \"ReturnWorld\" VARCHAR, \"JasonX\" DOUBLE, \"JasonY\" DOUBLE, \"JasonZ\" DOUBLE,  \"MinutesPerCounselor\" DOUBLE DEFAULT 2)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_spawn_points\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_signs\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_phones\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR, \"XP\" INTEGER DEFAULT 0)");
 
             conn.commit();
             st.close();
@@ -147,6 +147,43 @@ public class InputOutput
         }
     }
 
+    /**
+     * Updates DB to latest version
+     */
+    public void updateDB() {
+        Update("SELECT MinutesPerCounselor FROM f13_arenas", "ALTER TABLE f13_arenas ADD MinutesPerCounselor DOUBLE DEFAULT 2");
+        Update("SELECT XP FROM f13_players", "ALTER TABLE f13_players ADD XP INTEGER DEFAULT 0");
+    }
+
+    /**
+     * Performs update to database if check query fails
+     *
+     * @param check
+     * @param sqlite
+     */
+    private void Update(String check, String sqlite) {
+        try {
+            Statement statement = getConnection().createStatement();
+            statement.executeQuery(check);
+            statement.close();
+        } catch (SQLException ex) {
+            try {
+                String[] query;
+
+                query = sqlite.split(";");
+                Connection conn = getConnection();
+                Statement st = conn.createStatement();
+                for (String q : query)
+                    st.executeUpdate(q);
+                conn.commit();
+                st.close();
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Database updated to new version!");
+            } catch (SQLException e) {
+                FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Error while attempting to update database to new version!");
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * Load arenas into arena controller memory
@@ -159,7 +196,7 @@ public class InputOutput
             PreparedStatement ps = null;
             ResultSet result = null;
             conn = getConnection();
-            ps = conn.prepareStatement("SELECT `Name`, `B1X`, `B1Y`, `B1Z`, `B2X`, `B2Y`, `B2Z`, `ArenaWorld`, `WaitX`, `WaitY`, `WaitZ`, `WaitWorld`, `ReturnX`, `ReturnY`, `ReturnZ`, `ReturnWorld`, `JasonX`, `JasonY`, `JasonZ` FROM `f13_arenas`");
+            ps = conn.prepareStatement("SELECT `Name`, `B1X`, `B1Y`, `B1Z`, `B2X`, `B2Y`, `B2Z`, `ArenaWorld`, `WaitX`, `WaitY`, `WaitZ`, `WaitWorld`, `ReturnX`, `ReturnY`, `ReturnZ`, `ReturnWorld`, `JasonX`, `JasonY`, `JasonZ`, `MinutesPerCounselor` FROM `f13_arenas`");
             result = ps.executeQuery();
 
             int count = 0;
@@ -172,7 +209,7 @@ public class InputOutput
                 Location returnLoc = new Location(Bukkit.getWorld(result.getString("ReturnWorld")), result.getDouble("ReturnX"),result.getDouble("ReturnY"),result.getDouble("ReturnZ"));
                 Location jasonLoc = new Location(Bukkit.getWorld(result.getString("ArenaWorld")), result.getDouble("JasonX"),result.getDouble("JasonY"),result.getDouble("JasonZ"));
 
-                Arena arena = new Arena(result.getString("Name"), boundary1, boundary2, waitLoc, returnLoc, jasonLoc);
+                Arena arena = new Arena(result.getString("Name"), boundary1, boundary2, waitLoc, returnLoc, jasonLoc, result.getDouble("MinutesPerCounselor"));
 
                 try
                 {
@@ -205,10 +242,8 @@ public class InputOutput
      * Stores arena into database
      * @param arena
      */
-    public void storeArena(Arena arena) throws SaveToDatabaseException
-    {
-        try
-        {
+    public void storeArena(Arena arena) throws SaveToDatabaseException {
+        try {
             String sql;
             Connection conn = InputOutput.getConnection();
 
@@ -237,18 +272,42 @@ public class InputOutput
 
             preparedStatement.executeUpdate();
             conn.commit();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to save new arena into database: " + e.getMessage());
             throw new SaveToDatabaseException();
         }
     }
 
-    public void deleteArena(String arenaName)
-    {
-        try
-        {
+    /**
+     * Updates arena in the database
+     *
+     * @param arena
+     */
+    public void updateArena(Arena arena) {
+        try {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "UPDATE `f13_arenas` SET `MinutesPerCounselor` = ? WHERE `Name` = ?";
+            //updateInDatabase
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setDouble(1, arena.getMinutesPerCounselor());
+            preparedStatement.setString(2, arena.getArenaName());
+            preparedStatement.executeUpdate();
+            connection.commit();
+            conn.commit();
+
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to update arena in DB: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Removes an arena from the database
+     * @param arenaName
+     */
+    public void deleteArena(String arenaName) {
+        try {
             Connection conn = InputOutput.getConnection();
             PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_arenas WHERE Name = ?");
             ps.setString(1, arenaName);
@@ -256,9 +315,7 @@ public class InputOutput
             conn.commit();
             ps.close();
 
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove an arena from the database: " + e.getMessage());
         }
     }
@@ -759,7 +816,7 @@ public class InputOutput
             PreparedStatement ps = null;
             ResultSet result = null;
             conn = getConnection();
-            ps = conn.prepareStatement("SELECT `SpawnPreference` FROM `f13_players` WHERE `UUID` = ?");
+            ps = conn.prepareStatement("SELECT `SpawnPreference`, `XP` FROM `f13_players` WHERE `UUID` = ?");
             ps.setString(1, UUID);
             result = ps.executeQuery();
 
@@ -772,6 +829,8 @@ public class InputOutput
                 } else if (result.getString("SpawnPreference").equals("C")) {
                     player.setSpawnPreferenceCounselor();
                 }
+
+                player.setXP(result.getInt("XP"));
             }
 
             conn.commit();
@@ -825,7 +884,7 @@ public class InputOutput
             String sql;
             Connection conn = InputOutput.getConnection();
 
-            sql = "UPDATE `f13_players` SET `SpawnPreference` = ? WHERE `UUID` = ?";
+            sql = "UPDATE `f13_players` SET `SpawnPreference` = ?, `XP` = ? WHERE `UUID` = ?";
             //updateInDatabase
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
@@ -837,7 +896,8 @@ public class InputOutput
                 preparedStatement.setString(1, "None");
             }
 
-            preparedStatement.setString(2, player.getPlayerUUID());
+            preparedStatement.setInt(2, player.getXP());
+            preparedStatement.setString(3, player.getPlayerUUID());
             preparedStatement.executeUpdate();
             connection.commit();
 
@@ -848,5 +908,4 @@ public class InputOutput
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to update player in DB: " + e.getMessage());
         }
     }
-
 }

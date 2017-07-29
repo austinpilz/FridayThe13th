@@ -98,6 +98,9 @@ public class BlockListener implements Listener
                     Bukkit.getServer().getPluginManager().callEvent(newEvent);
 
                     event.setCancelled(newEvent.isCancelled());
+                } else {
+                    //Has item, but no hidden data - must just be a special name
+                    event.setCancelled(true);
                 }
             } else {
                 event.setCancelled(true);

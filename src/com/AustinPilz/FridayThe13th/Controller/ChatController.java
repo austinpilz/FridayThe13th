@@ -84,15 +84,15 @@ public class ChatController
         {
             if (arena.getGameManager().getPlayerManager().isSpectator(sender))
             {
-                prefix = ChatColor.GREEN + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Spectator", "Spectator") + "]" + ChatColor.WHITE;
+                prefix = ChatColor.GREEN + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Spectator", "Spectator") + "]";
             }
             else if (arena.getGameManager().getPlayerManager().isCounselor(sender))
             {
-                prefix = ChatColor.GOLD + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Counselor", "Counselor") + "]" + ChatColor.WHITE;
+                prefix = ChatColor.GOLD + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Counselor", "Counselor") + "]";
             }
             else if (arena.getGameManager().getPlayerManager().isJason(sender))
             {
-                prefix = ChatColor.RED + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Jason", "Jason") + "]" + ChatColor.WHITE;
+                prefix = ChatColor.RED + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Jason", "Jason") + "]";
             }
 
             if (!areAnyPlayersRecipients)
@@ -107,7 +107,7 @@ public class ChatController
         }
 
         //Final message
-        String finalMessage = wasHeard + prefix + " <" + sender.getName() + ">: " + message;
+        String finalMessage = wasHeard + prefix + sender.getName() + ChatColor.WHITE + ": " + message;
 
         //Send it
         for (Player player : recipients)

@@ -124,7 +124,7 @@ public class ArenaSetupSession
         this.jasonStartLocation = player.getLocation();
 
         //Create Arena
-        Arena arena = new Arena(arenaName, arenaBoundary1, arenaBoundary2, waitingLocation, returnLocation, jasonStartLocation);
+        Arena arena = new Arena(arenaName, arenaBoundary1, arenaBoundary2, waitingLocation, returnLocation, jasonStartLocation, 1.8);
 
         //Attempt to store arena in database
         try

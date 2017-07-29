@@ -355,6 +355,9 @@ public class GameManager
         //Assign all players roles
         getPlayerManager().performInProgressActions();
 
+        //Calculate the game time
+        calculateGameTime();
+
         //Regenerate chests
         arena.getObjectManager().regenerateChests();
 
@@ -370,8 +373,6 @@ public class GameManager
     {
         //Remove all players
         getPlayerManager().performEndGameActions();
-
-        //GET RID OF THE SPECTATORS
 
         //Make countdown bar for any counselors disappear
         getGameCountdownManager().hideCountdownBar();
@@ -402,9 +403,19 @@ public class GameManager
         changeGameStatus(GameStatus.Empty);
     }
 
-    public void gameTimeUp()
-    {
+    /**
+     * Ends the game when the time expires
+     */
+    public void gameTimeUp() {
         //need to pass that the counselors who are alive won.
         endGame();
+    }
+
+    /**
+     * Calculates the game time based on the number of counselors
+     */
+    private void calculateGameTime() {
+        double secondsPer = Math.max(arena.getMinutesPerCounselor(), 1.8);
+        gameTimeLeftInSeconds = (int) Math.ceil((secondsPer * arena.getGameManager().getPlayerManager().getNumCounselors()) * 60);
     }
 }
