@@ -3,7 +3,7 @@ package com.AustinPilz.FridayThe13th.IO;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
-import com.AustinPilz.FridayThe13th.Components.ChestType;
+import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;

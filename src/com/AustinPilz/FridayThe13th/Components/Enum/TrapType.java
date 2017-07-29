@@ -1,18 +1,15 @@
-package com.AustinPilz.FridayThe13th.Components;
+package com.AustinPilz.FridayThe13th.Components.Enum;
 
-public enum ChestType {
-
-    Weapon("Weapon"), Item("Item");
+public enum TrapType {
+    Counselor("Counselor"), Jason("Jason");
 
     private final String fieldDescription;
 
-    ChestType(String value) {
+    TrapType(String value) {
         fieldDescription = value;
     }
 
     public String getFieldDescription() {
         return fieldDescription;
     }
-
-
 }

@@ -1,8 +1,5 @@
 package com.AustinPilz.FridayThe13th.Structures;
 
-/**
- * Created by austinpilz on 6/16/17.
- */
 public class LightLevelList
 {
     private DoublyLinkedList list = new DoublyLinkedList();

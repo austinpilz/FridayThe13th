@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.GameSkin;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Structures.GameSkin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_12_R1.EntityPlayer;

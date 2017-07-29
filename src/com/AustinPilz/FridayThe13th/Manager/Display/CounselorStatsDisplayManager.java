@@ -40,6 +40,7 @@ public class CounselorStatsDisplayManager
     {
         staminaBar.removeAll();
         fearBar.removeAll();
+
     }
 
     public void updateStats()

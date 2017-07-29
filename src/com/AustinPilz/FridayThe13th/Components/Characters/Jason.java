@@ -1,13 +1,13 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Enum.GameSkin;
 import com.AustinPilz.FridayThe13th.Components.SkinChange;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Manager.Statistics.JasonXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
-import com.AustinPilz.FridayThe13th.Structures.GameSkin;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;

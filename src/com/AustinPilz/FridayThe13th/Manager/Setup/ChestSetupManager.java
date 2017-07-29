@@ -1,12 +1,10 @@
 package com.AustinPilz.FridayThe13th.Manager.Setup;
 
-import com.AustinPilz.FridayThe13th.Components.ChestType;
+import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Chest.ChestSetupSessionAlreadyInProgressException;
-import com.AustinPilz.FridayThe13th.Exceptions.SpawnPoint.SpawnPointSetupSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Session.ChestSetupSession;
-import com.AustinPilz.FridayThe13th.Session.SpawnPointSetupSession;
 
 import java.util.HashMap;
 

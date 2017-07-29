@@ -2,7 +2,7 @@ package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
-import com.AustinPilz.FridayThe13th.Components.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;

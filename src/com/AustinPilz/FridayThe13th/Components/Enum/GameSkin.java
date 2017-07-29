@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Structures;
+package com.AustinPilz.FridayThe13th.Components.Enum;
 
 public enum GameSkin
 {

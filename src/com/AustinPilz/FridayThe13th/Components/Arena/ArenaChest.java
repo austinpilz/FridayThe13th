@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 
-import com.AustinPilz.FridayThe13th.Components.ChestType;
+import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;

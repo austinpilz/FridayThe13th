@@ -584,6 +584,7 @@ public class PlayerManager
         teleportPlayerToWaitingPoint(player);
 
         //Show the countdown timer
+        FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().displayStatsScoreboard();
         arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player);
 
         //Change game mode & clear inventory
@@ -604,6 +605,11 @@ public class PlayerManager
         //Assign roles and teleport players there
         assignGameRoles();
         assignSpawnLocations();
+
+        //Hide waiting scoreboard from everyone
+        for (Player player : players.values()) {
+            FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
+        }
 
         //Display player bars
         Iterator it = getCounselors().entrySet().iterator();
@@ -803,6 +809,7 @@ public class PlayerManager
             if (offlinePlayer.isOnline())
             {
                 //Teleport them to the return point
+                FridayThe13th.playerController.getPlayer(Bukkit.getPlayer(UUID.fromString(playerUUID))).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
                 teleportPlayerToReturnPoint(Bukkit.getPlayer(UUID.fromString(playerUUID)));
                 arena.getGameManager().getWaitingCountdownDisplayManager().hideForPlayer(Bukkit.getPlayer(UUID.fromString(playerUUID)));
                 Bukkit.getPlayer(UUID.fromString(playerUUID)).getInventory().clear();
@@ -1020,4 +1027,14 @@ public class PlayerManager
         sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.counselorsWin", "Counselors win! Jason was slain."));
     }
 
+    /**
+     * Updates waiting scoreboards
+     */
+    public void updateWaitingStatsScoreboards() {
+        if (arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) {
+            for (Player player : players.values()) {
+                FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().updateStatsScoreboard();
+            }
+        }
+    }
 }

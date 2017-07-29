@@ -2,9 +2,13 @@ package com.AustinPilz.FridayThe13th.Controller;
 
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerController {
     private HashMap<String, F13Player> players;
@@ -80,6 +84,24 @@ public class PlayerController {
     public void updatePlayers() {
         for (F13Player player : players.values()) {
             player.updateDB();
+        }
+    }
+
+
+    /**
+     * Removes
+     */
+    public void cleanupMemory() {
+        Iterator it = players.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String playerUUID = (String) entry.getKey();
+            F13Player player = (F13Player) entry.getValue();
+
+            if (!Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).isOnline()) {
+                player.updateDB();
+                it.remove();
+            }
         }
     }
 }

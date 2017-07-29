@@ -1,7 +1,9 @@
 package com.AustinPilz.FridayThe13th.Components;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.F13Level;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Display.WaitingPlayerStatsDisplayManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -16,7 +18,11 @@ public class F13Player {
     private boolean spawnPreferenceCounselor;
 
     //Statistics
+    private F13Level level;
     private int experiencePoints;
+
+    //Waiting Scoreboard
+    private WaitingPlayerStatsDisplayManager waitingPlayerStatsDisplayManager;
 
     public F13Player(String uuid) {
         this.playerUUID = uuid;
@@ -25,10 +31,28 @@ public class F13Player {
         spawnPreferenceJason = false;
         spawnPreferenceCounselor = false;
         experiencePoints = 0;
+        determineLevel();
+
+        //Display
+        waitingPlayerStatsDisplayManager = new WaitingPlayerStatsDisplayManager(this);
     }
 
+    /**
+     * Returns the player's UUID
+     *
+     * @return
+     */
     public String getPlayerUUID() {
         return playerUUID;
+    }
+
+    /**
+     * Returns the manager for the waiting player stats scoreboard
+     *
+     * @return
+     */
+    public WaitingPlayerStatsDisplayManager getWaitingPlayerStatsDisplayManager() {
+        return waitingPlayerStatsDisplayManager;
     }
 
     /**
@@ -58,8 +82,6 @@ public class F13Player {
 
     /**
      * Returns if the player prefers to play as a counselor
-     *
-     * @return
      */
     public boolean isSpawnPreferenceCounselor() {
         return spawnPreferenceCounselor;
@@ -110,6 +132,7 @@ public class F13Player {
     public void addXP(int value) {
         experiencePoints += value;
         updateDB();
+        determineLevel();
     }
 
     /**
@@ -119,5 +142,26 @@ public class F13Player {
      */
     public void setXP(int value) {
         experiencePoints = value;
+        determineLevel();
+    }
+
+    /**
+     * Returns the players level
+     *
+     * @return
+     */
+    public F13Level getLevel() {
+        return level;
+    }
+
+    /**
+     * Determines the players level
+     */
+    private void determineLevel() {
+        for (F13Level l : F13Level.values()) {
+            if (getXP() >= l.getMinXP() && getXP() < l.getMaxXP()) {
+                this.level = l;
+            }
+        }
     }
 }

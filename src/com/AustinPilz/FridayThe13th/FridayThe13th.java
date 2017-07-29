@@ -17,6 +17,7 @@ import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.PhoneSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
 import com.AustinPilz.FridayThe13th.Runnable.PlayerDatabaseUpdate;
+import com.AustinPilz.FridayThe13th.Runnable.PlayerMemoryClean;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -93,6 +94,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
         //Schedule tasks
         Bukkit.getScheduler().runTaskTimer(this, new PlayerDatabaseUpdate(), 12000, 12000);
+        Bukkit.getScheduler().runTaskTimer(this, new PlayerMemoryClean(), 36000, 36000);
 
         //Register Command Handlers
         getCommand("f13").setExecutor(new CommandHandler());

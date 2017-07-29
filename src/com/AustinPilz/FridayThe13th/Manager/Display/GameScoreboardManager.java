@@ -18,7 +18,6 @@ public class GameScoreboardManager
 
     private SidebarString timeLeftValue;
     private SidebarString jasonValue;
-    private SidebarString space;
 
     public GameScoreboardManager(Arena a)
     {

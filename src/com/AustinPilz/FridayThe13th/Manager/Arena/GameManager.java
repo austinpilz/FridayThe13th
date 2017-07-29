@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.GameStatus;
+import com.AustinPilz.FridayThe13th.Components.Enum.GameStatus;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.IO.Setting;
 import com.AustinPilz.FridayThe13th.IO.Settings;
@@ -10,6 +10,7 @@ import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
 import com.AustinPilz.FridayThe13th.Runnable.GameCountdown;
 import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
+import com.AustinPilz.FridayThe13th.Runnable.PlayerWaitingDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.WaitingCountdown;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
@@ -40,6 +41,7 @@ public class GameManager
     int gameStatusCheckTask = -1;
     int gameCountdownTask = -1;
     int waitingCountdownTask = -1;
+    int waitingScoreboardUpdateTask = -1;
 
     //Tommy Jarvis
     private boolean tommyCalled;
@@ -76,6 +78,7 @@ public class GameManager
 
         //Start Tasks
         gameStatusCheckTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameStatusCheck(arena), 60, 20);
+        gameStatusCheckTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new PlayerWaitingDisplayUpdate(arena), 60, 60);
     }
 
     /**

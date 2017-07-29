@@ -107,7 +107,11 @@ public class ChatController
         }
 
         //Final message
-        String finalMessage = wasHeard + prefix + " " + sender.getName() + ChatColor.WHITE + ": " + message;
+
+        //[!] [Level #] [Counselor] austinpilz: hi
+        String level = "[Level " + FridayThe13th.playerController.getPlayer(sender).getLevel().getLevelNumber() + "] ";
+
+        String finalMessage = wasHeard + level + prefix + " " + sender.getName() + ChatColor.WHITE + ": " + message;
 
         //Send it
         for (Player player : recipients)
