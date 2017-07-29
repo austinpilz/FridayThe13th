@@ -106,12 +106,9 @@ public class ChatController
             prefix = ChatColor.GRAY + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Waiting", "Waiting") + "]" + ChatColor.WHITE;
         }
 
+
         //Final message
-
-        //[!] [Level #] [Counselor] austinpilz: hi
-        String level = "[Level " + FridayThe13th.playerController.getPlayer(sender).getLevel().getLevelNumber() + "] ";
-
-        String finalMessage = wasHeard + level + prefix + " " + sender.getName() + ChatColor.WHITE + ": " + message;
+        String finalMessage = wasHeard + FridayThe13th.playerController.getPlayer(sender).getLevel().getChatPrefix() + prefix + " " + sender.getName() + ChatColor.WHITE + ": " + message;
 
         //Send it
         for (Player player : recipients)
