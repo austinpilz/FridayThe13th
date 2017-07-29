@@ -301,7 +301,7 @@ public class PlayerListener implements Listener {
                     if (event.getFrom().distance(event.getTo()) > 0) {
                         if (event.getPlayer().isSprinting()) {
                             if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getStaminaPercentage() == 0) {
-                                event.setCancelled(true); //cant run when they have no energy
+                                event.getPlayer().setSprinting(false);
                             } else {
                                 //Sprinting
                                 arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);

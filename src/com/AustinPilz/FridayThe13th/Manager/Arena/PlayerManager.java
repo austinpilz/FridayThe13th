@@ -773,7 +773,10 @@ public class PlayerManager
             getJason().getXPManager().setTimeLeftMinutes(arena.getGameManager().getGameTimeLeft() / 60);
         }
 
-        getJason().awardXP();
+        //Award Jason XP if there was a current game
+        if (getJason() != null) {
+            getJason().awardXP();
+        }
 
 
         //Clean everyone up
