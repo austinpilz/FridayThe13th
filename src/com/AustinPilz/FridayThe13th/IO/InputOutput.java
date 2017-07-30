@@ -130,7 +130,7 @@ public class InputOutput
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_signs\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_phones\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR, \"XP\" INTEGER DEFAULT 0)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR, \"XP\" INTEGER DEFAULT 0, \"JasonProfile\" VARCHAR)");
 
             conn.commit();
             st.close();
@@ -153,6 +153,7 @@ public class InputOutput
     public void updateDB() {
         Update("SELECT MinutesPerCounselor FROM f13_arenas", "ALTER TABLE f13_arenas ADD MinutesPerCounselor DOUBLE DEFAULT 2");
         Update("SELECT XP FROM f13_players", "ALTER TABLE f13_players ADD XP INTEGER DEFAULT 0");
+        Update("SELECT JasonProfile FROM f13_players", "ALTER TABLE f13_players ADD JasonProfile VARCHAR");
     }
 
     /**
@@ -220,7 +221,7 @@ public class InputOutput
                     FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load arena ("+arena.getArenaName()+") from database that was already in controller memory");
                 }
 
-                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Arena " + arena.getArenaName() + " loaded successfully.");
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Game " + arena.getArenaName() + " loaded successfully.");
                 count++;
             }
 
@@ -816,12 +817,12 @@ public class InputOutput
             PreparedStatement ps = null;
             ResultSet result = null;
             conn = getConnection();
-            ps = conn.prepareStatement("SELECT `SpawnPreference`, `XP` FROM `f13_players` WHERE `UUID` = ?");
+            ps = conn.prepareStatement("SELECT `SpawnPreference`, `XP`, `JasonProfile` FROM `f13_players` WHERE `UUID` = ?");
             ps.setString(1, UUID);
             result = ps.executeQuery();
 
             while (result.next()) {
-                F13Player player = new F13Player(UUID);
+                F13Player player = new F13Player(UUID, result.getString("JasonProfile"));
                 FridayThe13th.playerController.addPlayer(player);
 
                 if (result.getString("SpawnPreference").equals("J")) {
@@ -884,7 +885,7 @@ public class InputOutput
             String sql;
             Connection conn = InputOutput.getConnection();
 
-            sql = "UPDATE `f13_players` SET `SpawnPreference` = ?, `XP` = ? WHERE `UUID` = ?";
+            sql = "UPDATE `f13_players` SET `SpawnPreference` = ?, `XP` = ?, `JasonProfile` WHERE `UUID` = ?";
             //updateInDatabase
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
@@ -897,7 +898,8 @@ public class InputOutput
             }
 
             preparedStatement.setInt(2, player.getXP());
-            preparedStatement.setString(3, player.getPlayerUUID());
+            preparedStatement.setString(3, player.getJasonProfile().getDisplayName());
+            preparedStatement.setString(4, player.getPlayerUUID());
             preparedStatement.executeUpdate();
             connection.commit();
 

@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Enum.GameSkin;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
 import com.AustinPilz.FridayThe13th.Components.SkinChange;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
@@ -155,7 +155,7 @@ public class Counselor
         scheduleTasks();
 
         //Skin
-        skin.apply(GameSkin.COUNSELOR_BASE);
+        skin.apply(F13Skin.COUNSELOR_BASE);
     }
 
     /**
@@ -579,16 +579,16 @@ public class Counselor
 
         if (percentage == 1) {
             //Full Health
-            skin.apply(GameSkin.COUNSELOR_BASE);
+            skin.apply(F13Skin.COUNSELOR_BASE);
         } else if (percentage < 1 && percentage > 0.5) {
             //Minor Damage
-            skin.apply(GameSkin.COUSENLOR_BLOOD_1);
+            skin.apply(F13Skin.COUSENLOR_BLOOD_1);
         } else if (percentage <= 0.5 && percentage > 0.3) {
             //Some damage
-            skin.apply(GameSkin.COUSENLOR_BLOOD_2);
+            skin.apply(F13Skin.COUSENLOR_BLOOD_2);
         } else {
             //Major damage
-            skin.apply(GameSkin.COUSENLOR_BLOOD_3);
+            skin.apply(F13Skin.COUSENLOR_BLOOD_3);
         }
     }
 

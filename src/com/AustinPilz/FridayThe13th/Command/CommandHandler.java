@@ -49,7 +49,7 @@ public class CommandHandler implements CommandExecutor {
                                 }
                             } else {
                                 //An arena with that name already exists in the arena controller memory
-                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaAlreadyExists", "Arena {0}{1}{2} already exists. Please choose another name and try again.", ChatColor.RED, arenaName, ChatColor.WHITE));
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaAlreadyExists", "Game {0}{1}{2} already exists. Please choose another name and try again.", ChatColor.RED, arenaName, ChatColor.WHITE));
                             }
                         } else {
                             //Incorrect setup syntax
@@ -89,7 +89,7 @@ public class CommandHandler implements CommandExecutor {
                                     arena.getSignManager().markDeleted();
                                     FridayThe13th.arenaController.removeArena(arena);
                                     FridayThe13th.inputOutput.deleteArena(arenaName);
-                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.message.arenaDeleted", "Arena {0} has been deleted successfully.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.message.arenaDeleted", "Game {0} has been deleted successfully.", ChatColor.RED + arenaName + ChatColor.WHITE));
 
                                 } catch (ArenaDoesNotExistException exception) {
                                     //
@@ -97,7 +97,7 @@ public class CommandHandler implements CommandExecutor {
 
                             } else {
                                 //An arena with that name already exists in the arena controller memory
-                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                             }
                         } else {
                             //Incorrect setup syntax
@@ -164,7 +164,7 @@ public class CommandHandler implements CommandExecutor {
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addArenaSessionExisting", "You already have an arena setup session in progress. You must finish that session before starting a new one."));
                                 } catch (ArenaDoesNotExistException exception) {
                                     //An arena with that name does not exist in the arena controller memory
-                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                                 }
                             } else if (args[2].equalsIgnoreCase("phone")) {
                                 //All is good, begin the setup process handled by the ArenaCreation manager
@@ -175,7 +175,7 @@ public class CommandHandler implements CommandExecutor {
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addPhoneSessionExisting", "You already have an phone setup session in progress. You must finish that session before starting a new one."));
                                 } catch (ArenaDoesNotExistException exception) {
                                     //An arena with that name does not exist in the arena controller memory
-                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                                 }
                             } else if (args[2].contains("chest")) {
                                 if (args[2].equalsIgnoreCase("chest:weapon")) {
@@ -186,7 +186,7 @@ public class CommandHandler implements CommandExecutor {
                                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addChestWeaponSessionExisting", "You already have a weapon chest setup session in progress. You must finish that session before starting a new one."));
                                     } catch (ArenaDoesNotExistException exception) {
                                         //An arena with that name does not exist in the arena controller memory
-                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                                     }
                                 } else if (args[2].equalsIgnoreCase("chest:item")) {
                                     try {
@@ -196,7 +196,7 @@ public class CommandHandler implements CommandExecutor {
                                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addChestItemSessionExisting", "You already have an item chest setup session in progress. You must finish that session before starting a new one."));
                                     } catch (ArenaDoesNotExistException exception) {
                                         //An arena with that name does not exist in the arena controller memory
-                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                                     }
                                 } else {
                                     //Unknown type of chest
@@ -243,8 +243,8 @@ public class CommandHandler implements CommandExecutor {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setFieldSyntaxError", "Unknown field to set."));
                             }
                         } catch (ArenaDoesNotExistException exception) {
-                            //Arena does not exist
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                            //Game does not exist
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                         }
                     } else {
                         //Incorrect set syntax
@@ -266,7 +266,7 @@ public class CommandHandler implements CommandExecutor {
                             try {
                                 FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().playerJoinGame(((Player) sender));
                             } catch (ArenaDoesNotExistException exception) {
-                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                             } catch (GameFullException exception) {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaGameFull", "The game in {0} is currently full.", ChatColor.RED + arenaName + ChatColor.WHITE));
                             } catch (GameInProgressException exception) {
@@ -303,7 +303,7 @@ public class CommandHandler implements CommandExecutor {
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.spectateNotInProgress", "The game in {0} is not in progress. You can't spectate until the game has begun.", ChatColor.RED + arenaName + ChatColor.WHITE));
                                 }
                             } catch (ArenaDoesNotExistException exception) {
-                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                             }
                         } else {
                             //Incorrect play syntax
@@ -351,7 +351,7 @@ public class CommandHandler implements CommandExecutor {
 
 
                         } catch (ArenaDoesNotExistException exception) {
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                         }
                     } else {
                         //Incorrect setup syntax
@@ -377,7 +377,7 @@ public class CommandHandler implements CommandExecutor {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noGameToEnd", "There is no in progress game in {0} to end.", ChatColor.RED + arenaName + ChatColor.WHITE));
                             }
                         } catch (ArenaDoesNotExistException exception) {
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                         }
                     } else {
                         //Incorrect setup syntax
@@ -489,16 +489,17 @@ public class CommandHandler implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "--- Help Menu ---");
-                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/setup");
-                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/add");
-                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arena");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/setup [arenaName]");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/add [arenaName] [object]");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/set [arenaName] [field] [value]");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arena [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arenas");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/here");
-                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/join" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/join [arenaName]" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
                 } else if (sender.hasPermission("FridayThe13th.User")) {
                     sender.sendMessage(FridayThe13th.pluginPrefix + "--- Help Menu ---");
-                    sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + "/join" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play");
+                    sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + "/join [arenaName]" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
                 } else {
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));

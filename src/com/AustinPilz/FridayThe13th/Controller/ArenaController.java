@@ -59,7 +59,7 @@ public class ArenaController
         }
         else
         {
-            throw new ArenaDoesNotExistException("Arena " + name + " does not exist in the controller memory");
+            throw new ArenaDoesNotExistException("Game " + name + " does not exist in the controller memory");
         }
     }
 
@@ -160,7 +160,7 @@ public class ArenaController
     }
 
     /**
-     * Returns hashmap of player UUID string and Arena objects
+     * Returns hashmap of player UUID string and Game objects
      * @return
      */
     public HashMap<String, Arena> getPlayers()

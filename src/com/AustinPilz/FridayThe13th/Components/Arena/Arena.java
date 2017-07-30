@@ -1,10 +1,10 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Manager.Arena.GameManager;
-import com.AustinPilz.FridayThe13th.Manager.Arena.LocationManager;
-import com.AustinPilz.FridayThe13th.Manager.Arena.ObjectManager;
-import com.AustinPilz.FridayThe13th.Manager.Arena.SignManager;
+import com.AustinPilz.FridayThe13th.Manager.Game.GameManager;
+import com.AustinPilz.FridayThe13th.Manager.Game.LocationManager;
+import com.AustinPilz.FridayThe13th.Manager.Game.ObjectManager;
+import com.AustinPilz.FridayThe13th.Manager.Game.SignManager;
 import org.bukkit.Location;
 
 import java.util.Arrays;
@@ -13,7 +13,7 @@ public class Arena
 {
     private String arenaName;
 
-    //Arena Boundaries
+    //Game Boundaries
     private Location boundary1;
     private Location boundary2;
     private Location waitingLocation;
@@ -21,7 +21,7 @@ public class Arena
     private Location jasonStartLocation;
     private double minutesPerCounselor;
 
-    //Arena Managers
+    //Game Managers
     private LocationManager locationManager; //Manages important locations such as counselor spawn locations
     private ObjectManager objectManager;
     private GameManager gameManager; //Manages the active game, players, etc.

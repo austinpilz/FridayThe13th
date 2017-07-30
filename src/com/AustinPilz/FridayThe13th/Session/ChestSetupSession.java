@@ -48,7 +48,7 @@ public class ChestSetupSession
     private void beginSelection()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "To add " + chestType.getFieldDescription().toLowerCase() + " chest, put chest in your crosshairs and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + ".");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");

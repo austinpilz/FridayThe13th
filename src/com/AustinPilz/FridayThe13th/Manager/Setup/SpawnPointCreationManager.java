@@ -58,7 +58,7 @@ public class SpawnPointCreationManager
         }
         else
         {
-            //Arena with that name does not exist
+            //Game with that name does not exist
             throw new ArenaDoesNotExistException();
         }
     }

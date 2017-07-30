@@ -1,10 +1,11 @@
-package com.AustinPilz.FridayThe13th.Manager.Arena;
+package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Menu.JasonProfilesMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
@@ -24,7 +25,7 @@ public class PlayerManager
 {
     private Arena arena;
 
-    //Arena Players
+    //Game Players
     private HashMap<String, Player> players;
     private HashMap<String, Counselor> counselors;
     private HashMap<String, Spectator> spectators;
@@ -35,7 +36,7 @@ public class PlayerManager
     private HashSet<String> deadPlayers;
 
     /**
-     * @param arena Arena
+     * @param arena Game
      */
     public PlayerManager(Arena arena)
     {
@@ -492,10 +493,8 @@ public class PlayerManager
             if (isJason(player)) {
                 //Counselors win
                 counselorsWin();
-
                 arena.getGameManager().endGame(); //Game over kiddos
             } else {
-
                 //Firework
                 arena.getGameManager().getPlayerManager().fireFirework(player, Color.RED);
 
@@ -510,11 +509,10 @@ public class PlayerManager
                     arena.getGameManager().endGame();
                 }
             }
+
+            //Let everyone know
+            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerKilledBroadcast", "{0} was killed.", player.getName()));
         }
-
-        //Let everyone know
-        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerKilledBroadcast", "{0} was killed.", player.getName()));
-
     }
 
     /* Spectator Actions */
@@ -595,6 +593,8 @@ public class PlayerManager
 
         //Give them waiting room items
         SpawnPreferenceMenu.addMenuOpenItem(player);
+        JasonProfilesMenu.addMenuOpenItem(player);
+        //CounselorProfilesMenu.addMenuOpenItem(player);
     }
 
     /**
@@ -769,7 +769,7 @@ public class PlayerManager
         }
 
         //If Jason killed all of the players, he gets a time bonus
-        if (getNumPlayersAlive() > 0) {
+        if (getNumPlayersAlive() == 0) {
             getJason().getXPManager().setTimeLeftMinutes(arena.getGameManager().getGameTimeLeft() / 60);
         }
 
@@ -777,7 +777,6 @@ public class PlayerManager
         if (getJason() != null) {
             getJason().awardXP();
         }
-
 
         //Clean everyone up
         Iterator it = getPlayers().entrySet().iterator();
@@ -787,7 +786,6 @@ public class PlayerManager
             Player player = (Player) entry.getValue();
             it.remove();
             performPlayerCleanupActions(player.getUniqueId().toString());
-
         }
     }
 

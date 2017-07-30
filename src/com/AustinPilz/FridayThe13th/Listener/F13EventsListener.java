@@ -1,5 +1,7 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.JasonProfile;
+import com.AustinPilz.FridayThe13th.Components.Menu.JasonProfilesMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
@@ -36,6 +38,9 @@ public class F13EventsListener implements Listener {
                 } else if (action.equals("Spectate")) {
                     //Open the spectate selection  menu
                     SpectateMenu.openMenu(event.getPlayer(), event.getArena());
+                } else if (action.equals("JasonProfiles")) {
+                    //Open the spectate selection  menu
+                    JasonProfilesMenu.openMenu(event.getPlayer());
                 }
                 event.setCancelled(true);
             } else if (json.containsKey("SpawnPrefSelect")) {
@@ -66,6 +71,25 @@ public class F13EventsListener implements Listener {
                 event.setCancelled(true);
             } else if (json.containsKey("PlaceItem")) {
                 event.setCancelled(false); //All place items are handled by a different event but need to be ignored by this one
+            } else if (json.containsKey("JasonProfileSelect")) {
+                String profileName = (String) json.get("JasonProfileSelect");
+
+                if (!profileName.equalsIgnoreCase("Locked")) {
+
+                    boolean found = false;
+                    for (JasonProfile profile : JasonProfile.values()) {
+                        if (profile.getDisplayName().equalsIgnoreCase(profileName)) {
+                            //This is their skin
+                            if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setJasonProfile(profile)) {
+                                //Profile set successfully
+                                found = true;
+                                JasonProfilesMenu.openMenu(event.getPlayer());
+                            }
+                        }
+                    }
+                }
+
+                event.setCancelled(true);
             } else {
                 event.setCancelled(false); //Unknown object so we'll ignore it
             }

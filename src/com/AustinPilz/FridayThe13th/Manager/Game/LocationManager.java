@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Manager.Arena;
+package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import org.bukkit.Location;
@@ -12,7 +12,7 @@ public class LocationManager
     private HashSet<Location> availableStartingPoints;
 
     /**
-     * @param arena Arena object
+     * @param arena Game object
      */
     public LocationManager(Arena arena)
     {

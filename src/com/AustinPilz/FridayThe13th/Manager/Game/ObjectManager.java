@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Manager.Arena;
+package com.AustinPilz.FridayThe13th.Manager.Game;
 
 
 import com.AustinPilz.FridayThe13th.Components.Arena.*;
@@ -35,7 +35,7 @@ public class ObjectManager
 
 
     /**
-     * @param arena Arena object
+     * @param arena Game object
      */
     public ObjectManager(Arena arena)
     {
@@ -58,7 +58,7 @@ public class ObjectManager
 
     /**
      * Get the arena of this object manager
-     * @return Arena
+     * @return Game
      */
     public Arena getArena()
     {

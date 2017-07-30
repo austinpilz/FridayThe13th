@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Manager.Arena;
+package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.GameStatus;
@@ -55,7 +55,7 @@ public class GameManager
     private GameScoreboardManager gameScoreboardManager;
 
     /**
-     * @param arena Arena object
+     * @param arena Game object
      */
     public GameManager (Arena arena)
     {
@@ -384,7 +384,6 @@ public class GameManager
         arena.getObjectManager().restorePerGameObjects();
 
         //Remove any holograms from the previous game
-        //Remove Hologram
         for (Hologram hologram: HologramsAPI.getHolograms(FridayThe13th.instance))
         {
             if (arena.isLocationWithinArenaBoundaries(hologram.getLocation())) {

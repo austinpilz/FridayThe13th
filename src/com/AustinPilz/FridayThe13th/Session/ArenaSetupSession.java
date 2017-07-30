@@ -72,7 +72,7 @@ public class ArenaSetupSession
     private void lowestBoundarySelected()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "Lowest point selected. Go to the highest point of the arena boundary and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -83,7 +83,7 @@ public class ArenaSetupSession
     private void highestBoundarySelected()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "Highest point selected. Go to where players will wait for other players before the game begins and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -94,7 +94,7 @@ public class ArenaSetupSession
     private void waitingLocationSelected()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "Waiting location selected. Go to where players will be sent after the game ends and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -105,7 +105,7 @@ public class ArenaSetupSession
     private void returnLocationSelected()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "Return location selected. Go to where JASON will start the game and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -116,14 +116,14 @@ public class ArenaSetupSession
     private void jasonLocationSelected()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Arena " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
-        this.player.sendMessage(ChatColor.WHITE + "Jason start location selected. Arena setup " + ChatColor.GREEN + "success " + ChatColor.WHITE + ". You'll need to use commands to now add player starting location(s) and other game objects.");
+        this.player.sendMessage(ChatColor.WHITE + "Jason start location selected. Game setup " + ChatColor.GREEN + "success " + ChatColor.WHITE + ". You'll need to use commands to now add player starting location(s) and other game objects.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
         this.state++;
         this.jasonStartLocation = player.getLocation();
 
-        //Create Arena
+        //Create Game
         Arena arena = new Arena(arenaName, arenaBoundary1, arenaBoundary2, waitingLocation, returnLocation, jasonStartLocation, 1.8);
 
         //Attempt to store arena in database
@@ -134,12 +134,12 @@ public class ArenaSetupSession
         }
         catch (SaveToDatabaseException exception)
         {
-            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena setup FAILED due to a database error.");
+            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Game setup FAILED due to a database error.");
         }
 
         catch (ArenaAlreadyExistsException exception)
         {
-            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Arena setup FAILED due to there already being an arena with that name in the controller memory.");
+            player.sendMessage(FridayThe13th.pluginAdminPrefix + "Game setup FAILED due to there already being an arena with that name in the controller memory.");
         }
         finally
         {

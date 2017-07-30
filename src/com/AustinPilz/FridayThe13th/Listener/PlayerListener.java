@@ -305,10 +305,10 @@ public class PlayerListener implements Listener {
                         if (event.getPlayer().isSprinting()) {
                             if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getStaminaPercentage() == 0) {
                                 event.getPlayer().setSprinting(false);
+                                event.setCancelled(true);
                             } else {
                                 //Sprinting
                                 arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
-                                event.setCancelled(true);
                             }
                         } else if (event.getPlayer().isSneaking()) {
                             //Sneaking
@@ -387,7 +387,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player)
         {
@@ -423,24 +423,28 @@ public class PlayerListener implements Listener {
                                         event.setCancelled(true);
                                     } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager))
                                     {
-                                        //Counselor is damaging Jason
+                                        //Counselor is damaging
                                         if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
                                         {
-                                            if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.STICK))
+                                            if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE))
                                             {
-                                                arena.getGameManager().getPlayerManager().getJason().stun();
+                                                //They're using a weapon
+                                                if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
+                                                    //Friendly kill
+                                                    arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addFriendlyHit();
+                                                } else if (arena.getGameManager().getPlayerManager().isJason(playerDamaged)) {
+                                                    //Jason Hit
+                                                    arena.getGameManager().getPlayerManager().getJason().stun();
 
-                                                //Register counselor XP
-                                                arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
+                                                    //Register counselor XP
+                                                    arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
+                                                }
                                             } else
                                             {
                                                 event.setCancelled(true); //Counselors can't hurt unless they have a special item
                                             }
                                         }
-                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
-                                        //Friendly kill
-                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addFriendlyHit();
-                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && arena.getGameManager().getPlayerManager().isJason(playerDamager) && playerDamaged.getHealth() <= event.getDamage()) {
+                                    } else if (arena.getGameManager().getPlayerManager().isJason(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
                                         //Jason kills a counselor
                                         arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
                                     }
@@ -461,6 +465,7 @@ public class PlayerListener implements Listener {
                         {
                             //This blow would kill them
                             event.setCancelled(true);
+                            playerDamaged.setHealth(20);
                             arena.getGameManager().getPlayerManager().onPlayerDeath(playerDamaged);
                         }
                     }

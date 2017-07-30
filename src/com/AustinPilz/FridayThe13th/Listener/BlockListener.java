@@ -52,9 +52,9 @@ public class BlockListener implements Listener
                         }
                         catch (ArenaDoesNotExistException exception)
                         {
-                            //Arena does not exist
+                            //Game does not exist
                             event.setCancelled(true);
-                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "command.error.arenaDoesNotExist", "Arena {0} does not exist.", ChatColor.RED + lines[1] + ChatColor.WHITE));
+                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + lines[1] + ChatColor.WHITE));
                         }
                         catch (SaveToDatabaseException exception)
                         {

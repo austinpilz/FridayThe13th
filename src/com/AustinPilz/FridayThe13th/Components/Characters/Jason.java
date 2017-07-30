@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Enum.GameSkin;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.SkinChange;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
@@ -30,6 +30,7 @@ public class Jason
 {
     //Minecraft Objects
     private Player player;
+    private F13Player f13Player;
 
     //Game
     private Arena arena;
@@ -83,6 +84,8 @@ public class Jason
     {
         arena = a;
         player = p;
+
+        f13Player = FridayThe13th.playerController.getPlayer(player);
 
         //Display
         abilityDisplayManager = new JasonAbilityDisplayManager(this);
@@ -227,7 +230,7 @@ public class Jason
         arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
 
         //Skin
-        skin.apply(GameSkin.JASON);
+        skin.apply(f13Player.getJasonProfile().getSkin());
 
         //Schedule tasks
         scheduleTasks();

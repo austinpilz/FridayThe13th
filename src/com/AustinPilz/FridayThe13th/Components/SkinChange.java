@@ -1,6 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.GameSkin;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -28,7 +28,7 @@ public class SkinChange {
     /**
      * Applies the skin
      */
-    public void apply(GameSkin skin) {
+    public void apply(F13Skin skin) {
         Player player = Bukkit.getPlayer(this.uuid);
 
         if (player == null) {
@@ -82,7 +82,7 @@ public class SkinChange {
         if (player == null) {
             return;
         }
-        GameSkin original = GameSkin.ORIGINAL;
+        F13Skin original = F13Skin.ORIGINAL;
         original.setValue(this.originalTextures[0]);
         original.setSignature(this.originalTextures[1]);
         apply(original);

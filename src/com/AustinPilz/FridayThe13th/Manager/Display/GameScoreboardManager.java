@@ -38,7 +38,7 @@ public class GameScoreboardManager
             gameScoreboard.removeEntry(string);
         }
 
-        SidebarString arenaTitle = new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Arena", "Arena"));
+        SidebarString arenaTitle = new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Game", "Game"));
         gameScoreboard.addEntry(arenaTitle);
 
         SidebarString arenaName = new SidebarString(arena.getArenaName());
