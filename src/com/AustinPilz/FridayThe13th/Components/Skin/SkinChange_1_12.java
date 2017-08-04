@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Components;
+package com.AustinPilz.FridayThe13th.Components.Skin;
 
 import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
@@ -14,13 +14,13 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.UUID;
 
-public class SkinChange {
+public class SkinChange_1_12 implements SkinChange {
 
     private UUID uuid;
     private String[] originalTextures;
     private boolean reverted;
 
-    public SkinChange(Player player) {
+    public SkinChange_1_12(Player player) {
         this.uuid = player.getUniqueId();
         reverted = false;
     }

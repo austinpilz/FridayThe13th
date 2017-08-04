@@ -394,86 +394,73 @@ public class PlayerListener implements Listener {
             try
             {
                 Player temp = (Player) event.getEntity();
-                Player playerDamaged = Bukkit.getPlayer(temp.getUniqueId());
 
-                Arena arena = FridayThe13th.arenaController.getPlayerArena(playerDamaged.getUniqueId().toString()); //See if they're playing
+                //Make sure they're an actual player and not an NPC
+                if (Bukkit.getPlayer(temp.getUniqueId()) != null) {
+                    Player playerDamaged = Bukkit.getPlayer(temp.getUniqueId());
+                    Arena arena = FridayThe13th.arenaController.getPlayerArena(playerDamaged.getUniqueId().toString()); //See if they're playing
 
-                if (arena.getGameManager().isGameInProgress())
-                {
-                    if (arena.getGameManager().getPlayerManager().isSpectator(playerDamaged))
-                    {
-                        event.setCancelled(true); //You can't get hurt in spectate mode
-                    }
-                    else
-                    {
-                        if(event instanceof EntityDamageByEntityEvent)
-                        {
-                            EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
-                            if(edbeEvent.getDamager() instanceof Player)
-                            {
-                                //The person doing the damage is a player, too.
-                                Player playerDamager = (Player)edbeEvent.getDamager();
+                    if (arena.getGameManager().isGameInProgress()) {
+                        if (arena.getGameManager().getPlayerManager().isSpectator(playerDamaged)) {
+                            event.setCancelled(true); //You can't get hurt in spectate mode
+                        } else {
+                            if (event instanceof EntityDamageByEntityEvent) {
+                                EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
+                                if (edbeEvent.getDamager() instanceof Player) {
+                                    //The person doing the damage is a player, too.
+                                    Player playerDamager = (Player) edbeEvent.getDamager();
 
-                                if (FridayThe13th.arenaController.isPlayerPlaying(playerDamager))
-                                {
-                                    //The person doing the damage is playing
-                                    if (arena.getGameManager().getPlayerManager().isSpectator(playerDamager))
-                                    {
-                                        //The damage is a counselor in spectate mode
-                                        event.setCancelled(true);
-                                    } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager))
-                                    {
-                                        //Counselor is damaging
-                                        if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
-                                        {
-                                            if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE))
-                                            {
-                                                //They're using a weapon
-                                                if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
-                                                    //Friendly kill
-                                                    arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addFriendlyHit();
-                                                } else if (arena.getGameManager().getPlayerManager().isJason(playerDamaged)) {
-                                                    //Jason Hit
-                                                    arena.getGameManager().getPlayerManager().getJason().stun();
+                                    if (FridayThe13th.arenaController.isPlayerPlaying(playerDamager)) {
+                                        //The person doing the damage is playing
+                                        if (arena.getGameManager().getPlayerManager().isSpectator(playerDamager)) {
+                                            //The damage is a counselor in spectate mode
+                                            event.setCancelled(true);
+                                        } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager)) {
+                                            //Counselor is damaging
+                                            if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
+                                                if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE)) {
+                                                    //They're using a weapon
+                                                    if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
+                                                        //Friendly kill
+                                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addFriendlyHit();
+                                                    } else if (arena.getGameManager().getPlayerManager().isJason(playerDamaged)) {
+                                                        //Jason Hit
+                                                        arena.getGameManager().getPlayerManager().getJason().stun();
 
-                                                    //Register counselor XP
-                                                    arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
+                                                        //Register counselor XP
+                                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
+                                                    }
+                                                } else {
+                                                    event.setCancelled(true); //Counselors can't hurt unless they have a special item
                                                 }
-                                            } else
-                                            {
-                                                event.setCancelled(true); //Counselors can't hurt unless they have a special item
                                             }
+                                        } else if (arena.getGameManager().getPlayerManager().isJason(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
+                                            //Jason kills a counselor
+                                            arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
                                         }
-                                    } else if (arena.getGameManager().getPlayerManager().isJason(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
-                                        //Jason kills a counselor
-                                        arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
+                                    } else {
+                                        //The person doing the damage isn't even playing
+                                        event.setCancelled(true);
+                                        playerDamager.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(playerDamager, "game.error.hitWhileNotPlaying", "You can't hit F13 players while you're not playing."));
                                     }
-                                }
-                                else
-                                {
-                                    //The person doing the damage isn't even playing
-                                    event.setCancelled(true);
-                                    playerDamager.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(playerDamager, "game.error.hitWhileNotPlaying", "You can't hit F13 players while you're not playing."));
                                 }
                             }
                         }
-                    }
 
-                    if (!event.isCancelled())
-                    {
-                        if (playerDamaged.getHealth() <= event.getDamage())
-                        {
-                            //This blow would kill them
-                            event.setCancelled(true);
-                            playerDamaged.setHealth(20);
-                            arena.getGameManager().getPlayerManager().onPlayerDeath(playerDamaged);
+                        if (!event.isCancelled()) {
+                            if (playerDamaged.getHealth() <= event.getDamage()) {
+                                //This blow would kill them
+                                event.setCancelled(true);
+                                playerDamaged.setHealth(20);
+                                arena.getGameManager().getPlayerManager().onPlayerDeath(playerDamaged);
+                            }
                         }
+                    } else {
+                        //You can't get damaged while wait2ing
+                        event.setCancelled(true);
                     }
-                }
-                else
-                {
-                    //You can't get damaged while waiting
-                    event.setCancelled(true);
+                } else {
+                    //They're not an actual player, most likely an NPC
                 }
             }
             catch (PlayerNotPlayingException exception)

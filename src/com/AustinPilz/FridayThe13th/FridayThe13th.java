@@ -37,6 +37,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static final String signPrefix = ChatColor.RED + "[F13]";
     public static final String consolePrefix = "[FridayThe13th] ";
     public static final String pluginURL = "";
+    public static String serverVersion = "";
     public static FridayThe13th instance;
 
     public static final Logger log = Logger.getLogger("Minecraft");
@@ -66,6 +67,14 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
         //Language Wrapper
         language = new LanguageWrapper(this, "eng");
+
+        //Determine server version
+        try {
+            serverVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+            log.log(Level.INFO, "SV: " + serverVersion);
+        } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
+            //Unknown server version - will lead to NMS not working
+        }
 
         //Initialize Game Components
         arenaController = new ArenaController();
@@ -155,6 +164,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
             log.log(Level.WARNING, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.metrics", "Encountered an unexpected error while attempting to submit stats."));
         }
 
+        //Startup complete
         log.log(Level.INFO, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.message.bootupTime", "Startup complete - took {0} ms", (System.currentTimeMillis() - startMili)));
     }
 

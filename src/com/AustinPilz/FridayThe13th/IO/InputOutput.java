@@ -885,7 +885,7 @@ public class InputOutput
             String sql;
             Connection conn = InputOutput.getConnection();
 
-            sql = "UPDATE `f13_players` SET `SpawnPreference` = ?, `XP` = ?, `JasonProfile` WHERE `UUID` = ?";
+            sql = "UPDATE `f13_players` SET `SpawnPreference` = ?, `XP` = ?, `JasonProfile` = ? WHERE `UUID` = ?";
             //updateInDatabase
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 

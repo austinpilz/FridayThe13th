@@ -2,7 +2,9 @@ package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
-import com.AustinPilz.FridayThe13th.Components.SkinChange;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Manager.Statistics.JasonXPManager;
@@ -90,7 +92,6 @@ public class Jason
         //Display
         abilityDisplayManager = new JasonAbilityDisplayManager(this);
         xpManager = new JasonXPManager(this, arena);
-        skin = new SkinChange(getPlayer());
 
         //Stalk Values
         stalkLevel = 0;
@@ -127,6 +128,13 @@ public class Jason
         originalWalkSpeed = player.getWalkSpeed();
         originalFlySpeed = player.getFlySpeed();
         originalAllowFly = player.getAllowFlight();
+
+        //Skin Change
+        if (FridayThe13th.serverVersion.equalsIgnoreCase("v1_12_R1")) {
+            skin = new SkinChange_1_12(getPlayer());
+        } else {
+            skin = new SkinChange_0_0(getPlayer());
+        }
     }
 
     /**

@@ -2,7 +2,9 @@ package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
-import com.AustinPilz.FridayThe13th.Components.SkinChange;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
 import com.AustinPilz.FridayThe13th.Manager.Statistics.CounselorXPManager;
@@ -108,7 +110,13 @@ public class Counselor
 
         //Etc
         awaitingWindowJump = false;
-        skin = new SkinChange(getPlayer());
+
+        //Skin Change
+        if (FridayThe13th.serverVersion.equalsIgnoreCase("v1_12_R1")) {
+            skin = new SkinChange_1_12(getPlayer());
+        } else {
+            skin = new SkinChange_0_0(getPlayer());
+        }
     }
 
     /**

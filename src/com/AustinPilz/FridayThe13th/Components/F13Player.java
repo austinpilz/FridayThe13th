@@ -203,10 +203,17 @@ public class F13Player {
         }
     }
 
+    /**
+     * Sets Jason profile
+     *
+     * @param p
+     * @return
+     */
     public boolean setJasonProfile(JasonProfile p) {
         //Check to make sure they have the right level
         if (getLevel().equals(p.getRequiredLevel()) || getLevel().isGreaterThan(p.getRequiredLevel())) {
             jasonProfile = p;
+            updateDB();
             return true;
         } else {
             return false;
