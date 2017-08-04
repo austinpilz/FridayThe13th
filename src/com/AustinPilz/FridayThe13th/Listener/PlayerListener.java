@@ -60,7 +60,6 @@ public class PlayerListener implements Listener {
         try {
             if (event.getEntity() instanceof Player)
             {
-
                 //This should NEVER happen, it should always look for damage
 
                 Player player = event.getEntity();
@@ -467,6 +466,17 @@ public class PlayerListener implements Listener {
             {
                 //Do nothing since in this case, we couldn't care
             }
+        } else {
+            //The entity being damaged is not a player, check to see if player is damaging this unknown entity
+            if (event instanceof EntityDamageByEntityEvent) {
+                EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
+                if (edbeEvent.getDamager() instanceof Player) {
+                    if (FridayThe13th.arenaController.isPlayerPlaying((Player) edbeEvent.getDamager())) {
+                        //F13 player is damaging a non-player entity.
+                        event.setCancelled(true);
+                    }
+                }
+            }
         }
     }
 
@@ -583,27 +593,18 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
-        try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
-            event.setCancelled(true);
-        } catch (PlayerNotPlayingException exception) {
-            //
+
+        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer())) {
+            event.setCancelled(true); //Cannot manipulate armor stands while playing
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
-        try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
-
-            if (event.getRightClicked() instanceof Player) {
-                event.setCancelled(false);
-            } else {
-                //They shouldn't be able to interact with anything that isn't a player
-                event.setCancelled(true);
+        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer())) {
+            if (!(event.getRightClicked() instanceof Player)) {
+                event.setCancelled(true); //Players cannot interact with any entity that is not another player
             }
-        } catch (PlayerNotPlayingException exception) {
-            //
         }
     }
 }

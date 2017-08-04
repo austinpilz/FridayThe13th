@@ -221,7 +221,7 @@ public class InputOutput
                     FridayThe13th.log.log(Level.SEVERE, FridayThe13th.consolePrefix + "Attempted to load arena ("+arena.getArenaName()+") from database that was already in controller memory");
                 }
 
-                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Game " + arena.getArenaName() + " loaded successfully.");
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Arena " + arena.getArenaName() + " loaded successfully.");
                 count++;
             }
 

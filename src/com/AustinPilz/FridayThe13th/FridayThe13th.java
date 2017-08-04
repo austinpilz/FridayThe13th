@@ -71,7 +71,6 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //Determine server version
         try {
             serverVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-            log.log(Level.INFO, "SV: " + serverVersion);
         } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
             //Unknown server version - will lead to NMS not working
         }

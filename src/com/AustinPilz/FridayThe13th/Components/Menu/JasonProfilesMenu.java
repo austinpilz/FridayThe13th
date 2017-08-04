@@ -3,7 +3,7 @@ package com.AustinPilz.FridayThe13th.Components.Menu;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
 import com.AustinPilz.FridayThe13th.Components.Enum.JasonProfile;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
-import com.AustinPilz.FridayThe13th.Components.SkullPreview;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkullPreview;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
@@ -44,6 +44,11 @@ public class JasonProfilesMenu {
                 //The player has access to the profile
                 jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"" + profile.getDisplayName() + "\"}"));
                 jasonItemLore.add(ChatColor.DARK_GREEN + "Unlocked");
+                jasonItemLore.add("");
+                jasonItemLore.add(ChatColor.WHITE + "Stalk " + ChatColor.GREEN + profile.getStalkLevel().getLevelName());
+                jasonItemLore.add(ChatColor.WHITE + "Sense " + ChatColor.RED + profile.getSenseLevel().getLevelName());
+                jasonItemLore.add(ChatColor.WHITE + "Warp " + ChatColor.DARK_PURPLE + profile.getWarpLevel().getLevelName());
+                jasonItemLore.add(ChatColor.WHITE + "Door Breaks: " + ChatColor.AQUA + profile.getRequiredDoorBreaks());
 
                 //Add green glass to signify unlocked
                 if (f13Player.getJasonProfile().equals(profile)) {
@@ -55,9 +60,10 @@ public class JasonProfilesMenu {
                     //This skin is available
                     glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 5);
                     glassMeta = glass.getItemMeta();
-                    glassMeta.setDisplayName(ChatColor.DARK_GREEN + "Unlocked");
+                    glassMeta.setDisplayName(ChatColor.DARK_GREEN + "^ Unlocked");
                 }
             } else {
+                //This Jason is locked
                 jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"Locked\"}"));
                 jasonItemLore.add(ChatColor.BOLD + "" + ChatColor.RED + "LOCKED");
                 jasonItemLore.add("");
@@ -66,7 +72,7 @@ public class JasonProfilesMenu {
                 //Set red glass to signify locked
                 glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 14);
                 glassMeta = glass.getItemMeta();
-                glassMeta.setDisplayName(ChatColor.RED + "Locked");
+                glassMeta.setDisplayName(ChatColor.RED + "^ Locked");
             }
 
             item = new SkullPreview(profile.getSkin(), profile.getDisplayName(), jasonItemLore);

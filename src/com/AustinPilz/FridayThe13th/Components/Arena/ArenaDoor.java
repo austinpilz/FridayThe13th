@@ -18,7 +18,7 @@ public class ArenaDoor
     public ArenaDoor(Block block, Arena arena)
     {
         hits = 0;
-        requiredHits = 5;
+        requiredHits = arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getRequiredDoorBreaks();
         doorBlock = block;
         this.arena = arena;
     }
@@ -26,8 +26,7 @@ public class ArenaDoor
     /**
      * Called whenever block break attempt is made by Jason
      */
-    public void blockBreak()
-    {
+    public void blockBreak() {
         hits++; //Register hit
 
         if (getNumHits() >= getNumHitsRequired())

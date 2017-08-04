@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Enum.JasonProfile;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
@@ -33,6 +34,7 @@ public class Jason
     //Minecraft Objects
     private Player player;
     private F13Player f13Player;
+    private JasonProfile jasonProfile;
 
     //Game
     private Arena arena;
@@ -96,16 +98,16 @@ public class Jason
         //Stalk Values
         stalkLevel = 0;
         stalkLevelMax = 30;
-        stalkLevelDepletionRate = 0.01;
-        stalkLevelRegenerationRate = 0.06;
+        stalkLevelDepletionRate = f13Player.getJasonProfile().getStalkLevel().getDepletionRate();
+        stalkLevelRegenerationRate = f13Player.getJasonProfile().getStalkLevel().getRegenerationRate();
         stalkInitialGenerationCompleted = false;
         stalkPotion = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
 
         //Sense Values
         senseLevel = 0;
         senseLevelMax = 30;
-        senseLevelDepletionRate = 0.1;
-        senseLevelRegenerationRate = 0.04;
+        senseLevelDepletionRate = f13Player.getJasonProfile().getSenseLevel().getDepletionRate();
+        senseLevelRegenerationRate = f13Player.getJasonProfile().getSenseLevel().getRegenerationRate();
         senseInitialGenerationComplete = false;
         senseActive = false;
         sensePotion = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
@@ -113,8 +115,8 @@ public class Jason
         //Warp Values
         warpLevel = 0;
         warpLevelMax = 30;
-        warpLevelDepletionRate = 0.1;
-        warpLevelRegenerationRate = 0.03;
+        warpLevelDepletionRate = f13Player.getJasonProfile().getWarpLevel().getDepletionRate();
+        warpLevelRegenerationRate = f13Player.getJasonProfile().getWarpLevel().getRegenerationRate();
         warpInitialGenerationComplete = false;
         warpActive = false;
 
@@ -138,11 +140,20 @@ public class Jason
     }
 
     /**
-     * Return the player object of the counselor
+     * Return the player object of Jason
      */
     public Player getPlayer()
     {
         return this.player;
+    }
+
+    /**
+     * Returns Jason's F13 player object
+     *
+     * @return
+     */
+    public F13Player getF13Player() {
+        return f13Player;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Components;
+package com.AustinPilz.FridayThe13th.Components.Skin;
 
 import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
 import com.mojang.authlib.GameProfile;

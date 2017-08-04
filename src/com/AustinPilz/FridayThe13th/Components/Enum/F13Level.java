@@ -22,7 +22,7 @@ public enum F13Level {
     L17(17, 210501, 232500),
     L18(18, 232501, 255500),
     L19(19, 255501, 279500),
-    L20(20, 279501, 304500),;
+    L20(20, 279501, 304500, ChatColor.RED);
 
     private final int levelNumber;
     private final int minXP;

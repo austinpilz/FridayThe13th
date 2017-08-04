@@ -204,6 +204,23 @@ public class F13Player {
     }
 
     /**
+     * Returns the next level for the player
+     *
+     * @return
+     */
+    public F13Level getNextLevel() {
+        F13Level level = getLevel();
+
+        for (F13Level l : F13Level.values()) {
+            if (l.getLevelNumber() == getLevel().getLevelNumber() + 1) {
+                level = l;
+            }
+        }
+
+        return level;
+    }
+
+    /**
      * Sets Jason profile
      *
      * @param p

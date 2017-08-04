@@ -121,7 +121,7 @@ public class BlockListener implements Listener
     {
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
-            event.setCancelled(true);
+            event.setCancelled(true); //Can never break blocks while in-game
 
             if (arena.getGameManager().isGameInProgress())
             {
@@ -149,10 +149,6 @@ public class BlockListener implements Listener
                         arena.getGameManager().getPlayerManager().getJason().getXPManager().addWindowBreak();
                     }
                 }
-            }
-            else if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty())
-            {
-                event.setCancelled(true); //Disable interaction while in the waiting room
             }
         } catch (PlayerNotPlayingException exception)
         {
