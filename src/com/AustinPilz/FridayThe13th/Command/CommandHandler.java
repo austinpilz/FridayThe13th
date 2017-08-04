@@ -28,7 +28,8 @@ public class CommandHandler implements CommandExecutor {
 
         if (args.length < 1) {
             //f13
-            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.pluginName + " v" + ChatColor.GREEN + FridayThe13th.pluginVersion);
+            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.pluginName + " version " + ChatColor.GREEN + FridayThe13th.pluginVersion);
+            sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Type " + ChatColor.AQUA + "/F13 help " + ChatColor.GREEN + "for help.");
         } else {
             if (args[0].equalsIgnoreCase("setup")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
@@ -116,7 +117,7 @@ public class CommandHandler implements CommandExecutor {
                     //Setup commands cannot be executed by the console
                     if (args.length == 2) {
                         if (args[1].equalsIgnoreCase("jason")) {
-                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jasonHeader", "--- F13 Jason Tutorial ---"));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jasonHeader", ChatColor.STRIKETHROUGH + "---" + ChatColor.RESET + "F13 Jason Tutorial" + ChatColor.STRIKETHROUGH + "---"));
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason1", "- You are Jason Voorhees. Your mission is to kill all of the counselors."));
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason2", "- Stalk by crouching to vanish and sneak up on counselors."));
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason3", "- Use sense potion to see players through terrain."));
@@ -124,7 +125,7 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason5", "- Use your axe to break down doors, power switches and windows."));
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.jason6", "- Set traps to ensnare counselors."));
                         } else if (args[1].equalsIgnoreCase("counselor")) {
-                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselorHeader", "--- F13 Counselor Tutorial ---"));
+                            sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselorHeader", ChatColor.STRIKETHROUGH + "---" + ChatColor.RESET + "F13 Counselor Tutorial" + ChatColor.STRIKETHROUGH + "---"));
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor1", "- You are a counselor. Run, hide, and fight for your life."));
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor2", "- Chat is proximity based. Spectators can hear you, but you cannot hear them."));
                             sender.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(sender, "command.tutorial.counselor3", "- Your fear level is calculated by the light level and distance from Jason. When you're scared, Jason can sense you."));
@@ -204,7 +205,7 @@ public class CommandHandler implements CommandExecutor {
                                 }
                             } else {
                                 //Unknown add command
-                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addItemError", "Incorrect add item. Available items are {0} and {1}.", ChatColor.AQUA + "spawn" + ChatColor.WHITE, ChatColor.AQUA + "chest" + ChatColor.WHITE));
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addItemError", "Incorrect add item. Available items are {0}, {1}, and {2}", ChatColor.AQUA + "spawn" + ChatColor.WHITE, ChatColor.AQUA + "chest" + ChatColor.WHITE + ChatColor.AQUA + "phone"));
                             }
                         } else {
                             //Incorrect setup syntax
@@ -325,7 +326,7 @@ public class CommandHandler implements CommandExecutor {
                         try {
                             Arena arena = FridayThe13th.arenaController.getArena(arenaName);
 
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + "-----" + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE + " -----");
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.STRIKETHROUGH + "-----" + ChatColor.RESET + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE + ChatColor.STRIKETHROUGH + " -----");
 
                             if (arena.getGameManager().isGameEmpty()) {
                                 sender.sendMessage("Game Status: " + ChatColor.RED + "Empty");
@@ -340,7 +341,7 @@ public class CommandHandler implements CommandExecutor {
                                 sender.sendMessage("Time Left: " + mn + "m " + sec + "sec");
                                 sender.sendMessage("# Players: " + arena.getGameManager().getPlayerManager().getNumPlayers());
                                 sender.sendMessage("# Spectators: " + arena.getGameManager().getPlayerManager().getNumSpectators());
-                                sender.sendMessage("--------------");
+                                sender.sendMessage(ChatColor.STRIKETHROUGH + "--------------");
                             }
 
                             sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
@@ -408,12 +409,12 @@ public class CommandHandler implements CommandExecutor {
                             }
                         } else {
                             //The player is not online
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + playerName + " " + FridayThe13th.language.get(sender, "command.error.kickPlayerNotOnline", "is not online."));
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + playerName + " " + FridayThe13th.language.get(sender, "command.error.kickPlayerNotOnline", ChatColor.DARK_RED +"is not online."));
                         }
 
                     } else {
                         //Incorrect kick syntax
-                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.kickSyntaxError", "Incorrect kick syntax. Usage: {0}", ChatColor.AQUA + "/f13 kick [playerName]"));
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.kickSyntaxError", "Incorrect kick syntax. Usage: {0}", ChatColor.GREEN + "/f13 kick" + ChatColor.AQUA + "[playerName]"));
                     }
                 } else {
                     //No permissions
@@ -468,7 +469,7 @@ public class CommandHandler implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("arenas")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     if (FridayThe13th.arenaController.getNumberOfArenas() > 0) {
-                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + "--- Arenas ---");
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.STRIKETHROUGH + "---" + ChatColor.RESET + "Arenas" + ChatColor.STRIKETHROUGH + "---");
 
                         //Print all arenas
                         Iterator it = FridayThe13th.arenaController.getArenas().entrySet().iterator();
@@ -488,7 +489,7 @@ public class CommandHandler implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
-                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + "--- Help Menu ---");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.STRIKETHROUGH + "---" + ChatColor.RESET + "Help Menu" + ChatColor.STRIKETHROUGH + "---");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/setup [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/add [arenaName] [object]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/set [arenaName] [field] [value]");
@@ -498,7 +499,7 @@ public class CommandHandler implements CommandExecutor {
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/join [arenaName]" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
                 } else if (sender.hasPermission("FridayThe13th.User")) {
-                    sender.sendMessage(FridayThe13th.pluginPrefix + "--- Help Menu ---");
+                    sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.STRIKETHROUGH + "---" + ChatColor.RESET + "Help Menu" + ChatColor.STRIKETHROUGH + "---");
                     sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + "/join [arenaName]" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "play [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.AQUA + "/leave" + ChatColor.GREEN + " <or> " + ChatColor.AQUA + "quit");
                 } else {
@@ -506,7 +507,7 @@ public class CommandHandler implements CommandExecutor {
                 }
             } else {
                 //Unknown command
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.DARK_RED + "Unknown command.");
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.DARK_RED + "Unknown command " + ChatColor.AQUA + ChatColor.ITALIC + args[0]);
             }
         }
 
