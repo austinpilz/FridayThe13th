@@ -6,7 +6,7 @@
 
     <groupId>com.austinpilz.friday13</groupId>
     <artifactId>FridayThe13th</artifactId>
-    <version>1.5.1</version>
+    <version>1.6</version>
 
     <repositories>
         <repository>
@@ -107,7 +107,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
-                    <outputDirectory>C:\Users\YOUR_USER\Desktop\Server\plugins</outputDirectory>
+                    <outputDirectory>/Users/austinpilz/Desktop/Minecraft Server Spigot/Plugins/</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
