@@ -5,6 +5,7 @@ import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Menu.CounselorProfilesMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.JasonProfilesMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
@@ -594,7 +595,7 @@ public class PlayerManager
         //Give them waiting room items
         SpawnPreferenceMenu.addMenuOpenItem(player);
         JasonProfilesMenu.addMenuOpenItem(player);
-        //CounselorProfilesMenu.addMenuOpenItem(player);
+        CounselorProfilesMenu.addMenuOpenItem(player);
     }
 
     /**

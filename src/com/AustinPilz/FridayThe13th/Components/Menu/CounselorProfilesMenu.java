@@ -1,5 +1,9 @@
 package com.AustinPilz.FridayThe13th.Components.Menu;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.CounselorProfile;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkullPreview;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
@@ -21,42 +25,72 @@ public class CounselorProfilesMenu {
      */
     public static void openMenu(Player player) {
 
+        F13Player f13Player = FridayThe13th.playerController.getPlayer(player);
+
         Inventory inventory;
 
-        if (FridayThe13th.playerController.getPlayer(player).isSpawnPreferenceJason()) {
-            //Jason
-            inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.SpawnPreferenceMenuJasonSet", "Spawn Preference: {0}Jason", ChatColor.RED));
-        } else if (FridayThe13th.playerController.getPlayer(player).isSpawnPreferenceCounselor()) {
-            //Counselor
-            inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.SpawnPreferenceMenuCounselorSet", "Spawn Preference: {0}Counselor", ChatColor.DARK_GREEN));
-        } else {
-            //None set
-            inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.SpawnPreferenceMenu", "Spawn Preference"));
+        inventory = Bukkit.createInventory(null, 18, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.CounselorProfileMenu", "Counselor Profiles"));
+
+        //Display all profiles
+        for (CounselorProfile profile : CounselorProfile.values()) {
+            ItemStack item;
+            ItemMeta itemMeta;
+
+            ItemStack glass;
+            ItemMeta glassMeta = null;
+
+            List<String> jasonItemLore = new ArrayList<String>();
+            if (f13Player.getLevel().equals(profile.getRequiredLevel()) || f13Player.getLevel().isGreaterThan(profile.getRequiredLevel())) {
+                //The player has access to the profile
+                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"CounselorProfileSelect\": \"" + profile.getDisplayName() + "\"}"));
+                jasonItemLore.add(ChatColor.DARK_GREEN + "Unlocked");
+                jasonItemLore.add("");
+                jasonItemLore.add(ChatColor.WHITE + "Composure    " + ChatColor.RED + profile.getComposure().getTraitLevel() + ChatColor.WHITE + "/10");
+                jasonItemLore.add(ChatColor.WHITE + "Luck         " + ChatColor.RED + profile.getLuck().getTraitLevel() + ChatColor.WHITE + "/10");
+                jasonItemLore.add(ChatColor.WHITE + "Intelligence " + ChatColor.RED + profile.getIntelligence().getTraitLevel() + ChatColor.WHITE + "/10");
+                jasonItemLore.add(ChatColor.WHITE + "Speed        " + ChatColor.RED + profile.getSpeed().getTraitLevel() + ChatColor.WHITE + "/10");
+                jasonItemLore.add(ChatColor.WHITE + "Stamina      " + ChatColor.RED + profile.getStamina().getTraitLevel() + ChatColor.WHITE + "/10");
+                jasonItemLore.add(ChatColor.WHITE + "Stealth      " + ChatColor.RED + profile.getStealth().getTraitLevel() + ChatColor.WHITE + "/10");
+                jasonItemLore.add(ChatColor.WHITE + "Strength     " + ChatColor.RED + profile.getStrength().getTraitLevel() + ChatColor.WHITE + "/10");
+
+                //Add green glass to signify unlocked
+                if (f13Player.getCounselorProfile().equals(profile)) {
+                    //They currently have this skin selected
+                    glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 4);
+                    glassMeta = glass.getItemMeta();
+                    glassMeta.setDisplayName(ChatColor.GOLD + "^ Selected");
+                } else {
+                    //This profile is available
+                    glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 5);
+                    glassMeta = glass.getItemMeta();
+                    glassMeta.setDisplayName(ChatColor.DARK_GREEN + "^ Unlocked");
+                }
+            } else {
+                //This profile is locked
+                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"CounselorProfileSelect\": \"Locked\"}"));
+                jasonItemLore.add(ChatColor.BOLD + "" + ChatColor.RED + "LOCKED");
+                jasonItemLore.add("");
+                jasonItemLore.add(ChatColor.WHITE + "Unlocks at level " + ChatColor.AQUA + profile.getRequiredLevel().getLevelNumber());
+
+                //Set red glass to signify locked
+                glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 14);
+                glassMeta = glass.getItemMeta();
+                glassMeta.setDisplayName(ChatColor.RED + "^ Locked");
+            }
+
+            //Get skin preview for the skull
+            //TODO CHANGE TO COUNSELOR PROFILE SKIN
+            item = new SkullPreview(profile.getSkin(), profile.getDisplayName(), jasonItemLore);
+            inventory.addItem(item);
+
+            //Add glass to signify which skins are available
+            List<String> glassLore = new ArrayList<String>();
+            glassLore.add(HiddenStringsUtil.encodeString("{\"CounselorProfileSelect\": \"Locked\"}"));
+            glassMeta.setLore(glassLore);
+            glass.setItemMeta(glassMeta);
+            inventory.setItem(profile.getOrder() + 8, glass);
         }
 
-        //Add Jason
-        ItemStack jasonItem = new ItemStack(Material.DIAMOND_AXE, 1);
-        ItemMeta jasonItemMeta = jasonItem.getItemMeta();
-        jasonItemMeta.setDisplayName(ChatColor.RED + FridayThe13th.language.get(player, "game.item.SpawnPreferenceJason", "Jason"));
-
-        List<String> jasonItemLore = new ArrayList<String>();
-        jasonItemLore.add(HiddenStringsUtil.encodeString("{\"SpawnPrefSelect\": \"J\"}"));
-        jasonItemMeta.setLore(jasonItemLore);
-
-        jasonItem.setItemMeta(jasonItemMeta);
-        inventory.addItem(jasonItem);
-
-        //Add Counselor
-        ItemStack counselorItem = new ItemStack(Material.COMPASS, 1);
-        ItemMeta counselorItemMeta = counselorItem.getItemMeta();
-        counselorItemMeta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(player, "game.item.SpawnPreferenceCounselor", "Counselor"));
-
-        List<String> counselorItemLore = new ArrayList<String>();
-        counselorItemLore.add(HiddenStringsUtil.encodeString("{\"SpawnPrefSelect\": \"C\"}"));
-        counselorItemMeta.setLore(counselorItemLore);
-
-        counselorItem.setItemMeta(counselorItemMeta);
-        inventory.addItem(counselorItem);
 
         //Open it for player
         player.openInventory(inventory);
@@ -68,13 +102,8 @@ public class CounselorProfilesMenu {
      * @param player
      */
     public static void addMenuOpenItem(Player player) {
-        ItemStack item = new ItemStack(Material.SKULL_ITEM, 1);
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.DARK_GREEN + FridayThe13th.language.get(player, "game.menu.CounselorProfile", "Counselor Profiles"));
         List<String> menuItemLore = new ArrayList<String>();
         menuItemLore.add(HiddenStringsUtil.encodeString("{\"Menu\": \"CounselorProfiles\"}"));
-        itemMeta.setLore(menuItemLore);
-        item.setItemMeta(itemMeta);
-        player.getInventory().addItem(item);
+        player.getInventory().setItem(0, new SkullPreview(F13Skin.COUNSELOR_BASE, ChatColor.DARK_GREEN + FridayThe13th.language.get(player, "game.menu.CounselorProfile", "Counselor Profiles"), menuItemLore));
     }
 }

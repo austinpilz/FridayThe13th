@@ -1,6 +1,8 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.CounselorProfile;
 import com.AustinPilz.FridayThe13th.Components.Enum.JasonProfile;
+import com.AustinPilz.FridayThe13th.Components.Menu.CounselorProfilesMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.JasonProfilesMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
@@ -41,6 +43,9 @@ public class F13EventsListener implements Listener {
                 } else if (action.equals("JasonProfiles")) {
                     //Open the spectate selection  menu
                     JasonProfilesMenu.openMenu(event.getPlayer());
+                } else if (action.equals("CounselorProfiles")) {
+                    //Open the spectate selection  menu
+                    CounselorProfilesMenu.openMenu(event.getPlayer());
                 }
                 event.setCancelled(true);
             } else if (json.containsKey("SpawnPrefSelect")) {
@@ -84,6 +89,25 @@ public class F13EventsListener implements Listener {
                                 //Profile set successfully
                                 found = true;
                                 JasonProfilesMenu.openMenu(event.getPlayer());
+                            }
+                        }
+                    }
+                }
+
+                event.setCancelled(true);
+            } else if (json.containsKey("CounselorProfileSelect")) {
+                String profileName = (String) json.get("CounselorProfileSelect");
+
+                if (!profileName.equalsIgnoreCase("Locked")) {
+
+                    boolean found = false;
+                    for (CounselorProfile profile : CounselorProfile.values()) {
+                        if (profile.getDisplayName().equalsIgnoreCase(profileName)) {
+                            //This is their skin
+                            if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setCounselorProfile(profile)) {
+                                //Profile set successfully
+                                found = true;
+                                CounselorProfilesMenu.openMenu(event.getPlayer());
                             }
                         }
                     }

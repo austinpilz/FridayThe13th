@@ -86,7 +86,11 @@ public class CommandHandler implements CommandExecutor {
                                 //End the game and remove the arena
                                 try {
                                     Arena arena = FridayThe13th.arenaController.getArena(arenaName);
-                                    arena.getGameManager().gameTimeUp();
+
+                                    if (!arena.getGameManager().isGameEmpty()) {
+                                        arena.getGameManager().gameTimeUp();
+                                    }
+
                                     arena.getSignManager().markDeleted();
                                     FridayThe13th.arenaController.removeArena(arena);
                                     FridayThe13th.inputOutput.deleteArena(arenaName);

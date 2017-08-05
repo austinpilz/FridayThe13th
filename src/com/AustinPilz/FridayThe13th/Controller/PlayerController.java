@@ -40,7 +40,7 @@ public class PlayerController {
 
             if (!doesPlayerExist(uuid)) {
                 //They weren't in the DB, so make new object and store them in DB
-                F13Player player = new F13Player(uuid, "");
+                F13Player player = new F13Player(uuid, "", "", 0);
                 player.storeToDB();
                 addPlayer(player);
                 return player;
@@ -77,16 +77,6 @@ public class PlayerController {
     public int getNumPlayers() {
         return players.size();
     }
-
-    /**
-     * Updates all players in the database
-     */
-    public void updatePlayers() {
-        for (F13Player player : players.values()) {
-            player.updateDB();
-        }
-    }
-
 
     /**
      * Removes

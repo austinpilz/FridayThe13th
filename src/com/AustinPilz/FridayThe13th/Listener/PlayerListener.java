@@ -84,7 +84,7 @@ public class PlayerListener implements Listener {
             } else if (arena.getGameManager().isGameInProgress()) {
                 if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.teleportPlaying", "You cannot be teleported while playing."));
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.teleportPlaying", "You cannot be teleported outside of the arena boundary while playing."));
                 }
             }
         } catch (PlayerNotPlayingException exception) {

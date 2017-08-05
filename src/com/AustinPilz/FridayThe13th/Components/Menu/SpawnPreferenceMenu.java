@@ -76,12 +76,6 @@ public class SpawnPreferenceMenu {
         itemMeta.setLore(menuItemLore);
         item.setItemMeta(itemMeta);
 
-        if (FridayThe13th.playerController.getPlayer(player).isSpawnPreferenceJason() || FridayThe13th.playerController.getPlayer(player).isSpawnPreferenceCounselor()) {
-            //They have already set their preference, so do not auto-open
-            player.getInventory().setItem(1, item);
-        } else {
-            //They do not have their preference set, so put it in slot 0 so it'll most likely auto-open
-            player.getInventory().setItem(0, item);
-        }
+        player.getInventory().setItem(4, item);
     }
 }

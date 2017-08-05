@@ -99,6 +99,6 @@ public class JasonProfilesMenu {
     public static void addMenuOpenItem(Player player) {
         List<String> menuItemLore = new ArrayList<String>();
         menuItemLore.add(HiddenStringsUtil.encodeString("{\"Menu\": \"JasonProfiles\"}"));
-        player.getInventory().addItem(new SkullPreview(F13Skin.JASON_Part1, ChatColor.RED + FridayThe13th.language.get(player, "game.menu.JasonProfile", "Jason Profiles"), menuItemLore));
+        player.getInventory().setItem(8, new SkullPreview(F13Skin.JASON_Part1, ChatColor.RED + FridayThe13th.language.get(player, "game.menu.JasonProfile", "Jason Profiles"), menuItemLore));
     }
 }

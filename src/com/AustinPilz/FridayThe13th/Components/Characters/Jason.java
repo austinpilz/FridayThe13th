@@ -88,7 +88,6 @@ public class Jason
     {
         arena = a;
         player = p;
-
         f13Player = FridayThe13th.playerController.getPlayer(player);
 
         //Display

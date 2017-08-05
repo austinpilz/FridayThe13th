@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
@@ -27,6 +27,7 @@ public class Counselor
 {
     //Minecraft Objects
     private Player player;
+    private F13Player f13Player;
 
     //Game
     private Arena arena;
@@ -79,6 +80,7 @@ public class Counselor
     {
         player = p;
         arena = a;
+        f13Player = FridayThe13th.playerController.getPlayer(player);
 
         //Stamina
         stamina = 100;
@@ -128,6 +130,15 @@ public class Counselor
     }
 
     /**
+     * Returns Jason's F13 player object
+     *
+     * @return
+     */
+    public F13Player getF13Player() {
+        return f13Player;
+    }
+
+    /**
      * Returns counselor's stats display manager
      * @return
      */
@@ -163,7 +174,7 @@ public class Counselor
         scheduleTasks();
 
         //Skin
-        skin.apply(F13Skin.COUNSELOR_BASE);
+        skin.apply(getF13Player().getCounselorProfile().getSkin());
     }
 
     /**
@@ -429,7 +440,7 @@ public class Counselor
             getPlayer().addPotionEffect(potionFearBlind);
 
             //Reduce stamina since scared
-            setSprinting(true);
+            setSprinting(false);
 
             if (!shownFearWarning)
             {
@@ -583,6 +594,8 @@ public class Counselor
      * Updates skin based on health level
      */
     public void updateSkin() {
+
+        /*
         double percentage = getHealthPercentage();
 
         if (percentage == 1) {
@@ -598,6 +611,7 @@ public class Counselor
             //Major damage
             skin.apply(F13Skin.COUSENLOR_BLOOD_3);
         }
+        */
     }
 
 

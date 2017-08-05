@@ -1,5 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.CounselorProfile;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13Level;
 import com.AustinPilz.FridayThe13th.Components.Enum.JasonProfile;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
@@ -20,6 +21,7 @@ public class F13Player {
 
     //Profiles
     private JasonProfile jasonProfile;
+    private CounselorProfile counselorProfile;
 
     //Purchased Profiles
     //Purchased Skins List
@@ -32,15 +34,20 @@ public class F13Player {
     //Waiting Scoreboard
     private WaitingPlayerStatsDisplayManager waitingPlayerStatsDisplayManager;
 
-    public F13Player(String uuid, String jasonProfile) {
+    public F13Player(String uuid, String jasonProfile, String counselorProfile) {
+        this(uuid, jasonProfile, counselorProfile, 0);
+    }
+
+    public F13Player(String uuid, String jasonProfile, String counselorProfile, int xp) {
         this.playerUUID = uuid;
 
         //Spawn Preferences
         spawnPreferenceJason = false;
         spawnPreferenceCounselor = false;
-        experiencePoints = 0;
+        experiencePoints = xp;
         determineLevel();
         determineJasonProfile(jasonProfile);
+        determineCounselorProfile(counselorProfile);
 
         //Display
         waitingPlayerStatsDisplayManager = new WaitingPlayerStatsDisplayManager(this);
@@ -71,6 +78,15 @@ public class F13Player {
      */
     public JasonProfile getJasonProfile() {
         return jasonProfile;
+    }
+
+    /**
+     * Returns the players saved Jason profile
+     *
+     * @return
+     */
+    public CounselorProfile getCounselorProfile() {
+        return counselorProfile;
     }
 
     /**
@@ -204,6 +220,26 @@ public class F13Player {
     }
 
     /**
+     * Determines the players saved profile
+     *
+     * @param profileName
+     */
+    private void determineCounselorProfile(String profileName) {
+        //TODO Make sure they have access to this profile
+        for (CounselorProfile profile : CounselorProfile.values()) {
+            if (profile.getDisplayName().equalsIgnoreCase(profileName)) {
+                //This is their skin
+                counselorProfile = profile;
+            }
+        }
+
+        //Check to see if they still have no skin, set them to the default one
+        if (counselorProfile == null) {
+            counselorProfile = CounselorProfile.Chad;
+        }
+    }
+
+    /**
      * Returns the next level for the player
      *
      * @return
@@ -212,11 +248,11 @@ public class F13Player {
         F13Level level = getLevel();
 
         for (F13Level l : F13Level.values()) {
-            if (l.getLevelNumber() == getLevel().getLevelNumber() + 1) {
+            if (l.getLevelNumber() == (getLevel().getLevelNumber() + 1)) {
                 level = l;
+                break;
             }
         }
-
         return level;
     }
 
@@ -230,6 +266,23 @@ public class F13Player {
         //Check to make sure they have the right level
         if (getLevel().equals(p.getRequiredLevel()) || getLevel().isGreaterThan(p.getRequiredLevel())) {
             jasonProfile = p;
+            updateDB();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Sets Counselor profile
+     *
+     * @param p
+     * @return
+     */
+    public boolean setCounselorProfile(CounselorProfile p) {
+        //Check to make sure they have the right level
+        if (getLevel().equals(p.getRequiredLevel()) || getLevel().isGreaterThan(p.getRequiredLevel())) {
+            counselorProfile = p;
             updateDB();
             return true;
         } else {
