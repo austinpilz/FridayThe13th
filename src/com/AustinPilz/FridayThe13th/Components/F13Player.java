@@ -192,11 +192,7 @@ public class F13Player {
      * Determines the players level
      */
     private void determineLevel() {
-        for (F13Level l : F13Level.values()) {
-            if (getXP() >= l.getMinXP() && getXP() < l.getMaxXP()) {
-                this.level = l;
-            }
-        }
+        this.level = Arrays.stream(F13Level.values()).filter(f13Level -> this.getXP() >= f13Level.getMinXP()).filter(f13Level -> this.getXP() < f13Level.getMaxXP()).findFirst().orElse(this.level);
     }
 
     /**
