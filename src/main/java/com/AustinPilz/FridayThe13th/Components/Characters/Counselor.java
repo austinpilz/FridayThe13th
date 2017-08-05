@@ -85,8 +85,8 @@ public class Counselor
         //Stamina
         stamina = 100;
         maxStamina = 100;
-        staminaDepletionRate = 0.1;
-        staminaRegenerationRate = .1;
+        staminaDepletionRate = getF13Player().getCounselorProfile().getStamina().getDepletionRate(); //default 0.1
+        staminaRegenerationRate = getF13Player().getCounselorProfile().getStamina().getRegenerationRate(); //default .1
 
         //Fear
         fearLevel = 5;
@@ -97,7 +97,8 @@ public class Counselor
         counselorXPManager = new CounselorXPManager(this, arena);
 
         //Fear
-        lightHistory = new LightLevelList(20);
+        Double lightHistorySize = getF13Player().getCounselorProfile().getComposure().getDepletionRate();
+        lightHistory = new LightLevelList(lightHistorySize.intValue());
 
         //Potions
         potionOutOfBreath = new PotionEffect(PotionEffectType.CONFUSION, 300, 1);
@@ -347,7 +348,7 @@ public class Counselor
             else
             {
                 //Their health is fine, so make walk speed normal
-                getPlayer().setWalkSpeed(0.2f);
+                getPlayer().setWalkSpeed((float)getF13Player().getCounselorProfile().getSpeed().getDataValue());
             }
 
             getPlayer().removePotionEffect(PotionEffectType.CONFUSION);
@@ -398,7 +399,7 @@ public class Counselor
         //See how far they are from jason
         double distanceFromJason = getPlayer().getLocation().distance(arena.getGameManager().getPlayerManager().getJason().getPlayer().getLocation());
 
-        if (distanceFromJason <= 5 && !arena.getGameManager().getPlayerManager().getJason().getPlayer().isSneaking())
+        if (distanceFromJason <= getF13Player().getCounselorProfile().getComposure().getDataValue() && !arena.getGameManager().getPlayerManager().getJason().getPlayer().isSneaking())
         {
             //Increase if within certain distance
             double increase = getMaxFearLevel() * (distanceFromJason / 10);

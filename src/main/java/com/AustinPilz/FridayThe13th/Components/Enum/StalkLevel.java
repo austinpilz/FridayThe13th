@@ -1,11 +1,11 @@
 package com.AustinPilz.FridayThe13th.Components.Enum;
 
 public enum StalkLevel {
-    One("I", .1, .03),
-    Two("II", .07, .07),
-    Three("III", .05, .09),
-    Four("IV", .03, .11),
-    Five("V", .01, .15);
+    One("I", .035, .03),
+    Two("II", .025, .035),
+    Three("III", .02, .04),
+    Four("IV", .015, .045),
+    Five("V", .01, .06);
 
     private String levelName;
     private double depletionRate; //default .01

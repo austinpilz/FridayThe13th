@@ -428,6 +428,9 @@ public class PlayerListener implements Listener {
 
                                                         //Register counselor XP
                                                         arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
+
+                                                        //Alter damage based on their strength level
+                                                        event.setDamage(event.getDamage() * FridayThe13th.playerController.getPlayer(playerDamager).getCounselorProfile().getStrength().getDepletionRate());
                                                     }
                                                 } else {
                                                     event.setCancelled(true); //Counselors can't hurt unless they have a special item

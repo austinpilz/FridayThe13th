@@ -2,10 +2,10 @@ package com.AustinPilz.FridayThe13th.Components.Enum;
 
 public enum SenseLevel {
     One("I", .12, .02),
-    Two("II", .1, .04),
-    Three("III", .09, .06),
-    Four("IV", .07, .07),
-    Five("V", .05, .1);
+    Two("II", .11, .025),
+    Three("III", .11, .03),
+    Four("IV", .10, .035),
+    Five("V", .09, .04);
 
     private String levelName;
     private double depletionRate; //default .1

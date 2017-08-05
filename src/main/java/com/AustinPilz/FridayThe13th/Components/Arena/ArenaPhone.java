@@ -20,7 +20,7 @@ public class ArenaPhone
     private Hologram hologram;
     private boolean isVisible;
 
-    private int callAttempts;
+    private double callAttempts;
     private int callAttemptsRequired;
 
 
@@ -80,7 +80,8 @@ public class ArenaPhone
     public void callAttempt(Player player)
     {
         if (!arena.getGameManager().hasTommyBeenCalled() && isVisible) {
-            if ((++callAttempts / callAttemptsRequired) == 1.0) {
+            callAttempts += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
+            if ((callAttempts / callAttemptsRequired) >= 1.0) {
                 hologram.getLine(0).removeLine();
                 hologram.insertTextLine(0, "Tommy: " + ChatColor.GREEN + "CALLED");
 

@@ -2,10 +2,10 @@ package com.AustinPilz.FridayThe13th.Components.Enum;
 
 public enum WarpLevel {
     One("I", .12, .02),
-    Two("II", .1, .03),
-    Three("III", .09, .04),
-    Four("IV", .08, .05),
-    Five("V", .07, .06);
+    Two("II", .12, .022),
+    Three("III", .12, .025),
+    Four("IV", .12, .027),
+    Five("V", .12, .035);
 
     private String levelName;
     private double depletionRate; //default .1

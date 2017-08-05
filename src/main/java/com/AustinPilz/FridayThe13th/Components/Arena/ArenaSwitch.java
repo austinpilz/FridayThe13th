@@ -16,7 +16,7 @@ public class ArenaSwitch
 {
     private Block block;
     private Arena arena;
-    private int repairAttempts;
+    private double repairAttempts;
     private int repairAttemptsRequired;
     private Hologram hologram;
 
@@ -38,7 +38,7 @@ public class ArenaSwitch
      */
     public void repairSwitchAttempt(Player player)
     {
-        repairAttempts++;
+        repairAttempts += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
 
         if (getRepairProgressPercent() == 1)
         {

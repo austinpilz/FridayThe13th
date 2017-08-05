@@ -33,7 +33,7 @@ public class Trap {
     //Activation Progress
     private boolean isActivated;
     private double activationProgress;
-    private int activationAttempts;
+    private double activationAttempts;
     private int activationAttemptsRequired;
 
     public Trap(Arena a, Block b, Material o, TrapType t) {
@@ -84,7 +84,7 @@ public class Trap {
      * @param counselor
      */
     public void activationAttempt(Counselor counselor) {
-        activationAttempts++;
+        activationAttempts += counselor.getF13Player().getCounselorProfile().getIntelligence().getRegenerationRate();
 
         if (getActivationProgressPercent() == 1) {
             activate();
