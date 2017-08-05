@@ -107,7 +107,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
-                    <outputDirectory>C:\Users\USER\Desktop\Server\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\YOUR_USER\Desktop\Server\plugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
