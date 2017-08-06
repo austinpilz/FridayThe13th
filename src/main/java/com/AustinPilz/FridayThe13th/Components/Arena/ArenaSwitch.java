@@ -40,7 +40,7 @@ public class ArenaSwitch
     {
         repairAttempts += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
 
-        if (getRepairProgressPercent() == 1)
+        if (getRepairProgressPercent() >= 1)
         {
             //Fix the switch
             repairSwitch();

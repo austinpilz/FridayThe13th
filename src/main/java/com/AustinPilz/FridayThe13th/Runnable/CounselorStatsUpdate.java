@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Runnable;
 
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import org.golde.bukkit.corpsereborn.nms.Corpses;
 
 public class CounselorStatsUpdate implements Runnable {
 
@@ -25,6 +26,15 @@ public class CounselorStatsUpdate implements Runnable {
         else if (!counselor.isMoving() && (counselor.getFearLevel()/counselor.getMaxFearLevel()) < .9)
         {
             counselor.setStandingStill(true);
+        }
+
+        //Check to see if they can see any corpses
+        for(Corpses.CorpseData corpse : counselor.getArena().getObjectManager().getCorpses())
+        {
+            if (corpse.canSee(counselor.getPlayer()))
+            {
+                counselor.corpseSeen(corpse);
+            }
         }
     }
 }

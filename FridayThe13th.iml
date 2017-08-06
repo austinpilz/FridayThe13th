@@ -109,6 +109,15 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="Maven: corpsereborn.api:corpsereborn:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/main/resources/lib/CorpseReborn.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="Maven: multiworld.api:multiworld-api:1.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/src/main/resources/lib/multiworld.jar!/" />

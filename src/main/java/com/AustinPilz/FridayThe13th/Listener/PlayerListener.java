@@ -30,6 +30,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Chest;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
+import org.golde.bukkit.corpsereborn.CorpseAPI.events.CorpseClickEvent;
 
 import java.util.Iterator;
 import java.util.List;
@@ -608,6 +609,29 @@ public class PlayerListener implements Listener {
             if (!(event.getRightClicked() instanceof Player)) {
                 event.setCancelled(true); //Players cannot interact with any entity that is not another player
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onCorpseClick(CorpseClickEvent event)
+    {
+        try {
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getClicker().getUniqueId().toString());
+
+            if (arena.getGameManager().isGameInProgress())
+            {
+                if (arena.getGameManager().getPlayerManager().isSpectator(event.getClicker()))
+                {
+                    event.setCancelled(true); //Spectators can't interact with corpses
+                }
+                else if (arena.getGameManager().getPlayerManager().isJason(event.getClicker()))
+                {
+                    event.setCancelled(true); //Jason can't interact with corpses
+                }
+
+            }
+        } catch (PlayerNotPlayingException exception) {
+            //
         }
     }
 }

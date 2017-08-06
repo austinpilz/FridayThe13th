@@ -86,7 +86,7 @@ public class Trap {
     public void activationAttempt(Counselor counselor) {
         activationAttempts += counselor.getF13Player().getCounselorProfile().getIntelligence().getRegenerationRate();
 
-        if (getActivationProgressPercent() == 1) {
+        if (getActivationProgressPercent() >= 1 && !isActivated) {
             activate();
 
             //Register trap activated for XP

@@ -54,6 +54,13 @@
             <systemPath>${project.basedir}/src/main/resources/lib/Multiverse-Core-2.5.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>corpsereborn.api</groupId>
+            <artifactId>corpsereborn</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/CorpseReborn.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>multiworld.api</groupId>
             <artifactId>multiworld-api</artifactId>
             <version>1.0</version>

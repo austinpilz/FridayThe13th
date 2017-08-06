@@ -502,6 +502,9 @@ public class PlayerManager
                 //They're a normal player, see if there are still others alive
                 if (getNumPlayersAlive() > 1) //since jason is still presumably alive
                 {
+                    //Spawn their corpse
+                    arena.getObjectManager().spawnCorpse(player);
+
                     //They're are others still alive, enter spectating mode
                     getCounselor(player).transitionToSpectatingMode();
                     becomeSpectator(player);

@@ -11,7 +11,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.material.Lever;
+import org.golde.bukkit.corpsereborn.CorpseAPI.CorpseAPI;
+import org.golde.bukkit.corpsereborn.nms.Corpses;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,6 +35,7 @@ public class ObjectManager
     private HashMap<Block, ArenaSwitch> brokenSwitches;
     private HashSet<Block> brokenWindows;
     private HashMap<Block, Trap> traps;
+    private HashSet<Corpses.CorpseData> corpses;
 
 
     /**
@@ -50,6 +54,7 @@ public class ObjectManager
         brokenSwitches = new HashMap<>();
         brokenWindows = new HashSet<>();
         traps = new HashMap<>();
+        corpses = new HashSet<>();
 
         //Globals
         windowBlockFaces = new HashSet<>();
@@ -102,6 +107,10 @@ public class ObjectManager
         //Restore traps
         removeTraps();
         traps.clear();
+
+        //Remove corpses
+        cleanupCorpses();
+        corpses.clear();
     }
 
     /**
@@ -423,6 +432,40 @@ public class ObjectManager
             Map.Entry entry = (Map.Entry) it.next();
             Trap trap = (Trap) entry.getValue();
             trap.remove();
+        }
+    }
+
+    /**
+     * Gets all corpses
+     * @return
+     */
+    public HashSet<Corpses.CorpseData> getCorpses() {
+        return corpses;
+    }
+
+    /**
+     * Spawns a corpse where the player died
+     * @param player
+     */
+    public void spawnCorpse(Player player)
+    {
+        Corpses.CorpseData corpse = CorpseAPI.spawnCorpse(player, player.getLocation());
+        corpses.add(corpse);
+
+        corpse.resendCorpseToEveryone();
+
+        player.sendMessage("Corpse spawned");
+    }
+
+    /**
+     * Removes all corpses
+     */
+    public void cleanupCorpses()
+    {
+        for (Corpses.CorpseData corpse : corpses)
+        {
+            corpse.destroyCorpseFromEveryone();
+            CorpseAPI.removeCorpse(corpse);
         }
     }
 

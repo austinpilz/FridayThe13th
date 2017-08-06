@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -16,11 +17,13 @@ public class Spectator
 {
     private Player player;
     private Arena arena;
+    private F13Player f13Player;
 
     public Spectator(Player p, Arena a)
     {
         player = p;
         arena = a;
+        f13Player = FridayThe13th.playerController.getPlayer(player);
     }
 
     /**

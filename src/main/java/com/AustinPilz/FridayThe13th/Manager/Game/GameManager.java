@@ -25,7 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class GameManager
+public class
+GameManager
 {
     private Arena arena;
 

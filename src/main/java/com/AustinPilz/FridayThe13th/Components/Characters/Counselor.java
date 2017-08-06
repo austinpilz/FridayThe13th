@@ -21,6 +21,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.golde.bukkit.corpsereborn.nms.Corpses;
+
+import java.util.HashSet;
 
 
 public class Counselor
@@ -43,6 +46,7 @@ public class Counselor
     private double fearLevel;
     private double maxFearLevel;
     private LightLevelList lightHistory;
+    private HashSet<Corpses.CorpseData> corpses;
 
     //Managers
     private CounselorStatsDisplayManager statsDisplayManager;
@@ -91,6 +95,7 @@ public class Counselor
         //Fear
         fearLevel = 5;
         maxFearLevel = 60;
+        corpses = new HashSet<>();
 
         //Initialize Manager
         statsDisplayManager = new CounselorStatsDisplayManager(this);
@@ -137,6 +142,15 @@ public class Counselor
      */
     public F13Player getF13Player() {
         return f13Player;
+    }
+
+    /**
+     * Returns the arena
+     * @return
+     */
+    public Arena getArena()
+    {
+        return arena;
     }
 
     /**
@@ -644,5 +658,27 @@ public class Counselor
         getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
 
         FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
+    }
+
+    /**
+     * When the counselor sees a corpse
+     * @param corpse
+     */
+    public void corpseSeen(Corpses.CorpseData corpse)
+    {
+        if (!corpses.contains(corpse))
+        {
+            //Add corpse to seen list
+            corpses.add(corpse);
+
+            //Scare them
+            for (int i = 0; i < getF13Player().getCounselorProfile().getComposure().getDepletionRate()-1; i++)
+            {
+                lightHistory.addLevel(0.0);
+            }
+
+
+            //TODO custom sound when they see a corpse
+        }
     }
 }
