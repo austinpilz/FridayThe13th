@@ -125,7 +125,7 @@ public class InputOutput
         try
         {
             st = conn.createStatement();
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_arenas\" (\"Name\" VARCHAR PRIMARY KEY NOT NULL, \"B1X\" DOUBLE, \"B1Y\" DOUBLE, \"B1Z\" DOUBLE, \"B2X\" DOUBLE, \"B2Y\" DOUBLE, \"B2Z\" DOUBLE, \"ArenaWorld\" VARCHAR, \"WaitX\" DOUBLE, \"WaitY\" DOUBLE, \"WaitZ\" DOUBLE, \"WaitWorld\" VARCHAR, \"ReturnX\" DOUBLE, \"ReturnY\" DOUBLE, \"ReturnZ\" DOUBLE, \"ReturnWorld\" VARCHAR, \"JasonX\" DOUBLE, \"JasonY\" DOUBLE, \"JasonZ\" DOUBLE,  \"MinutesPerCounselor\" DOUBLE DEFAULT 2)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_arenas\" (\"Name\" VARCHAR PRIMARY KEY NOT NULL, \"B1X\" DOUBLE, \"B1Y\" DOUBLE, \"B1Z\" DOUBLE, \"B2X\" DOUBLE, \"B2Y\" DOUBLE, \"B2Z\" DOUBLE, \"ArenaWorld\" VARCHAR, \"WaitX\" DOUBLE, \"WaitY\" DOUBLE, \"WaitZ\" DOUBLE, \"WaitWorld\" VARCHAR, \"ReturnX\" DOUBLE, \"ReturnY\" DOUBLE, \"ReturnZ\" DOUBLE, \"ReturnWorld\" VARCHAR, \"JasonX\" DOUBLE, \"JasonY\" DOUBLE, \"JasonZ\" DOUBLE,  \"MinutesPerCounselor\" DOUBLE DEFAULT 2, \"SecondsWaitingRoom\" DOUBLE DEFAULT 60)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_spawn_points\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_signs\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
@@ -151,6 +151,7 @@ public class InputOutput
      * Updates DB to latest version
      */
     public void updateDB() {
+        Update("SELECT SecondsWaitingRoom FROM f13_arenas", "ALTER TABLE f13_arenas ADD SecondsWaitingRoom DOUBLE DEFAULT 60");
         Update("SELECT MinutesPerCounselor FROM f13_arenas", "ALTER TABLE f13_arenas ADD MinutesPerCounselor DOUBLE DEFAULT 2");
         Update("SELECT XP FROM f13_players", "ALTER TABLE f13_players ADD XP INTEGER DEFAULT 0");
         Update("SELECT JasonProfile FROM f13_players", "ALTER TABLE f13_players ADD JasonProfile VARCHAR");
@@ -198,7 +199,7 @@ public class InputOutput
             PreparedStatement ps = null;
             ResultSet result = null;
             conn = getConnection();
-            ps = conn.prepareStatement("SELECT `Name`, `B1X`, `B1Y`, `B1Z`, `B2X`, `B2Y`, `B2Z`, `ArenaWorld`, `WaitX`, `WaitY`, `WaitZ`, `WaitWorld`, `ReturnX`, `ReturnY`, `ReturnZ`, `ReturnWorld`, `JasonX`, `JasonY`, `JasonZ`, `MinutesPerCounselor` FROM `f13_arenas`");
+            ps = conn.prepareStatement("SELECT `Name`, `B1X`, `B1Y`, `B1Z`, `B2X`, `B2Y`, `B2Z`, `ArenaWorld`, `WaitX`, `WaitY`, `WaitZ`, `WaitWorld`, `ReturnX`, `ReturnY`, `ReturnZ`, `ReturnWorld`, `JasonX`, `JasonY`, `JasonZ`, `MinutesPerCounselor`, `SecondsWaitingRoom` FROM `f13_arenas`");
             result = ps.executeQuery();
 
             int count = 0;
@@ -211,7 +212,7 @@ public class InputOutput
                 Location returnLoc = new Location(Bukkit.getWorld(result.getString("ReturnWorld")), result.getDouble("ReturnX"),result.getDouble("ReturnY"),result.getDouble("ReturnZ"));
                 Location jasonLoc = new Location(Bukkit.getWorld(result.getString("ArenaWorld")), result.getDouble("JasonX"),result.getDouble("JasonY"),result.getDouble("JasonZ"));
 
-                Arena arena = new Arena(result.getString("Name"), boundary1, boundary2, waitLoc, returnLoc, jasonLoc, result.getDouble("MinutesPerCounselor"));
+                Arena arena = new Arena(result.getString("Name"), boundary1, boundary2, waitLoc, returnLoc, jasonLoc, result.getDouble("MinutesPerCounselor"), (int)result.getDouble("SecondsWaitingRoom"));
 
                 try
                 {
@@ -290,11 +291,12 @@ public class InputOutput
             String sql;
             Connection conn = InputOutput.getConnection();
 
-            sql = "UPDATE `f13_arenas` SET `MinutesPerCounselor` = ? WHERE `Name` = ?";
+            sql = "UPDATE `f13_arenas` SET `MinutesPerCounselor` = ?,  `SecondsWaitingRoom` = ? WHERE `Name` = ?";
             //updateInDatabase
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setDouble(1, arena.getMinutesPerCounselor());
-            preparedStatement.setString(2, arena.getArenaName());
+            preparedStatement.setDouble(2, arena.getSecondsWaitingRoom());
+            preparedStatement.setString(3, arena.getArenaName());
             preparedStatement.executeUpdate();
             connection.commit();
             conn.commit();

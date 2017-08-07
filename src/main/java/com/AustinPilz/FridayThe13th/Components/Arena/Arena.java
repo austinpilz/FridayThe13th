@@ -20,6 +20,7 @@ public class Arena
     private Location returnLocation;
     private Location jasonStartLocation;
     private double minutesPerCounselor;
+    private int secondsWaitingRoom;
 
     //Game Managers
     private LocationManager locationManager; //Manages important locations such as counselor spawn locations
@@ -27,7 +28,7 @@ public class Arena
     private GameManager gameManager; //Manages the active game, players, etc.
     private SignManager signManager;
 
-    public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation, double minPerCounselor)
+    public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation, double minPerCounselor, int secWaitingRoom)
     {
         //Values
         this.arenaName = arenaName;
@@ -37,6 +38,7 @@ public class Arena
         this.returnLocation = returnLocation;
         this.jasonStartLocation = jasonStartLocation;
         this.minutesPerCounselor = minPerCounselor;
+        this.secondsWaitingRoom = secWaitingRoom;
 
         //Initialize
         locationManager = new LocationManager(this);
@@ -170,6 +172,22 @@ public class Arena
      */
     public double getMinutesPerCounselor() {
         return minutesPerCounselor;
+    }
+
+    /**
+     * Returns the number of minutes in the waiting room once the minimum number of players have joined
+     * @return
+     */
+    public int getSecondsWaitingRoom() { return secondsWaitingRoom; }
+
+    /**
+     * Updates the number of seconds in the waiting room
+     * @param seconds
+     */
+    public void setSecondsWaitingRoom(int seconds)
+    {
+        secondsWaitingRoom = seconds;
+        updateInDB();
     }
 
     /**

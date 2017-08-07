@@ -64,8 +64,8 @@ GameManager
         resetGameStatistics();
 
         //Get max times
-        waitingTimeMax = Settings.getGlobalInt(Setting.gameplayWaitingTime);
-        gameTimeMax = Settings.getGlobalInt(Setting.gameplayGameTime);
+        waitingTimeMax = arena.getSecondsWaitingRoom();
+        gameTimeMax = 0; //Since game time is calculated based on number of counselors during every game
 
         //Managers
         playerManager = new PlayerManager(arena);

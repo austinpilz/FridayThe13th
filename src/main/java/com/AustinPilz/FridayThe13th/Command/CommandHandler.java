@@ -243,6 +243,18 @@ public class CommandHandler implements CommandExecutor {
                                     //They didn't provide numbers
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setValueSyntaxError", "Error. The value of the field must be a number."));
                                 }
+                            } else if (args[2].equalsIgnoreCase("wait")) {
+                                //Setting time per counselor
+                                try {
+                                    int seconds = Integer.parseInt(args[3]);
+                                    seconds = Math.max(1, seconds);
+
+                                    arena.setSecondsWaitingRoom(seconds);
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setWaitingRoomTime", "Success! Waiting room time in {0} has been set to {1} seconds.", ChatColor.AQUA + arena.getArenaName() + ChatColor.WHITE, ChatColor.GREEN + "" + seconds + ChatColor.WHITE));
+                                } catch (NumberFormatException e) {
+                                    //They didn't provide numbers
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setValueSyntaxError", "Error. The value of the field must be a number."));
+                                }
                             } else {
                                 //Unknown field
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setFieldSyntaxError", "Unknown field to set."));
@@ -353,6 +365,7 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage("# Weapon Chests: " + arena.getObjectManager().getNumChestsWeapon());
                             sender.sendMessage("# Phones: " + arena.getObjectManager().getPhones().size());
                             sender.sendMessage("# Minutes per Counselor: " + arena.getMinutesPerCounselor());
+                            sender.sendMessage("# Waiting Room Seconds: " + arena.getSecondsWaitingRoom());
 
 
                         } catch (ArenaDoesNotExistException exception) {
@@ -496,7 +509,7 @@ public class CommandHandler implements CommandExecutor {
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.STRIKETHROUGH + "---" + ChatColor.RESET + "Help Menu" + ChatColor.STRIKETHROUGH + "---");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/setup [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/add [arenaName] [object]");
-                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/set [arenaName] [field] [value]");
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/set [arenaName] (tpc/wait) [value]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arena [arenaName]");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/arenas");
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.AQUA + "/here");
