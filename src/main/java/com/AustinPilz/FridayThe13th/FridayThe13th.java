@@ -133,6 +133,12 @@ public class FridayThe13th extends JavaPlugin implements Listener
             return;
         }
 
+        if (!Bukkit.getPluginManager().isPluginEnabled("CorpseReborn")) {
+            log.log(Level.SEVERE, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.corpseReborn", "CorpseReborn not found - required for gameplay."));
+            this.setEnabled(false);
+            return;
+        }
+
         //Check for Update
         try
         {
