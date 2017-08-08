@@ -79,7 +79,6 @@ public class CounselorProfilesMenu {
             }
 
             //Get skin preview for the skull
-            //TODO CHANGE TO COUNSELOR PROFILE SKIN
             item = new SkullPreview(profile.getSkin(), profile.getDisplayName(), jasonItemLore);
             inventory.addItem(item);
 
@@ -104,6 +103,6 @@ public class CounselorProfilesMenu {
     public static void addMenuOpenItem(Player player) {
         List<String> menuItemLore = new ArrayList<String>();
         menuItemLore.add(HiddenStringsUtil.encodeString("{\"Menu\": \"CounselorProfiles\"}"));
-        player.getInventory().setItem(0, new SkullPreview(F13Skin.COUNSELOR_BASE, ChatColor.DARK_GREEN + FridayThe13th.language.get(player, "game.menu.CounselorProfile", "Counselor Profiles"), menuItemLore));
+        player.getInventory().setItem(0, new SkullPreview(F13Skin.Counselor_Chad, ChatColor.DARK_GREEN + FridayThe13th.language.get(player, "game.menu.CounselorProfile", "Counselor Profiles"), menuItemLore));
     }
 }

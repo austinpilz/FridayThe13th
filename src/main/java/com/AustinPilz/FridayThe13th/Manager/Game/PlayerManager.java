@@ -7,6 +7,7 @@ import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Menu.CounselorProfilesMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.JasonProfilesMenu;
+import com.AustinPilz.FridayThe13th.Components.Menu.Shop_MainMenu;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
@@ -599,6 +600,7 @@ public class PlayerManager
         SpawnPreferenceMenu.addMenuOpenItem(player);
         JasonProfilesMenu.addMenuOpenItem(player);
         CounselorProfilesMenu.addMenuOpenItem(player);
+        Shop_MainMenu.addMenuOpenItem(player);
     }
 
     /**

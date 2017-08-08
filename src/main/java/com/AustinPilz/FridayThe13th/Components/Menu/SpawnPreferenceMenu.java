@@ -76,6 +76,6 @@ public class SpawnPreferenceMenu {
         itemMeta.setLore(menuItemLore);
         item.setItemMeta(itemMeta);
 
-        player.getInventory().setItem(4, item);
+        player.getInventory().setItem(3, item);
     }
 }

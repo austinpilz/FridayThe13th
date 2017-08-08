@@ -453,8 +453,6 @@ public class ObjectManager
         corpses.add(corpse);
 
         corpse.resendCorpseToEveryone();
-
-        player.sendMessage("Corpse spawned");
     }
 
     /**

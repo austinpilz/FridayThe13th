@@ -75,8 +75,9 @@ public class GameScoreboardManager
 
         if (arena.getGameManager().getPlayerManager().getNumSpectators() > 0)
         {
+            gameScoreboard.addEntry(new SidebarString("    "));
             gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Spectators", "Spectators")));
-            gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + "" + arena.getGameManager().getPlayerManager().getNumSpectators()));
+            gameScoreboard.addEntry(new SidebarString(ChatColor.WHITE + "" + arena.getGameManager().getPlayerManager().getNumSpectators()));
         }
 
         gameScoreboard.update();
