@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th.Command;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaSetupSessionAlreadyInProgress;
 import com.AustinPilz.FridayThe13th.Exceptions.Chest.ChestSetupSessionAlreadyInProgressException;
@@ -480,6 +481,64 @@ public class CommandHandler implements CommandExecutor {
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.consoleSender", "This command must be executed by an in-game player, not the console."));
                     }
                 } else {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
+                }
+            } else if (args[0].equalsIgnoreCase("stats")) {
+                if (sender.hasPermission("FridayThe13th.User")) {
+                    if (args.length >= 1 && args.length <= 2)
+                    {
+                        //Retrieve their own stats
+                        String statsUsername = "";
+
+                        if (args.length == 1)
+                        {
+                            //No username provided, so get stats for sender
+                            statsUsername = sender.getName();
+                        }
+                        else if (args.length == 2)
+                        {
+                            //Get stats for supplied player
+                            statsUsername = args[1];
+                        }
+
+                        if (FridayThe13th.playerController.hasPlayerPlayed(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString()))
+                        {
+                            F13Player player = FridayThe13th.playerController.getPlayer(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString());
+
+                            sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.STRIKETHROUGH + ChatColor.RED + "---- " + ChatColor.RESET + "Player Stats" + ChatColor.STRIKETHROUGH + ChatColor.RED + "---- ");
+                            sender.sendMessage("Player: " + statsUsername);
+                            sender.sendMessage("Level: " + player.getLevel().getLevelNumber());
+                            sender.sendMessage("XP: " + player.getXP());
+                            sender.sendMessage("XP until Next Level: " + (player.getNextLevel().getMinXP() - player.getXP()));
+
+                            try
+                            {
+                                Arena arena = FridayThe13th.arenaController.getPlayerArena(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString());
+                                {
+                                    sender.sendMessage("Current arena: " + ChatColor.GREEN + arena.getArenaName());
+                                }
+                            }
+                            catch (PlayerNotPlayingException exception)
+                            {
+                                //They're not playing, so we don't care
+                            }
+
+                        }
+                        else
+                        {
+                            //The player has never played F13 before
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.statsPlayerError", "The player {0} has never played F13 before on this server.", ChatColor.AQUA + statsUsername + ChatColor.WHITE));
+                        }
+                    }
+                    else
+                    {
+                        //Syntax error
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.statsSyntaxError", "Incorrect stats syntax. Usage: {0}", ChatColor.GREEN + "/f13 stats" + ChatColor.AQUA + "[playerName]"));
+                    }
+                }
+                else
+                {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
                 }

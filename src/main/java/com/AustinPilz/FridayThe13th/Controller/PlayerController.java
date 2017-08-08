@@ -70,6 +70,34 @@ public class PlayerController {
     }
 
     /**
+     * Returns if the player has ever played Friday the 13th before
+     * @param uuid
+     * @return
+     */
+    public boolean hasPlayerPlayed(String uuid)
+    {
+        if (doesPlayerExist(uuid))
+        {
+            return true;
+        }
+        else
+        {
+            FridayThe13th.inputOutput.loadPlayer(uuid);
+
+            if (doesPlayerExist(uuid))
+            {
+                //They were in the DB
+                return true;
+            }
+            else
+            {
+                //They weren't in the DB
+                return false;
+            }
+        }
+    }
+
+    /**
      * Returns the number of F13 players in memory
      *
      * @return
