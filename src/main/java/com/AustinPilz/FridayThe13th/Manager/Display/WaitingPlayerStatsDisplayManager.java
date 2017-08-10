@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Enum.F13Level;
+import com.AustinPilz.FridayThe13th.Components.Enum.Level.F13Level;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;

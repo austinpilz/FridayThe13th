@@ -1,5 +1,6 @@
 package com.AustinPilz.FridayThe13th;
 
+import com.AustinPilz.FridayThe13th.Command.APICommandHandler;
 import com.AustinPilz.FridayThe13th.Command.CommandHandler;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Controller.ArenaController;
@@ -16,6 +17,7 @@ import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.PhoneSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
+import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
 import com.AustinPilz.FridayThe13th.Runnable.PlayerMemoryClean;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -100,10 +102,11 @@ public class FridayThe13th extends JavaPlugin implements Listener
         getServer().getPluginManager().registerEvents(new F13EventsListener(), this);
 
         //Schedule tasks
-        Bukkit.getScheduler().runTaskTimer(this, new PlayerMemoryClean(), 36000, 36000);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new PlayerMemoryClean(), 36000, 36000);
 
         //Register Command Handlers
         getCommand("f13").setExecutor(new CommandHandler());
+        getCommand("f13api").setExecutor(new APICommandHandler());
 
         //3rd Party Plugins
         if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays"))
@@ -139,6 +142,12 @@ public class FridayThe13th extends JavaPlugin implements Listener
             return;
         }
 
+        if (!Bukkit.getPluginManager().isPluginEnabled("CustomSoundManagerAPI")) {
+            log.log(Level.SEVERE, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.customSoundManagerAPI", "CustomSoundManagerAPI not found - required for gameplay."));
+            this.setEnabled(false);
+            return;
+        }
+
         //Check for Update
         try
         {
@@ -153,7 +162,6 @@ public class FridayThe13th extends JavaPlugin implements Listener
         catch (Exception e)
         {
             log.log(Level.WARNING, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.spigotUpdate", "Encountered an unexpected error while attempting to check Spigot for update."));
-            e.printStackTrace();
         }
 
         //Submit Metrics

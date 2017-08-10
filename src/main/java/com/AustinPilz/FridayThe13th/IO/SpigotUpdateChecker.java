@@ -41,7 +41,7 @@ public class SpigotUpdateChecker {
             con.getOutputStream().write(("key=" + key + "&resource=" + resourceId).getBytes("UTF-8"));
             version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
         return version;
     }

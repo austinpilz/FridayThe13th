@@ -1,5 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components.Visuals;
 
+import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +24,7 @@ public class ThrowableItem {
     private static final double SPEED = 1.3;
     private static final double DIRECTIONAL_VECTOR_AMOUNT = 1.3;
     private static final double HIT_RADIUS = 1.2;
-    private static final double DOWN_FALL = .03;
+    private static final double DOWN_FALL = .1; //.03
 
     private final UUID player;
     private ItemStack hand;
@@ -36,7 +37,7 @@ public class ThrowableItem {
         this.player = player.getUniqueId();
     }
 
-    public void display(Plugin plugin) {
+    public void display() {
         Player thrower = Bukkit.getPlayer(this.player);
         this.hand = thrower.getInventory().getItemInMainHand();
         if (this.hand.getType() == Material.AIR) {
@@ -72,7 +73,7 @@ public class ThrowableItem {
                 cancel();
                 regive();
             }
-        }.runTaskTimer(plugin, 0, 3);
+        }.runTaskTimer(FridayThe13th.instance, 0, 3);
     }
 
     private void regive() {

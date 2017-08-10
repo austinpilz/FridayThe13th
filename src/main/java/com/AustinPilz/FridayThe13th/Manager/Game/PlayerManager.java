@@ -1,14 +1,14 @@
 package com.AustinPilz.FridayThe13th.Manager.Game;
 
+import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
+import com.AustinPilz.CustomSoundManagerAPI.CustomSoundManagerAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
-import com.AustinPilz.FridayThe13th.Components.Menu.CounselorProfilesMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.JasonProfilesMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.Shop_MainMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
+import com.AustinPilz.FridayThe13th.Components.Menu.*;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
@@ -598,9 +598,12 @@ public class PlayerManager
 
         //Give them waiting room items
         SpawnPreferenceMenu.addMenuOpenItem(player);
-        JasonProfilesMenu.addMenuOpenItem(player);
-        CounselorProfilesMenu.addMenuOpenItem(player);
+        Profiles_MainMenu.addMenuOpenItem(player);
         Shop_MainMenu.addMenuOpenItem(player);
+        PurchasedPerksMenu.addMenuOpenItem(player);
+
+        //Begin waiting room music
+        PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), F13SoundEffect.LobbyMusic.getResourcePackValue(), F13SoundEffect.LobbyMusic.getLengthInSeconds(), 10, true, true);
     }
 
     /**
@@ -633,6 +636,8 @@ public class PlayerManager
         //Tell everyone who Jason is
         sendMessageToAllPlayers(ChatColor.AQUA + jason.getPlayer().getName() + ChatColor.WHITE + " is Jason.");
 
+        //Play game start music
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.Music_GameStart, arena, true, true);
     }
 
     /**
@@ -772,6 +777,7 @@ public class PlayerManager
             Map.Entry entry = (Map.Entry) counselorIterator.next();
             Counselor counselor = (Counselor) entry.getValue();
             counselor.awardXP();
+            counselor.awardCP();
         }
 
         //If Jason killed all of the players, he gets a time bonus
@@ -782,6 +788,7 @@ public class PlayerManager
         //Award Jason XP if there was a current game
         if (getJason() != null) {
             getJason().awardXP();
+            getJason().awardCP();
         }
 
         //Clean everyone up
@@ -816,10 +823,15 @@ public class PlayerManager
             if (offlinePlayer.isOnline())
             {
                 //Teleport them to the return point
-                FridayThe13th.playerController.getPlayer(Bukkit.getPlayer(UUID.fromString(playerUUID))).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
-                teleportPlayerToReturnPoint(Bukkit.getPlayer(UUID.fromString(playerUUID)));
-                arena.getGameManager().getWaitingCountdownDisplayManager().hideForPlayer(Bukkit.getPlayer(UUID.fromString(playerUUID)));
-                Bukkit.getPlayer(UUID.fromString(playerUUID)).getInventory().clear();
+                Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
+
+                FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
+                teleportPlayerToReturnPoint(player);
+                arena.getGameManager().getWaitingCountdownDisplayManager().hideForPlayer(player);
+                player.getInventory().clear();
+
+                //Stop all music
+                PlayerSoundAPI.getPlayerSoundManager(player).stopAllSounds();
             }
         }
         else
@@ -887,6 +899,9 @@ public class PlayerManager
                 for (PotionEffect effect : player.getActivePotionEffects()) {
                     player.removePotionEffect(effect.getType());
                 }
+
+                //Stop all music
+                PlayerSoundAPI.getPlayerSoundManager(player).stopAllSounds();
             }
         }
     }

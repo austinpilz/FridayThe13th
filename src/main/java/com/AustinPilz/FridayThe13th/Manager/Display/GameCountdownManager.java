@@ -2,7 +2,9 @@ package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -66,6 +68,12 @@ public class GameCountdownManager
                 if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned())
                 {
                     arena.getGameManager().getPlayerManager().spawnTommyJarvis();
+                }
+
+                //Play 2 minute left music
+                if (mn == 2)
+                {
+                    SoundManager.playSoundForAllPlayers(F13SoundEffect.Music_2Minute, arena, true, false);
                 }
             }
             else if (mn == 0 && (sec == 30 || sec == 20 || sec == 10 || sec == 5))

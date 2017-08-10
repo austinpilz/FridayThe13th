@@ -1,5 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Menu;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkullPreview;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
@@ -25,7 +27,7 @@ public class SpawnPreferenceMenu {
 
         if (FridayThe13th.playerController.getPlayer(player).isSpawnPreferenceJason()) {
             //Jason
-            inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.SpawnPreferenceMenuJasonSet", "Spawn Preference: {0}Jason", ChatColor.RED));
+            inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.SpawnPreferenceMenuJasonSet", "Spawn Preference: {0}Jason", ChatColor.DARK_RED));
         } else if (FridayThe13th.playerController.getPlayer(player).isSpawnPreferenceCounselor()) {
             //Counselor
             inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.SpawnPreferenceMenuCounselorSet", "Spawn Preference: {0}Counselor", ChatColor.DARK_GREEN));
@@ -34,29 +36,16 @@ public class SpawnPreferenceMenu {
             inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.SpawnPreferenceMenu", "Spawn Preference"));
         }
 
-        //Add Jason
-        ItemStack jasonItem = new ItemStack(Material.DIAMOND_AXE, 1);
-        ItemMeta jasonItemMeta = jasonItem.getItemMeta();
-        jasonItemMeta.setDisplayName(ChatColor.RED + FridayThe13th.language.get(player, "game.item.SpawnPreferenceJason", "Jason"));
 
-        List<String> jasonItemLore = new ArrayList<String>();
-        jasonItemLore.add(HiddenStringsUtil.encodeString("{\"SpawnPrefSelect\": \"J\"}"));
-        jasonItemMeta.setLore(jasonItemLore);
-
-        jasonItem.setItemMeta(jasonItemMeta);
-        inventory.addItem(jasonItem);
-
-        //Add Counselor
-        ItemStack counselorItem = new ItemStack(Material.COMPASS, 1);
-        ItemMeta counselorItemMeta = counselorItem.getItemMeta();
-        counselorItemMeta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(player, "game.item.SpawnPreferenceCounselor", "Counselor"));
-
+        //Add counselor
         List<String> counselorItemLore = new ArrayList<String>();
         counselorItemLore.add(HiddenStringsUtil.encodeString("{\"SpawnPrefSelect\": \"C\"}"));
-        counselorItemMeta.setLore(counselorItemLore);
+        inventory.setItem(0, new SkullPreview(F13Skin.Counselor_Tiffany, ChatColor.DARK_GREEN + FridayThe13th.language.get(player, "game.item.SpawnPreferenceCounselor", "Counselor"), counselorItemLore));
 
-        counselorItem.setItemMeta(counselorItemMeta);
-        inventory.addItem(counselorItem);
+        //Add Jason
+        List<String> jasonItemLore = new ArrayList<String>();
+        jasonItemLore.add(HiddenStringsUtil.encodeString("{\"SpawnPrefSelect\": \"J\"}"));
+        inventory.setItem(1, new SkullPreview(F13Skin.JASON_Part1, ChatColor.DARK_RED + FridayThe13th.language.get(player, "game.item.SpawnPreferenceJason", "Jason"), jasonItemLore));
 
         //Open it for player
         player.openInventory(inventory);
@@ -76,6 +65,6 @@ public class SpawnPreferenceMenu {
         itemMeta.setLore(menuItemLore);
         item.setItemMeta(itemMeta);
 
-        player.getInventory().setItem(3, item);
+        player.getInventory().setItem(1, item);
     }
 }

@@ -2,12 +2,15 @@ package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
-import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.Enum.Level.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Visuals.ThrowableItem;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorWindowJump;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -40,7 +43,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (FridayThe13th.updateChecker.isUpdateNeeded() && event.getPlayer().hasPermission("FridayThe13th.admin"))
+        if (FridayThe13th.updateChecker != null && FridayThe13th.updateChecker.isUpdateNeeded() && event.getPlayer().hasPermission("FridayThe13th.admin"))
         {
             event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.updateAvailable", "There is a newer version of Friday the 13th available for update!"));
         }
@@ -62,7 +65,6 @@ public class PlayerListener implements Listener {
             if (event.getEntity() instanceof Player)
             {
                 //This should NEVER happen, it should always look for damage
-
                 Player player = event.getEntity();
                 FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()).getGameManager().getPlayerManager().onPlayerDeath(player); //See if they're playing
             }
@@ -95,7 +97,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
-
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
 
@@ -432,14 +433,29 @@ public class PlayerListener implements Listener {
 
                                                         //Alter damage based on their strength level
                                                         event.setDamage(event.getDamage() * FridayThe13th.playerController.getPlayer(playerDamager).getCounselorProfile().getStrength().getDepletionRate());
+
+                                                        if (playerDamaged.getHealth() <= event.getDamage()) {
+                                                            //Counselor killed jason
+                                                            arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonKill();
+                                                        }
                                                     }
                                                 } else {
                                                     event.setCancelled(true); //Counselors can't hurt unless they have a special item
                                                 }
                                             }
-                                        } else if (arena.getGameManager().getPlayerManager().isJason(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
-                                            //Jason kills a counselor
-                                            arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
+                                        } else if (arena.getGameManager().getPlayerManager().isJason(playerDamager) && arena.getGameManager().getPlayerManager().isCounselor(playerDamaged)) {
+                                            //Jason hitting a counselor
+
+                                            //Play sound effect
+                                            SoundManager.playSoundForNearbyPlayers(F13SoundEffect.Stab, arena, playerDamaged.getLocation(), 4, false, true);
+
+                                            if (playerDamaged.getHealth() <= event.getDamage())
+                                            {
+                                                //Jason kills a counselor
+                                                arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
+
+                                                //
+                                            }
                                         }
                                     } else {
                                         //The person doing the damage isn't even playing

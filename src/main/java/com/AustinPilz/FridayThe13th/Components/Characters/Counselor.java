@@ -1,12 +1,15 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
+import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
+import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Manager.Statistics.CounselorXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
@@ -19,8 +22,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.golde.bukkit.corpsereborn.nms.Corpses;
 
 import java.util.HashSet;
@@ -59,7 +65,6 @@ public class Counselor
     //Potions
     private PotionEffect potionOutOfBreath;
     private PotionEffect potionFearBlind;
-    private PotionEffect potionSpectatingInvisibility;
     private PotionEffect potionSenseByJason;
 
     //Warnings
@@ -108,7 +113,6 @@ public class Counselor
         //Potions
         potionOutOfBreath = new PotionEffect(PotionEffectType.CONFUSION, 300, 1);
         potionFearBlind = new PotionEffect(PotionEffectType.BLINDNESS, 400, 1);
-        potionSpectatingInvisibility = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
         potionSenseByJason = new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 10);
 
         //Restore Values
@@ -190,6 +194,38 @@ public class Counselor
 
         //Skin
         skin.apply(getF13Player().getCounselorProfile().getSkin());
+
+        //Perks
+        addGameStartPerks();
+
+        //Stop all previous sounds and play game start music
+        PlayerSoundAPI.getPlayerSoundManager(getPlayer()).stopAllSounds();
+    }
+
+    /**
+     * Adds applicable perks to the players inventory
+     */
+    private void addGameStartPerks()
+    {
+        //Perk - Antiseptic
+        if (getF13Player().hasPerk(F13Perk.Counselor_FirstAid))
+        {
+            ItemStack healthPotion = new ItemStack(Material.POTION, 1);
+            PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
+            meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
+            meta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(getPlayer(), "game.item.Antiseptic", "Antiseptic Spray"));
+            healthPotion.setItemMeta(meta);
+            getPlayer().getInventory().addItem(healthPotion);
+        }
+
+        if (getF13Player().hasPerk(F13Perk.Counselor_Radio))
+        {
+            ItemStack item = new ItemStack(Material.NETHER_STAR, 1);
+            ItemMeta metaData = item.getItemMeta();
+            metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
+            item.setItemMeta(metaData);
+            getPlayer().getInventory().addItem(item);
+        }
     }
 
     /**
@@ -334,8 +370,20 @@ public class Counselor
         //If they're totally out of breath, apply the potion
         if (getStamina() == 0)
         {
-            //Add confusion effect
-            getPlayer().addPotionEffect(potionOutOfBreath);
+            //Add confusion effect - if no dramamine
+            if (getF13Player().hasPerk(F13Perk.Counselor_Dramamine))
+            {
+                double chance = Math.random() * 100;
+                if ((chance -= 75) < 0) //75%
+                {
+                    getPlayer().addPotionEffect(potionOutOfBreath);
+                }
+            }
+            else
+            {
+                //No perk, apply potion
+                getPlayer().addPotionEffect(potionOutOfBreath);
+            }
         }
 
         if (getStamina() < (getMaxStamina()*.05))
@@ -661,6 +709,14 @@ public class Counselor
     }
 
     /**
+     * Awards Jason their CP
+     */
+    public void awardCP()
+    {
+        getF13Player().addCP(500);
+    }
+
+    /**
      * When the counselor sees a corpse
      * @param corpse
      */
@@ -677,8 +733,8 @@ public class Counselor
                 lightHistory.addLevel(0.0);
             }
 
-
-            //TODO custom sound when they see a corpse
+            //Play gasp sound effect
+            SoundManager.playSoundForPlayer(getPlayer(), getF13Player().getCounselorProfile().getGaspSoundEffect(), false, true);
         }
     }
 }

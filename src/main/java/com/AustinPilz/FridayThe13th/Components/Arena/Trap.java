@@ -2,7 +2,7 @@ package com.AustinPilz.FridayThe13th.Components.Arena;
 
 
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
-import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Enum.Level.TrapType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;

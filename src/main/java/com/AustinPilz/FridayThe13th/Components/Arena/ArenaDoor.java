@@ -1,6 +1,8 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -52,6 +54,14 @@ public class ArenaDoor
 
             //Door is broken, add XP to Jason
             arena.getGameManager().getPlayerManager().getJason().getXPManager().addDoorBreak();
+
+            //Play broken sound
+            SoundManager.playSoundForNearbyPlayers(F13SoundEffect.DoorBreak, arena, doorBlock.getLocation(), 5, false, true);
+        }
+        else
+        {
+            //Play hitting sound
+            SoundManager.playSoundForNearbyPlayers(F13SoundEffect.DoorHit, arena, doorBlock.getLocation(), 5, false, true);
         }
     }
 

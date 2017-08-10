@@ -26,7 +26,7 @@ public class SpectateMenu {
      * @param arena
      */
     public static void openMenu(Player player, Arena arena) {
-        Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.GREEN + "" + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.SpectateSelectionItem", "Spectate - Teleport To:"));
+        Inventory inventory = Bukkit.createInventory(null, 9, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.SpectateSelectionItem", "Spectate Selection"));
 
         int i = 0;
         Iterator it = arena.getGameManager().getPlayerManager().getCounselors().entrySet().iterator();

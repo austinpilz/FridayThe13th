@@ -15,6 +15,7 @@ public class CounselorXPManager {
     private int statsFriendlyHits = 0;
     private int statsWindowSprints = 0;
     private int statsJasonStuns = 0;
+    private boolean statsJasonKilled = false;
     private boolean statsCalledTommy = false;
     private boolean statsDoorClosed = false;
 
@@ -88,6 +89,10 @@ public class CounselorXPManager {
         ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.jasonStuns", "Jason Stunned: +{0}xp", 50), 60);
     }
 
+    public void addJasonKill() {
+        statsJasonKilled = true;
+    }
+
     /**
      * Calculates and returns the counselors XP for the game
      *
@@ -109,6 +114,10 @@ public class CounselorXPManager {
         //Calculate Tommy Jarvis called
         if (statsCalledTommy) {
             xp += 100;
+        }
+
+        if (statsJasonKilled) {
+            xp += 1000;
         }
 
         //Calculate activated traps

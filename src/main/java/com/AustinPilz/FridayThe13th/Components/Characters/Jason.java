@@ -1,13 +1,17 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
+import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Enum.JasonProfile;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
+import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Manager.Statistics.JasonXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
@@ -198,10 +202,21 @@ public class Jason
     public void prepareforGameplay()
     {
         //Give jason his sword
-        ItemStack sword = new ItemStack(Material.DIAMOND_AXE, 1);
+        Material weaponMaterial;
+
+        if (getF13Player().hasPerk(F13Perk.Jason_Part2Pickaxe) && getF13Player().getJasonProfile().equals(JasonProfile.PartTwo))
+        {
+            weaponMaterial = Material.IRON_PICKAXE;
+        }
+        else
+        {
+            weaponMaterial = Material.IRON_AXE;
+        }
+
+        ItemStack sword = new ItemStack(weaponMaterial, 1);
         ItemMeta metaData = sword.getItemMeta();
         metaData.setUnbreakable(true);
-        metaData.setDisplayName(ChatColor.RED + "Jason's " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.JasonsAxe", "Axe"));
+        metaData.setDisplayName(ChatColor.RED + "Jason's " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.JasonsWeapon", "Weapon"));
         sword.setItemMeta(metaData);
 
         //Give him a bow
@@ -249,6 +264,9 @@ public class Jason
 
         //Skin
         skin.apply(f13Player.getJasonProfile().getSkin());
+
+        //Stop all previous sounds
+        PlayerSoundAPI.getPlayerSoundManager(getPlayer()).stopAllSounds();
 
         //Schedule tasks
         scheduleTasks();
@@ -397,13 +415,17 @@ public class Jason
      */
     public void setInitialStalkGenerationCompleted(boolean value)
     {
-       stalkInitialGenerationCompleted = value;
+        stalkInitialGenerationCompleted = value;
 
-       if (value)
-       {
-           //When it becomes available, send message
-           ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.stalkAvailable", "Stalk ability is now available"), 60);
-       }
+        if (value)
+        {
+            //When it becomes available, send message
+            ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.stalkAvailable", "Stalk ability is now available"), 60);
+        }
+
+        //Play sound effect for all players
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true);
+
     }
 
 
@@ -518,6 +540,9 @@ public class Jason
             //When it becomes available, send message
             ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.senseAvailable", "Sense ability is now available"), 60);
         }
+
+        //Play sound effect for all players
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true);
     }
 
     /**
@@ -590,6 +615,9 @@ public class Jason
             //When it becomes available, send message
             ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.warpAvailable", "Warp ability is now available"), 60);
         }
+
+        //Play sound effect for all players
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true);
     }
 
     public void regenerateWarp()
@@ -673,5 +701,13 @@ public class Jason
         getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
 
         FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
+    }
+
+    /**
+     * Awards Jason their CP
+     */
+    public void awardCP()
+    {
+        getF13Player().addCP(500);
     }
 }

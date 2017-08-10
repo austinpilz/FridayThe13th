@@ -1,9 +1,11 @@
 package com.AustinPilz.FridayThe13th.Command;
 
 
+import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Visuals.ThrowableItem;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaSetupSessionAlreadyInProgress;
 import com.AustinPilz.FridayThe13th.Exceptions.Chest.ChestSetupSessionAlreadyInProgressException;
@@ -15,10 +17,15 @@ import com.AustinPilz.FridayThe13th.Exceptions.SpawnPoint.SpawnPointSetupSession
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -524,6 +531,11 @@ public class CommandHandler implements CommandExecutor {
                                 //They're not playing, so we don't care
                             }
 
+                            //Customization points
+                            if (player.getPlayerUUID().equals(Bukkit.getOfflinePlayer(sender.getName()).getUniqueId().toString()))
+                            {
+                                sender.sendMessage("Customization Points: " + player.getCP());
+                            }
                         }
                         else
                         {

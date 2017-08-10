@@ -5,10 +5,12 @@ description: Classic Friday The 13th Gameplay
 author: Austin Pilz
 website: http://austinpilz.com
 load: POSTWORLD
-softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, ActionBarAPI, LanguageAPI, SidebarAPI, ProtocolLib, CorpseReborn]
+softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, ActionBarAPI, LanguageAPI, SidebarAPI, ProtocolLib, CorpseReborn, CustomSoundManagerAPI]
 commands:
     f13:
         description: Friday The 13th commands
+    f13api:
+        description: Friday The 13th API
 permissions:
     FridayThe13th.*:
         description: Gives access to all commands

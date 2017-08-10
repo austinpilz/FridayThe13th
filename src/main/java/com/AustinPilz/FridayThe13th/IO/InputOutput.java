@@ -4,11 +4,14 @@ import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Profiles.F13ProfileManager;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -130,7 +133,8 @@ public class InputOutput
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_signs\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_phones\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR, \"XP\" INTEGER DEFAULT 0, \"JasonProfile\" VARCHAR, \"CounselorProfile\" VARCHAR)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR, \"XP\" INTEGER DEFAULT 0, \"JasonProfile\" VARCHAR, \"CounselorProfile\" VARCHAR, \"CP\" INTEGER DEFAULT 0)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players_purchase\" (\"UUID\" VARCHAR NOT NULL, \"Item\" VARCHAR NOT NULL, \"Name\" VARCHAR NOT NULL)");
 
             conn.commit();
             st.close();
@@ -154,6 +158,7 @@ public class InputOutput
         Update("SELECT SecondsWaitingRoom FROM f13_arenas", "ALTER TABLE f13_arenas ADD SecondsWaitingRoom DOUBLE DEFAULT 60");
         Update("SELECT MinutesPerCounselor FROM f13_arenas", "ALTER TABLE f13_arenas ADD MinutesPerCounselor DOUBLE DEFAULT 2");
         Update("SELECT XP FROM f13_players", "ALTER TABLE f13_players ADD XP INTEGER DEFAULT 0");
+        Update("SELECT CP FROM f13_players", "ALTER TABLE f13_players ADD CP INTEGER DEFAULT 0");
         Update("SELECT JasonProfile FROM f13_players", "ALTER TABLE f13_players ADD JasonProfile VARCHAR");
         Update("SELECT CounselorProfile FROM f13_players", "ALTER TABLE f13_players ADD CounselorProfile VARCHAR");
     }
@@ -820,12 +825,12 @@ public class InputOutput
             PreparedStatement ps = null;
             ResultSet result = null;
             conn = getConnection();
-            ps = conn.prepareStatement("SELECT `SpawnPreference`, `XP`, `JasonProfile`, `CounselorProfile` FROM `f13_players` WHERE `UUID` = ?");
+            ps = conn.prepareStatement("SELECT `SpawnPreference`, `XP`, `JasonProfile`, `CounselorProfile`, `CP` FROM `f13_players` WHERE `UUID` = ?");
             ps.setString(1, UUID);
             result = ps.executeQuery();
 
             while (result.next()) {
-                F13Player player = new F13Player(UUID, result.getString("JasonProfile"), result.getString("CounselorProfile"), result.getInt("XP"));
+                F13Player player = new F13Player(UUID, result.getString("JasonProfile"), result.getString("CounselorProfile"), result.getInt("XP"), result.getInt("CP"));
                 FridayThe13th.playerController.addPlayer(player);
 
                 if (result.getString("SpawnPreference").equals("J")) {
@@ -886,7 +891,7 @@ public class InputOutput
             String sql;
             Connection conn = InputOutput.getConnection();
 
-            sql = "UPDATE `f13_players` SET `SpawnPreference` = ?, `XP` = ?, `JasonProfile` = ?, `CounselorProfile` = ? WHERE `UUID` = ?";
+            sql = "UPDATE `f13_players` SET `SpawnPreference` = ?, `XP` = ?, `JasonProfile` = ?, `CounselorProfile` = ?, `CP` = ? WHERE `UUID` = ?";
             //updateInDatabase
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
@@ -899,9 +904,10 @@ public class InputOutput
             }
 
             preparedStatement.setInt(2, player.getXP());
-            preparedStatement.setString(3, player.getJasonProfile().getDisplayName());
-            preparedStatement.setString(4, player.getCounselorProfile().getDisplayName());
-            preparedStatement.setString(5, player.getPlayerUUID());
+            preparedStatement.setString(3, player.getJasonProfile().getInternalIdentifier());
+            preparedStatement.setString(4, player.getCounselorProfile().getInternalIdentifier());
+            preparedStatement.setInt(5, player.getCP());
+            preparedStatement.setString(6, player.getPlayerUUID());
             preparedStatement.executeUpdate();
             connection.commit();
 
@@ -910,6 +916,150 @@ public class InputOutput
 
         } catch (SQLException e) {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to update player in DB: " + e.getMessage());
+        }
+    }
+
+    public void loadPlayerPurchases(F13Player player)
+    {
+        try {
+            Connection conn;
+            PreparedStatement ps = null;
+            ResultSet result = null;
+            conn = getConnection();
+            ps = conn.prepareStatement("SELECT `Item`, `Name` FROM `f13_players_purchase` WHERE `UUID` = ?");
+            ps.setString(1, player.getPlayerUUID());
+            result = ps.executeQuery();
+
+            while (result.next())
+            {
+                if (result.getString("Item").equalsIgnoreCase("Perk"))
+                {
+                    if (F13PerkManager.getPerkByInternalIdentifier(result.getString("Name")) != null)
+                    {
+                        player.addPurchasedPerk(F13PerkManager.getPerkByInternalIdentifier(result.getString("Name")), false);
+                    }
+                }
+                else if (result.getString("Item").equalsIgnoreCase("Profile"))
+                {
+                    if (F13ProfileManager.getCounselorProfileByInternalIdentifier(result.getString("Name")) != null)
+                    {
+                        player.addPurchasedCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(result.getString("Name")), false);
+                    }
+                    else if (F13ProfileManager.getJasonProfileByInternalIdentifier(result.getString("Name")) != null)
+                    {
+                        player.addPurchasedJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(result.getString("Name")), false);
+                    }
+                }
+            }
+
+            conn.commit();
+            ps.close();
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to load F13 player purchases from database.");
+        }
+    }
+
+    /**
+     * Stores player perk into the database
+     * @param player
+     * @param perk
+     * @throws SaveToDatabaseException
+     */
+    public void storePurchasedPlayerPerk(F13Player player, F13Perk perk) throws SaveToDatabaseException
+    {
+        try {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "INSERT INTO f13_players_purchase (`UUID`, `Item`, `Name`) VALUES (?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+            preparedStatement.setString(1, player.getPlayerUUID());
+            preparedStatement.setString(2, "Perk");
+            preparedStatement.setString(3, perk.getInternalIdentifier());
+
+            preparedStatement.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            throw new SaveToDatabaseException();
+        }
+    }
+
+    /**
+     * Removes player perk from the database
+     * @param player
+     * @param perk
+     */
+    public void removePurchasedPlayerPerk(F13Player player, F13Perk perk)
+    {
+        try
+        {
+            Connection conn = InputOutput.getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_players_purchase WHERE UUID = ? AND Item = ? AND Name = ?");
+            ps.setString(1, player.getPlayerUUID());
+            ps.setString(2, "Perk");
+            ps.setString(3, perk.getInternalIdentifier());
+            ps.executeUpdate();
+            conn.commit();
+            ps.close();
+
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove a player perk from the database for player " + player.getPlayerUUID());
+        }
+    }
+
+    /**
+     * Stores player perk into the database
+     * @param player
+     * @param internalIdentifier
+     * @throws SaveToDatabaseException
+     */
+    public void storePurchasedPlayerProfile(F13Player player, String internalIdentifier) throws SaveToDatabaseException
+    {
+        try {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "INSERT INTO f13_players_purchase (`UUID`, `Item`, `Name`) VALUES (?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+            preparedStatement.setString(1, player.getPlayerUUID());
+            preparedStatement.setString(2, "Profile");
+            preparedStatement.setString(3, internalIdentifier);
+
+            preparedStatement.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            throw new SaveToDatabaseException();
+        }
+    }
+
+    /**
+     * Removes purchased profile from the database
+     * @param player
+     * @param internalIdentifier
+     */
+    public void removePurchasedPlayerProfile(F13Player player, String internalIdentifier)
+    {
+        try
+        {
+            Connection conn = InputOutput.getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_players_purchase WHERE UUID = ? AND Item = ? AND Name = ?");
+            ps.setString(1, player.getPlayerUUID());
+            ps.setString(2, "Profile");
+            ps.setString(3, internalIdentifier);
+            ps.executeUpdate();
+            conn.commit();
+            ps.close();
+
+        }
+        catch (SQLException e)
+        {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove a purchased player profile from the database for player " + player.getPlayerUUID());
         }
     }
 }

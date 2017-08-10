@@ -1,14 +1,13 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.CounselorProfile;
-import com.AustinPilz.FridayThe13th.Components.Enum.JasonProfile;
-import com.AustinPilz.FridayThe13th.Components.Menu.CounselorProfilesMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.JasonProfilesMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
+import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
+import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
+import com.AustinPilz.FridayThe13th.Components.Menu.*;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,12 +39,27 @@ public class F13EventsListener implements Listener {
                 } else if (action.equals("Spectate")) {
                     //Open the spectate selection  menu
                     SpectateMenu.openMenu(event.getPlayer(), event.getArena());
+                } else if (action.equals("Profiles")) {
+                    //Open the profile main menu
+                    Profiles_MainMenu.openMenu(event.getPlayer());
                 } else if (action.equals("JasonProfiles")) {
-                    //Open the spectate selection  menu
-                    JasonProfilesMenu.openMenu(event.getPlayer());
+                    //Open the spectate selection menu
+                    Profiles_JasonMenu.openMenu(event.getPlayer());
                 } else if (action.equals("CounselorProfiles")) {
-                    //Open the spectate selection  menu
-                    CounselorProfilesMenu.openMenu(event.getPlayer());
+                    //Open the spectate selection menu
+                    Profiles_CounselorMenu.openMenu(event.getPlayer());
+                } else if (action.equals("Shop_Main")) {
+                    //Open main shop
+                    Shop_MainMenu.openMenu(event.getPlayer());
+                } else if (action.equals("Shop_Jason")) {
+                    //Open Jason perks shop
+                    Shop_JasonPerksMenu.openMenu(event.getPlayer());
+                } else if (action.equals("Shop_Counselor")) {
+                    //Open Counselor perks shop
+                    Shop_CounselorPerksMenu.openMenu(event.getPlayer());
+                } else if (action.equals("Purchased_Perks")) {
+                    //Open purchased perks menu
+                    PurchasedPerksMenu.openMenu(event.getPlayer());
                 }
                 event.setCancelled(true);
             } else if (json.containsKey("SpawnPrefSelect")) {
@@ -88,12 +102,11 @@ public class F13EventsListener implements Listener {
                             if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setJasonProfile(profile)) {
                                 //Profile set successfully
                                 found = true;
-                                JasonProfilesMenu.openMenu(event.getPlayer());
+                                Profiles_JasonMenu.openMenu(event.getPlayer());
                             }
                         }
                     }
                 }
-
                 event.setCancelled(true);
             } else if (json.containsKey("CounselorProfileSelect")) {
                 String profileName = (String) json.get("CounselorProfileSelect");
@@ -107,14 +120,32 @@ public class F13EventsListener implements Listener {
                             if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setCounselorProfile(profile)) {
                                 //Profile set successfully
                                 found = true;
-                                CounselorProfilesMenu.openMenu(event.getPlayer());
+                                Profiles_CounselorMenu.openMenu(event.getPlayer());
                             }
                         }
                     }
                 }
 
                 event.setCancelled(true);
-            } else {
+            } else if (json.containsKey("PurchasePerk")) {
+                String perkName = (String) json.get("PurchasePerk");
+
+                F13Perk perk = F13PerkManager.getPerkByInternalIdentifier(perkName);
+
+                if (perk != null)
+                {
+                    if (FridayThe13th.playerController.getPlayer(event.getPlayer()).purchasePerk(perk))
+                    {
+                        //Open their ender chest thing
+                        PurchasedPerksMenu.openMenu(event.getPlayer());
+                    }
+                }
+                event.setCancelled(true);
+            } else if (json.containsKey("ActivatePerk"))
+            {
+                event.setCancelled(true);
+            }
+            else {
                 event.setCancelled(false); //Unknown object so we'll ignore it
             }
         } catch (ParseException exception) {
