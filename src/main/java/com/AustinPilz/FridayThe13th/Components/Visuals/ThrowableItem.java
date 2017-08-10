@@ -64,7 +64,7 @@ public class ThrowableItem {
                 EulerAngle eulerAngle = new EulerAngle(armPosition + ThrowableItem.ROTATION_ANGLE_AMOUNT, 0.0D, 0.0D);
                 armorStand.setRightArmPose(eulerAngle);
 
-                armorStand.setVelocity(thrower.getLocation().getDirection().multiply(ThrowableItem.SPEED).subtract(new Vector(0, ThrowableItem.DOWN_FALL, 0)));
+                armorStand.setVelocity(thrower.getLocation().getDirection().multiply(ThrowableItem.SPEED).subtract(new Vector(0, ThrowableItem.DOWN_FALL, 0))); //define this outside of the runnable for a locked on direction. currently will follow where the player looks.
                 if (!armorStand.isOnGround()) {
                     return;
                 }
