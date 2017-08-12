@@ -1,17 +1,17 @@
-package com.AustinPilz.FridayThe13th.Components.Enum.Level;
+package com.AustinPilz.FridayThe13th.Components.Level;
 
-public enum WarpLevel {
-    One("I", .12, .02),
-    Two("II", .12, .022),
-    Three("III", .12, .025),
-    Four("IV", .12, .027),
-    Five("V", .12, .035);
+public enum StalkLevel {
+    One("I", .035, .03),
+    Two("II", .025, .035),
+    Three("III", .02, .04),
+    Four("IV", .015, .045),
+    Five("V", .01, .06);
 
     private String levelName;
-    private double depletionRate; //default .1
-    private double regenerationRate; //default .03
+    private double depletionRate; //default .01
+    private double regenerationRate; //default .06
 
-    WarpLevel(String name, double d, double r) {
+    StalkLevel(String name, double d, double r) {
         levelName = name;
         depletionRate = d;
         regenerationRate = r;

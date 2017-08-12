@@ -1,17 +1,17 @@
-package com.AustinPilz.FridayThe13th.Components.Enum.Level;
+package com.AustinPilz.FridayThe13th.Components.Level;
 
-public enum SenseLevel {
+public enum WarpLevel {
     One("I", .12, .02),
-    Two("II", .11, .025),
-    Three("III", .11, .03),
-    Four("IV", .10, .035),
-    Five("V", .09, .04);
+    Two("II", .12, .022),
+    Three("III", .12, .025),
+    Four("IV", .12, .027),
+    Five("V", .12, .035);
 
     private String levelName;
     private double depletionRate; //default .1
-    private double regenerationRate; //default .04
+    private double regenerationRate; //default .03
 
-    SenseLevel(String name, double d, double r) {
+    WarpLevel(String name, double d, double r) {
         levelName = name;
         depletionRate = d;
         regenerationRate = r;

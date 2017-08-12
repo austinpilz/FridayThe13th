@@ -1,8 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components;
 
-import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
-import com.AustinPilz.FridayThe13th.Components.Enum.Level.F13Level;
+import com.AustinPilz.FridayThe13th.Components.Level.F13Level;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Profiles.F13ProfileManager;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;

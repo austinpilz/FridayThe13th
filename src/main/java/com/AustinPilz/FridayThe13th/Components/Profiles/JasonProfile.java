@@ -1,10 +1,10 @@
 package com.AustinPilz.FridayThe13th.Components.Profiles;
 
 import com.AustinPilz.FridayThe13th.Components.Enum.*;
-import com.AustinPilz.FridayThe13th.Components.Enum.Level.F13Level;
-import com.AustinPilz.FridayThe13th.Components.Enum.Level.SenseLevel;
-import com.AustinPilz.FridayThe13th.Components.Enum.Level.StalkLevel;
-import com.AustinPilz.FridayThe13th.Components.Enum.Level.WarpLevel;
+import com.AustinPilz.FridayThe13th.Components.Level.F13Level;
+import com.AustinPilz.FridayThe13th.Components.Level.SenseLevel;
+import com.AustinPilz.FridayThe13th.Components.Level.StalkLevel;
+import com.AustinPilz.FridayThe13th.Components.Level.WarpLevel;
 
 public enum JasonProfile {
     PartOne("Part I", "J-P1", 1, F13Level.L1, F13Skin.JASON_Part1, 5, StalkLevel.One, SenseLevel.One, WarpLevel.One, F13SoundEffect.RegularChase),

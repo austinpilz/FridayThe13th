@@ -310,6 +310,25 @@ public class PlayerManager
         }
     }
 
+    /**
+     * Returns the max number of players in the arena
+     * @return
+     */
+    private int getMaxNumberOfPlayers()
+    {
+        if (arena.getLocationManager().getNumberStartingPoints() >= 8)
+        {
+            //We don't have to worry about spawn points
+            //Games capped at 8 counselors + Jason.
+            return 9 - getNumPlayers();
+        }
+        else
+        {
+            //They're are less than 8 spawn points for counselors
+            return arena.getLocationManager().getNumberStartingPoints() - getNumPlayers();
+        }
+    }
+
 
    /* Display */
 
@@ -375,7 +394,8 @@ public class PlayerManager
                         performWaitingActions(player);
 
                         //Announce arrival
-                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()));
+                        int playerNumber = players.size();
+                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game. ", player.getName()) + "(" + playerNumber + "/" + getMaxNumberOfPlayers()+")");
 
                         if (players.size() == 1)
                         {

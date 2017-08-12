@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Components.Enum.Level;
+package com.AustinPilz.FridayThe13th.Components.Level;
 
 public enum CounselorTraitLevel {
 

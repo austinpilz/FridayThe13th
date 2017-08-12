@@ -3,7 +3,7 @@ package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
-import com.AustinPilz.FridayThe13th.Components.Enum.Level.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Level.TrapType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;

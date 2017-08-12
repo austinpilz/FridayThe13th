@@ -2,7 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Game;
 
 
 import com.AustinPilz.FridayThe13th.Components.Arena.*;
-import com.AustinPilz.FridayThe13th.Components.Enum.Level.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Level.TrapType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
