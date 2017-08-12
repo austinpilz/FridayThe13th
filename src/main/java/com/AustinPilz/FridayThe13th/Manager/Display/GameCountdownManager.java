@@ -73,7 +73,7 @@ public class GameCountdownManager
                 //Play 2 minute left music
                 if (mn == 2)
                 {
-                    SoundManager.playSoundForAllPlayers(F13SoundEffect.Music_2Minute, arena, true, false);
+                    SoundManager.playSoundForAllPlayers(F13SoundEffect.Music_2Minute, arena, true, false, 2);
                 }
             }
             else if (mn == 0 && (sec == 30 || sec == 20 || sec == 10 || sec == 5))

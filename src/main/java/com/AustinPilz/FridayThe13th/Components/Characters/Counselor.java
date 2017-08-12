@@ -474,6 +474,18 @@ public class Counselor
             {
                 fearLevel += increase;
             }
+
+            //Jason is nearby, add chase music if not playing already
+            if (!SoundManager.isSoundAlreadyPlayingForPlayer(getPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic()))
+            {
+                //Chase music isn't already playing it, so we should play it for the player and for Jason
+                SoundManager.playSoundForPlayer(player, arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic(), true, false, 1);
+            }
+            if (!SoundManager.isSoundAlreadyPlayingForPlayer(arena.getGameManager().getPlayerManager().getJason().getPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic()))
+            {
+                //Chase music isn't already playing it, so we should play it for the player and for Jason
+                SoundManager.playSoundForPlayer(arena.getGameManager().getPlayerManager().getJason().getPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic(), true, false, 1);
+            }
         }
 
         //Ensure within boundaries
@@ -734,7 +746,7 @@ public class Counselor
             }
 
             //Play gasp sound effect
-            SoundManager.playSoundForPlayer(getPlayer(), getF13Player().getCounselorProfile().getGaspSoundEffect(), false, true);
+            SoundManager.playSoundForPlayer(getPlayer(), getF13Player().getCounselorProfile().getGaspSoundEffect(), false, true, 0);
         }
     }
 }

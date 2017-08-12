@@ -2,8 +2,10 @@ package com.AustinPilz.FridayThe13th.Components.Arena;
 
 
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.Components.Enum.Level.TrapType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -158,6 +160,9 @@ public class Trap {
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 100, 20));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 20));
             player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 100, 20));
+
+            //Play the sound for nearby players
+            SoundManager.playSoundForNearbyPlayers(F13SoundEffect.TrapCaught, arena, player.getLocation(), 6, false, true);
 
             if (getTrapType().equals(TrapType.Jason)) {
                 //Only counselors get damaged

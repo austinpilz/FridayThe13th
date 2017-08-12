@@ -276,7 +276,7 @@ public class F13Player {
      */
     public boolean setJasonProfile(JasonProfile p) {
         //Check to make sure they have the right level
-        if (getLevel().equals(p.getRequiredLevel()) || getLevel().isGreaterThan(p.getRequiredLevel())) {
+        if (getLevel().equals(p.getRequiredLevel()) || getLevel().isGreaterThan(p.getRequiredLevel()) || hasPurchasedJasonProfile(p)) {
             jasonProfile = p;
             updateDB();
             return true;
@@ -293,7 +293,7 @@ public class F13Player {
      */
     public boolean setCounselorProfile(CounselorProfile p) {
         //Check to make sure they have the right level
-        if (getLevel().equals(p.getRequiredLevel()) || getLevel().isGreaterThan(p.getRequiredLevel())) {
+        if (getLevel().equals(p.getRequiredLevel()) || getLevel().isGreaterThan(p.getRequiredLevel()) || hasPurchasedCounselorProfile(p)) {
             counselorProfile = p;
             updateDB();
             return true;
@@ -376,7 +376,7 @@ public class F13Player {
      */
     public boolean purchasePerk(F13Perk perk)
     {
-        if (customizationPoints >= perk.getCost())
+        if (customizationPoints >= perk.getCost() && !hasPerk(perk))
         {
             subtractCP(perk.getCost());
             addPurchasedPerk(perk, true);

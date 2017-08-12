@@ -17,14 +17,14 @@ public class SoundManager {
      * @param soundEffect
      * @param arena
      */
-    public static void playSoundForAllPlayers(F13SoundEffect soundEffect, Arena arena, boolean interrupt, boolean overlay)
+    public static void playSoundForAllPlayers(F13SoundEffect soundEffect, Arena arena, boolean interrupt, boolean overlay, int transitionSeconds)
     {
         Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
         while (it.hasNext())
         {
             Map.Entry entry = (Map.Entry) it.next();
             Player player = (Player) entry.getValue();
-            PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), soundEffect.getResourcePackValue(), soundEffect.getLengthInSeconds(), soundEffect.getVolume(), interrupt, overlay);
+            PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), soundEffect.getResourcePackValue(), soundEffect.getLengthInSeconds(), soundEffect.getVolume(), interrupt, overlay, transitionSeconds);
         }
     }
 
@@ -66,8 +66,29 @@ public class SoundManager {
      * @param interrupt
      * @param overlay
      */
-    public static void playSoundForPlayer(Player player, F13SoundEffect soundEffect, boolean interrupt, boolean overlay)
+    public static void playSoundForPlayer(Player player, F13SoundEffect soundEffect, boolean interrupt, boolean overlay, int transitionSeconds)
     {
-        PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), soundEffect.getResourcePackValue(), soundEffect.getLengthInSeconds(), soundEffect.getVolume(), interrupt, overlay);
+        PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), soundEffect.getResourcePackValue(), soundEffect.getLengthInSeconds(), soundEffect.getVolume(), interrupt, overlay, transitionSeconds);
+    }
+
+    /**
+     * Returns if the sound effect is already playing for the supplied player
+     * @param player
+     * @param soundEffect
+     * @return
+     */
+    public static boolean isSoundAlreadyPlayingForPlayer(Player player, F13SoundEffect soundEffect)
+    {
+        return PlayerSoundAPI.getPlayerSoundManager(player).isSoundCurrentlyPlaying(soundEffect.getResourcePackValue());
+    }
+
+    /**
+     * Returns if any sounds are currently playing for the player
+     * @param player
+     * @return
+     */
+    public static boolean areAnySoundsPlayingForPlayer(Player player)
+    {
+        return PlayerSoundAPI.getPlayerSoundManager(player).areAnySoundsPlaying();
     }
 }

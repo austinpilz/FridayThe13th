@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
+import com.AustinPilz.FridayThe13th.Components.Profiles.F13ProfileManager;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 import com.AustinPilz.FridayThe13th.Components.Menu.*;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
@@ -94,16 +95,11 @@ public class F13EventsListener implements Listener {
                 String profileName = (String) json.get("JasonProfileSelect");
 
                 if (!profileName.equalsIgnoreCase("Locked")) {
-
-                    boolean found = false;
-                    for (JasonProfile profile : JasonProfile.values()) {
-                        if (profile.getDisplayName().equalsIgnoreCase(profileName)) {
-                            //This is their skin
-                            if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setJasonProfile(profile)) {
-                                //Profile set successfully
-                                found = true;
-                                Profiles_JasonMenu.openMenu(event.getPlayer());
-                            }
+                    if (F13ProfileManager.getJasonProfileByInternalIdentifier(profileName) != null)
+                    {
+                        if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(profileName))) {
+                            //Profile set successfully
+                            Profiles_JasonMenu.openMenu(event.getPlayer());
                         }
                     }
                 }
@@ -113,15 +109,11 @@ public class F13EventsListener implements Listener {
 
                 if (!profileName.equalsIgnoreCase("Locked")) {
 
-                    boolean found = false;
-                    for (CounselorProfile profile : CounselorProfile.values()) {
-                        if (profile.getDisplayName().equalsIgnoreCase(profileName)) {
-                            //This is their skin
-                            if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setCounselorProfile(profile)) {
-                                //Profile set successfully
-                                found = true;
-                                Profiles_CounselorMenu.openMenu(event.getPlayer());
-                            }
+                    if (F13ProfileManager.getCounselorProfileByInternalIdentifier(profileName) != null)
+                    {
+                        if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(profileName))) {
+                            //Profile set successfully
+                            Profiles_CounselorMenu.openMenu(event.getPlayer());
                         }
                     }
                 }

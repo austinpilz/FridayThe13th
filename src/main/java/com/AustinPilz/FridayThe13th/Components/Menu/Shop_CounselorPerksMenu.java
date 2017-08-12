@@ -57,7 +57,7 @@ public class Shop_CounselorPerksMenu {
                 meta.setDisplayName(perk.getName());
 
                 List<String> menuItemLore = new ArrayList<String>();
-                menuItemLore.add(HiddenStringsUtil.encodeString("{\"PurchasePerk\": \"" + perk.getName() + "\"}"));
+                menuItemLore.add(HiddenStringsUtil.encodeString("{\"PurchasePerk\": \"" + perk.getInternalIdentifier() + "\"}"));
 
                 if (!perk.getDescription().isEmpty())
                 {
@@ -68,7 +68,11 @@ public class Shop_CounselorPerksMenu {
                 menuItemLore.add(ChatColor.WHITE + "Cost: " + ChatColor.AQUA + perk.getFormattedCost() + ChatColor.WHITE + " cp");
                 menuItemLore.add("");
 
-                if (f13Player.getCP() >= perk.getCost())
+                if (f13Player.hasPerk(perk))
+                {
+                    menuItemLore.add(ChatColor.GOLD + "Owned");
+                }
+                else if (f13Player.getCP() >= perk.getCost())
                 {
                     //They have sufficient funds
                     menuItemLore.add(ChatColor.GREEN + "Click to purchase!");

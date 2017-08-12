@@ -35,7 +35,7 @@ public class Profiles_JasonMenu {
             List<String> jasonItemLore = new ArrayList<String>();
             if (f13Player.getLevel().equals(profile.getRequiredLevel()) || f13Player.getLevel().isGreaterThan(profile.getRequiredLevel()) || f13Player.hasPurchasedJasonProfile(profile)) {
                 //The player has access to the profile
-                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"" + profile.getDisplayName() + "\"}"));
+                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"" + profile.getInternalIdentifier() + "\"}"));
 
                 if (f13Player.getJasonProfile().equals(profile))
                 {

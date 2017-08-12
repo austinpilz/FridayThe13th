@@ -424,7 +424,7 @@ public class Jason
         }
 
         //Play sound effect for all players
-        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true);
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true, 0);
 
     }
 
@@ -542,7 +542,7 @@ public class Jason
         }
 
         //Play sound effect for all players
-        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true);
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true, 0);
     }
 
     /**
@@ -617,7 +617,7 @@ public class Jason
         }
 
         //Play sound effect for all players
-        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true);
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.ChiChiChi, arena, false, true, 0);
     }
 
     public void regenerateWarp()

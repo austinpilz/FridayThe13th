@@ -37,7 +37,7 @@ public class Profiles_CounselorMenu {
             List<String> jasonItemLore = new ArrayList<String>();
             if (f13Player.getLevel().equals(profile.getRequiredLevel()) || f13Player.getLevel().isGreaterThan(profile.getRequiredLevel()) || f13Player.hasPurchasedCounselorProfile(profile)) {
                 //The player has access to the profile
-                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"CounselorProfileSelect\": \"" + profile.getDisplayName() + "\"}"));
+                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"CounselorProfileSelect\": \"" + profile.getInternalIdentifier() + "\"}"));
 
                 //Add green glass to signify unlocked
                 if (f13Player.getCounselorProfile().equals(profile)) {

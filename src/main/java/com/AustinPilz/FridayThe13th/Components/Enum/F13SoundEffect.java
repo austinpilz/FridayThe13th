@@ -13,7 +13,11 @@ public enum F13SoundEffect {
     Music_GameStart("f13.gamestart", 69, 10),
     Music_2Minute("f13.twominute", 120, 10),
     GuyGasp("f13.guygasp", 1, 10),
-    GirlGasp("f13.girlgasp", 1, 10);
+    GirlGasp("f13.girlgasp", 1, 10),
+    RetroChase("f13.retrochase", 82, 10),
+    RegularChase("f13.chase", 81, 10),
+    TrapCaught("f13.trapcaught", 1, 1),
+    JumpScare("f13.jumpscare", 10, 10);
 
     private String value;
     private int lengthInSeconds;

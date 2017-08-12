@@ -1,5 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components.Visuals;
 
+import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,6 +28,7 @@ public class ThrowableItem {
     private static final double DOWN_FALL = .1; //.03
 
     private final UUID player;
+    private Player p;
     private ItemStack hand;
 
     private ArmorStand armorStand;
@@ -35,6 +37,7 @@ public class ThrowableItem {
 
     public ThrowableItem(Player player) {
         this.player = player.getUniqueId();
+        this.p = player;
     }
 
     public void display() {
@@ -78,7 +81,18 @@ public class ThrowableItem {
 
     private void regive() {
         Player thrower = Bukkit.getPlayer(this.player);
-        thrower.getInventory().addItem(this.hand);
+
+        try
+        {
+            if (FridayThe13th.arenaController.getPlayerArena(player.toString()).getGameManager().isGameInProgress())
+            {
+                thrower.getInventory().addItem(this.hand);
+            }
+        }
+        catch (PlayerNotPlayingException exception)
+        {
+            //
+        }
     }
 
     private ItemStack recalculateAmount(ItemStack itemStack) {

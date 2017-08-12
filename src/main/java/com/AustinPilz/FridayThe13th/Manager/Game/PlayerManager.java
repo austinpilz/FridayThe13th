@@ -1,7 +1,6 @@
 package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
-import com.AustinPilz.CustomSoundManagerAPI.CustomSoundManagerAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
@@ -13,6 +12,8 @@ import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.austinpilz.ResourcePackAPI.Components.ResourcePackRequest;
+import com.austinpilz.ResourcePackAPI.ResourcePackAPI;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
@@ -358,37 +359,48 @@ public class PlayerManager
      */
     public synchronized void playerJoinGame(Player player) throws GameFullException, GameInProgressException
     {
-        if (arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) {
-            //Determine if there's room for this user
-            if (isRoomForPlayerToJoin()) {
-                try {
-                    //Add to lists
-                    FridayThe13th.arenaController.addPlayer(player.getUniqueId().toString(), arena);
-                    addPlayer(player);
-                    alivePlayers.put(player.getUniqueId().toString(), player);
+        if (true)
+        {
+            //All is well with the resource pack, they can join
+            if (arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) {
+                //Determine if there's room for this user
+                if (isRoomForPlayerToJoin()) {
+                    try {
+                        //Add to lists
+                        FridayThe13th.arenaController.addPlayer(player.getUniqueId().toString(), arena);
+                        addPlayer(player);
+                        alivePlayers.put(player.getUniqueId().toString(), player);
 
-                    //Waiting actions
-                    performWaitingActions(player);
+                        //Waiting actions
+                        performWaitingActions(player);
 
-                    //Announce arrival
-                    sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()));
+                        //Announce arrival
+                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()));
 
-                    if (players.size() == 1)
-                    {
-                        arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
+                        if (players.size() == 1)
+                        {
+                            arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
+                        }
+
+                    } catch (PlayerAlreadyPlayingException exception) {
+                        //They're already in the controller global player list
+                        player.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinFailAR", "Failed to add you to game because you're already registered as playing a game."));
                     }
-
-                } catch (PlayerAlreadyPlayingException exception) {
-                    //They're already in the controller global player list
-                    player.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinFailAR", "Failed to add you to game because you're already registered as playing a game."));
+                } else {
+                    throw new GameFullException();
                 }
-            } else {
-                throw new GameFullException();
+            }
+            else
+            {
+                throw new GameInProgressException();
             }
         }
         else
         {
-            throw new GameInProgressException();
+            //They don't have the resource pack, so let's request it
+            ResourcePackRequest request = new ResourcePackRequest("f13", player, "https://s3.amazonaws.com/fridaythe13th/F13.zip", FridayThe13th.pluginPrefix + "Resource pack success! Please join the game again", FridayThe13th.pluginPrefix + "Error! You MUST have the resource pack in order to play. You'll need to re-enable server resource packs on this server by returning to your server selection screen, hitting edit and enabling them. Then completely quit and restart your Minecraft client.", false);
+            ResourcePackAPI.playerController.getPlayer(player).newResourcePackRequest(request);
+            request.sendRequest();
         }
     }
 
@@ -637,7 +649,7 @@ public class PlayerManager
         sendMessageToAllPlayers(ChatColor.AQUA + jason.getPlayer().getName() + ChatColor.WHITE + " is Jason.");
 
         //Play game start music
-        SoundManager.playSoundForAllPlayers(F13SoundEffect.Music_GameStart, arena, true, true);
+        SoundManager.playSoundForAllPlayers(F13SoundEffect.Music_GameStart, arena, true, true, 0);
     }
 
     /**

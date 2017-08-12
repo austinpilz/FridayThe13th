@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="FridayThe13th">
-    <output-path>$PROJECT_DIR$/../../Minecraft Server Spigot/Plugins</output-path>
-    <root id="archive" name="FridayThe13th.jar">
-      <element id="module-output" name="FridayThe13th" />
-      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
-    </root>
-  </artifact>
-</component>

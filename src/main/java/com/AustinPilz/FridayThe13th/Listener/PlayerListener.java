@@ -4,6 +4,7 @@ import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.Components.Enum.Level.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Visuals.ThrowableItem;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
@@ -17,6 +18,7 @@ import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -133,6 +135,16 @@ public class PlayerListener implements Listener {
                             if (door.isOpen()) {
                                 //They're closing a door - register for XP
                                 arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addDoorClosed();
+                            } else {
+                                //They're opening a door, random chance for jump scare noise
+                                double scareChance = Math.random() * 100;
+                                if ((scareChance -= 10) < 0)
+                                {
+                                    if (!SoundManager.areAnySoundsPlayingForPlayer(event.getPlayer()))
+                                    {
+                                        SoundManager.playSoundForPlayer(event.getPlayer(), F13SoundEffect.JumpScare, false, true, 0);
+                                    }
+                                }
                             }
                         }
                     }
@@ -455,6 +467,12 @@ public class PlayerListener implements Listener {
                                                 arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
 
                                                 //
+                                                if (arena.getGameManager().getPlayerManager().getJason().getF13Player().hasPerk(F13Perk.Jason_AxeThrow))
+                                                {
+                                                    //Has axe throw perk
+                                                    ThrowableItem item = new ThrowableItem(playerDamager);
+                                                    item.display();
+                                                }
                                             }
                                         }
                                     } else {
