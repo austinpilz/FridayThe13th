@@ -12,7 +12,7 @@ public enum JasonProfile {
     PartThree("Part III", "J-P3", 3, F13Level.L5, F13Skin.JASON_Part3, 5, StalkLevel.Two, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase),
     PartFour("Part IV", "J-P4", 4, F13Level.L7, F13Skin.JASON_Part4, 4, StalkLevel.Two, SenseLevel.Three, WarpLevel.Two, F13SoundEffect.RegularChase),
     PartFive("Part V", "J-P5", 5, F13Level.L9, F13Skin.JASON_Part5, 4, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase),
-    PartSix("Part VI", "J-P6", 6, F13Level.L13, F13Skin.JASON_Part6, 4, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase),
+    PartSix("Part VI", "J-P6", 6, F13Level.L13, F13Skin.JASON_Part6, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase),
     PartSeven("Part VII", "J-P7", 7, F13Level.L16, F13Skin.JASON_Part7, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Three, F13SoundEffect.RegularChase),
     PartEight("Part VIII", "J-P8", 8, F13Level.L18, F13Skin.JASON_Part8, 2, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase),
     PartNine("Part IX", "J-P9", 9, F13Level.L20, F13Skin.JASON_Part9, 1, StalkLevel.Five, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase),

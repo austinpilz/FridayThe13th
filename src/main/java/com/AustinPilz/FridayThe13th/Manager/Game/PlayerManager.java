@@ -320,12 +320,12 @@ public class PlayerManager
         {
             //We don't have to worry about spawn points
             //Games capped at 8 counselors + Jason.
-            return 9 - getNumPlayers();
+            return 9;
         }
         else
         {
             //They're are less than 8 spawn points for counselors
-            return arena.getLocationManager().getNumberStartingPoints() - getNumPlayers();
+            return arena.getLocationManager().getNumberStartingPoints();
         }
     }
 
@@ -395,7 +395,7 @@ public class PlayerManager
 
                         //Announce arrival
                         int playerNumber = players.size();
-                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game. ", player.getName()) + "(" + playerNumber + "/" + getMaxNumberOfPlayers()+")");
+                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()) + " (" + playerNumber + "/" + getMaxNumberOfPlayers()+")");
 
                         if (players.size() == 1)
                         {

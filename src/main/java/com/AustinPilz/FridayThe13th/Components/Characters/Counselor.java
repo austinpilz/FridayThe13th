@@ -14,11 +14,13 @@ import com.AustinPilz.FridayThe13th.Manager.Statistics.CounselorXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
+import net.minecraft.server.v1_12_R1.Vec3D;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -748,5 +750,18 @@ public class Counselor
             //Play gasp sound effect
             SoundManager.playSoundForPlayer(getPlayer(), getF13Player().getCounselorProfile().getGaspSoundEffect(), false, true, 0);
         }
+    }
+
+    /**
+     * Returns if the player can see the provided block
+     * @param loc2
+     * @return
+     */
+    public boolean canSee(Location loc2) {
+        return false;
+        /*
+        Location loc1 = player.getLocation();
+        return ((CraftWorld)loc1.getWorld()).getHandle().a(Vec3D.a().create(loc1.getX(), loc1.getY() + player.getEyeHeight(), loc1.getZ()), Vec3D.a().create(loc2.getX(), loc2.getY(), loc2.getZ())) == null;
+        */
     }
 }

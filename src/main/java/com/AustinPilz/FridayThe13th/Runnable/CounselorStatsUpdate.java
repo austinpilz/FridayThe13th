@@ -31,7 +31,7 @@ public class CounselorStatsUpdate implements Runnable {
         //Check to see if they can see any corpses
         for(Corpses.CorpseData corpse : counselor.getArena().getObjectManager().getCorpses())
         {
-            if (corpse.canSee(counselor.getPlayer()))
+            if (counselor.canSee(corpse.getTrueLocation()))
             {
                 counselor.corpseSeen(corpse);
             }
