@@ -217,7 +217,7 @@ public class CommandHandler implements CommandExecutor {
                                 }
                             } else {
                                 //Unknown add command
-                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addItemError", "Incorrect add item. Available items are {0}, {1}, and {2}", ChatColor.AQUA + "spawn" + ChatColor.WHITE, ChatColor.AQUA + "chest" + ChatColor.WHITE + ChatColor.AQUA + "phone"));
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addItemError", "Incorrect add item. Available items are {0}, {1}, and {2}", ChatColor.AQUA + "spawn" + ChatColor.WHITE, ChatColor.AQUA + "chest" + ChatColor.WHITE, ChatColor.AQUA + "phone"));
                             }
                         } else {
                             //Incorrect setup syntax
