@@ -64,10 +64,12 @@ public class APICommandHandler implements CommandExecutor {
                                             if (counselor)
                                             {
                                                 FridayThe13th.playerController.getPlayer(playerUUID).addPurchasedCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(itemName), true);
+                                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.counselorProfileAdded", "Counselor profile added for ") + playerUUID);
                                             }
                                             else if (jason)
                                             {
                                                 FridayThe13th.playerController.getPlayer(playerUUID).addPurchasedJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(itemName), true);
+                                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.jasonProfileAdded", "Jason profile added for ") + playerUUID);
                                             }
                                         }
                                         else if (action.equalsIgnoreCase("remove"))
@@ -75,16 +77,24 @@ public class APICommandHandler implements CommandExecutor {
                                             if (counselor)
                                             {
                                                 FridayThe13th.playerController.getPlayer(playerUUID).removePurchasedCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(itemName), true);
+                                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.counselorProfileRemoved", "Counselor profile removed from ") + playerUUID);
                                             }
                                             else if (jason)
                                             {
                                                 FridayThe13th.playerController.getPlayer(playerUUID).removePurchasedJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(itemName), true);
+                                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.jasonProfileRemoved", "Jason profile removed from ") + playerUUID);
                                             }
+                                        }
+                                        else
+                                        {
+                                            //Unknown action
+                                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.unknownAction", "Unknown action."));
                                         }
                                     }
                                     else
                                     {
                                         //Unknown profile name
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.unknownProfileName", "Unknown profile name."));
                                     }
                                 }
                                 else if (itemType.equalsIgnoreCase("perk"))
@@ -96,31 +106,42 @@ public class APICommandHandler implements CommandExecutor {
                                         if (action.equalsIgnoreCase("add"))
                                         {
                                             FridayThe13th.playerController.getPlayer(playerUUID).addPurchasedPerk(F13PerkManager.getPerkByInternalIdentifier(itemName), true);
+                                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.API.perkAdded", "Success. Perk added for player ") + playerUUID);
                                         }
                                         else if (action.equalsIgnoreCase("remove"))
                                         {
                                             FridayThe13th.playerController.getPlayer(playerUUID).removePurchasedPerk(F13PerkManager.getPerkByInternalIdentifier(itemName), true);
+                                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.API.perkAdded", "Success. Perk removed from player ") + playerUUID);
+                                        }
+                                        else
+                                        {
+                                            //Unknown action
+                                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.unknownAction", "Unknown action."));
                                         }
                                     }
                                     else
                                     {
                                         //Unknown perk name
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.unknownPerkName", "Unknown perk name."));
                                     }
                                 }
                             }
                             else
                             {
                                 //No item name provided or unknown item name
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.unknownItemName", "Unknown item name."));
                             }
                         }
                         else
                         {
                             //No item type provided or unknown item type
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.unknownItemType", "Unknown item type."));
                         }
                     }
                     else
                     {
                         //No player provided
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.playerUUIDNotProvided", "Syntax error. Player UUID was not provided."));
                     }
                 }
                 else
@@ -132,6 +153,7 @@ public class APICommandHandler implements CommandExecutor {
             else
             {
                 //No arguments provided
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.noArgumentsProvided", "Syntax error. No arguments were provided."));
             }
         }
         else

@@ -95,7 +95,7 @@ public class ChatController
                 prefix = ChatColor.RED + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Jason", "Jason") + "]";
             }
 
-            if (!areAnyPlayersRecipients)
+            if (!areAnyPlayersRecipients && arena.getGameManager().getPlayerManager().getNumSpectators() < 2)
             {
                 wasHeard = ChatColor.WHITE + "[" + ChatColor.RED + "!" + ChatColor.WHITE + "] ";
             }
