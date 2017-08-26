@@ -15,12 +15,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
@@ -181,6 +184,22 @@ public class BlockListener implements Listener
                             event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(event.getPlayer(), "block.error.signBreakNoPermission", "You don't have permission to break Friday the 13th signs."));
                         }
                     }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPaintingBreak(HangingBreakByEntityEvent event)
+    {
+        if (event.getRemover() instanceof Player)
+        {
+            if (FridayThe13th.arenaController.isPlayerPlaying((Player)event.getRemover()))
+            {
+                if (event.getEntity().getType() == EntityType.PAINTING)
+                {
+                    //Players cannot break paintings while playing
+                    event.setCancelled(true);
                 }
             }
         }
