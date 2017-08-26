@@ -107,10 +107,9 @@ public class PlayerListener implements Listener {
                 event.setCancelled(newEvent.isCancelled());
             } else if (arena.getGameManager().isGameInProgress()) {
                 //Check to see if they're trampling anything
-                if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL) {
+                if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL || event.getClickedBlock().getType() == Material.FIRE) {
                     event.setCancelled(true);
-                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()))
-                {
+                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
                     //They're in regular play mode
                     if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Door)
                     {
