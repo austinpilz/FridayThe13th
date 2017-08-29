@@ -175,12 +175,23 @@ public class PlayerListener implements Listener {
                         }
 
                     }
+                    else if (event.getClickedBlock().getState().getData() instanceof Chest)
+                    {
+                        //They're interacting with a chest
+                        if (arena.getObjectManager().isChest(event.getClickedBlock().getLocation()))
+                        {
+                            //They're clicking one of the arena's chests - generate it
+                            arena.getObjectManager().getChest(event.getClickedBlock().getLocation()).randomlyFill();
+                        }
+                    }
                     else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.BED_BLOCK))
                     {
+                        //Players are not allowed to sleep during the game
                         event.setCancelled(true);
                     }
                     else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.TRIPWIRE_HOOK))
                     {
+                        //Touching a phone
                         if (arena.getObjectManager().getPhones().containsKey(event.getClickedBlock()))
                         {
                             arena.getObjectManager().getPhones().get(event.getClickedBlock()).callAttempt(event.getPlayer());
@@ -268,7 +279,6 @@ public class PlayerListener implements Listener {
             }
         } catch (PlayerNotPlayingException exception)
         {
-            //Do nothing since in this case, we couldn't care
             if (event.hasBlock() && (event.getClickedBlock().getType().equals(Material.WALL_SIGN) || event.getClickedBlock().getType().equals(Material.SIGN_POST)))
             {
                 Sign sign = (Sign)event.getClickedBlock().getState();

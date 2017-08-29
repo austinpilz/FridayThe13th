@@ -7,6 +7,7 @@ import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -111,6 +112,9 @@ public class ObjectManager
         //Remove corpses
         cleanupCorpses();
         corpses.clear();
+
+        //Empties all chests
+        clearChests();
     }
 
     /**
@@ -188,20 +192,88 @@ public class ObjectManager
     /**
      * Randomly regenerates chests
      */
-    public void regenerateChests()
+    private void regenerateChests()
     {
         for (ArenaChest chest: weaponChests)
         {
-            chest.randomlyGenerate();
+            chest.randomlyFill();
         }
 
         for (ArenaChest chest: itemChests)
         {
-            chest.randomlyGenerate();
+            chest.randomlyFill();
         }
 
         //Place the walkie talkies
         placeRadios();
+    }
+
+    /**
+     * Empties all chests
+     */
+    private void clearChests()
+    {
+        for (ArenaChest chest: weaponChests)
+        {
+            chest.clear();
+        }
+
+        for (ArenaChest chest: itemChests)
+        {
+            chest.clear();
+        }
+    }
+
+    /**
+     * Returns if the location is one of the arena chests s
+     * @param location
+     * @return
+     */
+    public boolean isChest(Location location)
+    {
+        for (ArenaChest chest: weaponChests)
+        {
+            if (chest.getLocation().equals(location))
+            {
+                return true;
+            }
+        }
+
+        for (ArenaChest chest: itemChests)
+        {
+            if (chest.getLocation().equals(location))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the arena chest based on the supplied location
+     * @param location
+     * @return
+     */
+    public ArenaChest getChest(Location location)
+    {
+        for (ArenaChest chest: weaponChests)
+        {
+            if (chest.getLocation().equals(location))
+            {
+                return chest;
+            }
+        }
+
+        for (ArenaChest chest: itemChests)
+        {
+            if (chest.getLocation().equals(location))
+            {
+                return chest;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -23,12 +23,14 @@ public class ArenaChest
     private Arena arena;
     private Location location;
     private ChestType chestType;
+    private boolean filled;
 
     public ArenaChest(Arena arena, Location location, ChestType chestType)
     {
         this.arena = arena;
         this.location = location;
         this.chestType = chestType;
+        this.filled = false;
     }
 
     /**
@@ -88,133 +90,135 @@ public class ArenaChest
     /**
      * Randomly regenerates the chest's inventory based on its type
      */
-    public void randomlyGenerate()
+    public void randomlyFill()
     {
         if (getLocation().getBlock().getType().equals(Material.CHEST))
         {
-            //Clear existing inventory
-            getChest().getBlockInventory().clear();
+            if (!filled)
+            {
+                //The chest has not yet been filled this game, mark it as so and fill it.
+                filled = true;
 
-            if (isWeaponChest()) {
-                //Diamond Sword (BLADE)
-                double diamondSwordChance = Math.random() * 100;
-                if ((diamondSwordChance -= 10) < 0) //10% of the time
-                {
-                    ItemStack item = new ItemStack(Material.IRON_SWORD, 1);
-                    ItemMeta metaData = item.getItemMeta();
-                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Blade", "Blade"));
-                    item.setItemMeta(metaData);
-                    item.setDurability((short) 250);
-                    getChest().getBlockInventory().addItem(item);
-                }
+                if (isWeaponChest()) {
+                    //Iron Sword (BLADE)
+                    double ironSwordChance = Math.random() * 100;
+                    if ((ironSwordChance -= 10) < 0) //10% of the time
+                    {
+                        ItemStack item = new ItemStack(Material.IRON_SWORD, 1);
+                        ItemMeta metaData = item.getItemMeta();
+                        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Blade", "Blade"));
+                        item.setItemMeta(metaData);
+                        item.setDurability((short) 250);
+                        getChest().getBlockInventory().addItem(item);
+                    }
 
-                //Iron axe (AXE)
-                double ironAxeChance = Math.random() * 100;
-                if ((ironAxeChance -= 1) < 0) //3% of the time
-                {
-                    ItemStack item = new ItemStack(Material.IRON_AXE, 1);
-                    ItemMeta metaData = item.getItemMeta();
-                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.HeavyAxe", "Heavy Axe"));
-                    item.setItemMeta(metaData);
-                    item.setDurability((short) 20);
-                    getChest().getBlockInventory().addItem(item);
-                }
+                    //Iron axe (AXE)
+                    double ironAxeChance = Math.random() * 100;
+                    if ((ironAxeChance -= 1) < 0) //3% of the time
+                    {
+                        ItemStack item = new ItemStack(Material.IRON_AXE, 1);
+                        ItemMeta metaData = item.getItemMeta();
+                        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.HeavyAxe", "Heavy Axe"));
+                        item.setItemMeta(metaData);
+                        item.setDurability((short) 20);
+                        getChest().getBlockInventory().addItem(item);
+                    }
 
-                //Wooden axe (AXE)
-                double woodAxeChance = Math.random() * 100;
-                if ((woodAxeChance -= 50) < 0) //50% of the time
-                {
-                    ItemStack item = new ItemStack(Material.WOOD_AXE, 1);
-                    ItemMeta metaData = item.getItemMeta();
-                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.LightAxe", "Light Axe"));
-                    item.setDurability((short) 60);
-                    item.setItemMeta(metaData);
-                    getChest().getBlockInventory().addItem(item);
-                }
+                    //Wooden axe (AXE)
+                    double woodAxeChance = Math.random() * 100;
+                    if ((woodAxeChance -= 50) < 0) //50% of the time
+                    {
+                        ItemStack item = new ItemStack(Material.WOOD_AXE, 1);
+                        ItemMeta metaData = item.getItemMeta();
+                        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.LightAxe", "Light Axe"));
+                        item.setDurability((short) 60);
+                        item.setItemMeta(metaData);
+                        getChest().getBlockInventory().addItem(item);
+                    }
 
-                //Bow & Arrow (GUN)
-                double bowChance = Math.random() * 100;
-                if ((bowChance -= 10) < 0) //3% of the time
-                {
-                    ItemStack item = new ItemStack(Material.BOW, 1);
-                    ItemMeta metaData = item.getItemMeta();
-                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Gun", "Gun"));
-                    item.setItemMeta(metaData);
-                    getChest().getBlockInventory().addItem(item);
+                    //Bow & Arrow (GUN)
+                    double bowChance = Math.random() * 100;
+                    if ((bowChance -= 10) < 0) //3% of the time
+                    {
+                        ItemStack item = new ItemStack(Material.BOW, 1);
+                        ItemMeta metaData = item.getItemMeta();
+                        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Gun", "Gun"));
+                        item.setItemMeta(metaData);
+                        getChest().getBlockInventory().addItem(item);
 
-                    getChest().getBlockInventory().addItem(new ItemStack(Material.ARROW, 1));
-                }
+                        getChest().getBlockInventory().addItem(new ItemStack(Material.ARROW, 1));
+                    }
 
-                //Always put a stick (BRANCH)
-                ItemStack stick = new ItemStack(Material.STICK, 1);
-                ItemMeta metaData = stick.getItemMeta();
-                metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.BrittleBranch", "Brittle Branch"));
-                stick.setItemMeta(metaData);
-                getChest().getBlockInventory().addItem(stick);
-            } else if (isItemChest()) {
-                //Healing Potion
-                double healPotionChance = Math.random() * 100;
-                if ((healPotionChance -= 50) < 0) //50% of the time
-                {
-                    ItemStack healthPotion = new ItemStack(Material.POTION, 1);
-                    PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
-                    meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
-                    meta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Antiseptic", "Antiseptic Spray"));
-                    healthPotion.setItemMeta(meta);
-                    getChest().getBlockInventory().addItem(healthPotion);
-                }
+                    //Always put a stick (BRANCH)
+                    ItemStack stick = new ItemStack(Material.STICK, 1);
+                    ItemMeta metaData = stick.getItemMeta();
+                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.BrittleBranch", "Brittle Branch"));
+                    stick.setItemMeta(metaData);
+                    getChest().getBlockInventory().addItem(stick);
+                } else if (isItemChest()) {
+                    //Healing Potion
+                    double healPotionChance = Math.random() * 100;
+                    if ((healPotionChance -= 50) < 0) //50% of the time
+                    {
+                        ItemStack healthPotion = new ItemStack(Material.POTION, 1);
+                        PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
+                        meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
+                        meta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Antiseptic", "Antiseptic Spray"));
+                        healthPotion.setItemMeta(meta);
+                        getChest().getBlockInventory().addItem(healthPotion);
+                    }
 
-                //Slow Potion
-                double slowPotionChance = Math.random() * 100;
-                if ((slowPotionChance -= 10) < 0) //10% of the time
-                {
-                    ItemStack healthPotion = new ItemStack(Material.SPLASH_POTION, 1);
-                    PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
-                    meta.setBasePotionData(new PotionData(PotionType.SLOWNESS));
-                    healthPotion.setItemMeta(meta);
-                    getChest().getBlockInventory().addItem(healthPotion);
-                }
+                    //Slow Potion
+                    double slowPotionChance = Math.random() * 100;
+                    if ((slowPotionChance -= 10) < 0) //10% of the time
+                    {
+                        ItemStack healthPotion = new ItemStack(Material.SPLASH_POTION, 1);
+                        PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
+                        meta.setBasePotionData(new PotionData(PotionType.SLOWNESS));
+                        healthPotion.setItemMeta(meta);
+                        getChest().getBlockInventory().addItem(healthPotion);
+                    }
 
-                //Redstone
-                double redstoneChance = Math.random() * 100;
-                if ((redstoneChance -= 40) < 0) //40% of the time
-                {
-                    ItemStack item = new ItemStack(Material.REDSTONE, 1);
-                    ItemMeta metaData = item.getItemMeta();
-                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.RepairWire", "Repair Wire"));
-                    item.setItemMeta(metaData);
-                    getChest().getBlockInventory().addItem(item);
-                }
+                    //Redstone
+                    double redstoneChance = Math.random() * 100;
+                    if ((redstoneChance -= 40) < 0) //40% of the time
+                    {
+                        ItemStack item = new ItemStack(Material.REDSTONE, 1);
+                        ItemMeta metaData = item.getItemMeta();
+                        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.RepairWire", "Repair Wire"));
+                        item.setItemMeta(metaData);
+                        getChest().getBlockInventory().addItem(item);
+                    }
 
-                //Map
-                double mapChance = Math.random() * 100;
-                if ((mapChance -= 20) < 0) {
-                    ItemStack item = new ItemStack(Material.EMPTY_MAP, 1);
-                    ItemMeta metaData = item.getItemMeta();
-                    metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Map", "Camp Map"));
-                    item.setItemMeta(metaData);
-                    getChest().getBlockInventory().addItem(item);
-                }
+                    //Map
+                    double mapChance = Math.random() * 100;
+                    if ((mapChance -= 20) < 0) {
+                        ItemStack item = new ItemStack(Material.EMPTY_MAP, 1);
+                        ItemMeta metaData = item.getItemMeta();
+                        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Map", "Camp Map"));
+                        item.setItemMeta(metaData);
+                        getChest().getBlockInventory().addItem(item);
+                    }
 
-                //Trap
-                double trapChance = Math.random() * 100;
-                if ((trapChance -= 20) < 0) {
-                    ItemStack counselorTrap = new ItemStack(Material.CARPET, 1, (byte) 8);
-                    ItemMeta counselorTrapMeta = counselorTrap.getItemMeta();
-                    counselorTrapMeta.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.counselorTraps", "Trap"));
-                    List<String> counselorTrapLore = new ArrayList<>();
-                    counselorTrapLore.add(HiddenStringsUtil.encodeString("{\"PlaceItem\": \"CounselorTrap\"}"));
-                    counselorTrapMeta.setLore(counselorTrapLore);
-                    counselorTrap.setItemMeta(counselorTrapMeta);
+                    //Trap
+                    double trapChance = Math.random() * 100;
+                    if ((trapChance -= 20) < 0) {
+                        ItemStack counselorTrap = new ItemStack(Material.CARPET, 1, (byte) 8);
+                        ItemMeta counselorTrapMeta = counselorTrap.getItemMeta();
+                        counselorTrapMeta.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.counselorTraps", "Trap"));
+                        List<String> counselorTrapLore = new ArrayList<>();
+                        counselorTrapLore.add(HiddenStringsUtil.encodeString("{\"PlaceItem\": \"CounselorTrap\"}"));
+                        counselorTrapMeta.setLore(counselorTrapLore);
+                        counselorTrap.setItemMeta(counselorTrapMeta);
 
-                    getChest().getBlockInventory().addItem(counselorTrap);
+                        getChest().getBlockInventory().addItem(counselorTrap);
+                    }
                 }
             }
         }
         else
         {
             //It's no longer a chest
-            //arena.getObjectManager().removeChest(this);
             FridayThe13th.inputOutput.deleteChest(getLocation().getBlockX(), getLocation().getBlockY(), getLocation().getBlockZ(), getLocation().getWorld().getName());
         }
     }
@@ -228,5 +232,22 @@ public class ArenaChest
         metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
         item.setItemMeta(metaData);
         getChest().getBlockInventory().addItem(item);
+    }
+
+    /**
+     * Clears the inventory of the chest
+     */
+    public void clear()
+    {
+        if (getLocation().getBlock().getType().equals(Material.CHEST))
+        {
+            getChest().getBlockInventory().clear();
+            filled = false; //reset per-game filled indicator
+        }
+        else
+        {
+            //It's no longer a chest
+            FridayThe13th.inputOutput.deleteChest(getLocation().getBlockX(), getLocation().getBlockY(), getLocation().getBlockZ(), getLocation().getWorld().getName());
+        }
     }
 }

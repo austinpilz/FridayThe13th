@@ -362,9 +362,6 @@ GameManager
         //Calculate the game time
         calculateGameTime();
 
-        //Regenerate chests
-        arena.getObjectManager().regenerateChests();
-
         //Phone
         arena.getObjectManager().displayRandomPhone();
 

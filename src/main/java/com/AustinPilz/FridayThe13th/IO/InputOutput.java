@@ -782,7 +782,7 @@ public class InputOutput
                             arena.getObjectManager().addPhone(new ArenaPhone(arena, location));
                             count++;
                         } catch (ArenaDoesNotExistException exception) {
-                            deleteSign(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
+                            deletePhone(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));
                             removed++;
                         }
                     } else {
