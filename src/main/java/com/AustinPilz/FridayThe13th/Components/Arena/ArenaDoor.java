@@ -16,6 +16,7 @@ public class ArenaDoor
     private int requiredHits;
     private Block doorBlock;
     private Arena arena;
+    private boolean broken;
 
     public ArenaDoor(Block block, Arena arena)
     {
@@ -23,6 +24,7 @@ public class ArenaDoor
         requiredHits = arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getRequiredDoorBreaks();
         doorBlock = block;
         this.arena = arena;
+        broken = false;
     }
 
     /**
@@ -31,7 +33,7 @@ public class ArenaDoor
     public void blockBreak() {
         hits++; //Register hit
 
-        if (getNumHits() >= getNumHitsRequired())
+        if (getNumHits() >= getNumHitsRequired() && !broken)
         {
             BlockState state = doorBlock.getState();
             Door door = (Door) state.getData();
@@ -57,6 +59,8 @@ public class ArenaDoor
 
             //Play broken sound
             SoundManager.playSoundForNearbyPlayers(F13SoundEffect.DoorBreak, arena, doorBlock.getLocation(), 5, false, true);
+
+            broken = true;
         }
         else
         {

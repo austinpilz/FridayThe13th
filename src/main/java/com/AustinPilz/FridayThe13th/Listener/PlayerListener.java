@@ -107,11 +107,11 @@ public class PlayerListener implements Listener {
                 event.setCancelled(newEvent.isCancelled());
             } else if (arena.getGameManager().isGameInProgress()) {
                 //Check to see if they're trampling anything
-                if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL || event.getClickedBlock().getType() == Material.FIRE) {
+                if (event.getAction() == Action.PHYSICAL && event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.SOIL || event.getClickedBlock().getType() == Material.FIRE)) {
                     event.setCancelled(true);
-                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()) && event.getClickedBlock() != null && event.hasBlock()) {
                     //They're in regular play mode
-                    if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Door)
+                    if (event.getClickedBlock().getState().getData() instanceof Door)
                     {
                         BlockState state = event.getClickedBlock().getState();
                         Door door = (Door) state.getData();
@@ -146,7 +146,7 @@ public class PlayerListener implements Listener {
                             }
                         }
                     }
-                    else if (event.hasBlock() && event.getClickedBlock().getState().getData() instanceof Lever)
+                    else if (event.getClickedBlock().getState().getData() instanceof Lever)
                     {
                         if (arena.getObjectManager().getBrokenSwitches().containsKey(event.getClickedBlock()))
                         {
@@ -184,12 +184,12 @@ public class PlayerListener implements Listener {
                             arena.getObjectManager().getChest(event.getClickedBlock().getLocation()).randomlyFill();
                         }
                     }
-                    else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.BED_BLOCK))
+                    else if (event.getClickedBlock().getType().equals(Material.BED_BLOCK))
                     {
                         //Players are not allowed to sleep during the game
                         event.setCancelled(true);
                     }
-                    else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.TRIPWIRE_HOOK))
+                    else if (event.getClickedBlock().getType().equals(Material.TRIPWIRE_HOOK))
                     {
                         //Touching a phone
                         if (arena.getObjectManager().getPhones().containsKey(event.getClickedBlock()))
