@@ -43,10 +43,7 @@ public class ArenaDoor
             if (door.isTopHalf())
             {
                 //Top 1/2
-                Block set = doorBlock.getRelative(BlockFace.DOWN);
-                BlockState state2 = set.getState();
-                Door setDoor = (Door) state2.getData();
-                arena.getObjectManager().getBrokenDoors().add(set);
+                arena.getObjectManager().getBrokenDoors().add(doorBlock.getRelative(BlockFace.DOWN));
 
             }
             else

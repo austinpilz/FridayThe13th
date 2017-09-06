@@ -14,6 +14,9 @@ import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -135,8 +138,19 @@ public class BlockListener implements Listener
                     //Physical object interactions
                     if (event.getBlock().getState().getData() instanceof Door)
                     {
-                        //Door broken
-                        arena.getObjectManager().getArenaDoor(event.getBlock()).blockBreak();
+                        BlockState state = event.getBlock().getState();
+                        Door door = (Door) state.getData();
+
+                        if (door.isTopHalf())
+                        {
+                            //Top 1/2
+                            arena.getObjectManager().getArenaDoor(event.getBlock().getRelative(BlockFace.DOWN)).blockBreak();
+
+                        }
+                        else
+                        {
+                            arena.getObjectManager().getArenaDoor(event.getBlock()).blockBreak();
+                        }
                     }
                     else if (event.getBlock().getState().getData() instanceof Lever)
                     {
