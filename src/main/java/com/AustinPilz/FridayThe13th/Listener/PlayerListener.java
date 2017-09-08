@@ -182,7 +182,6 @@ public class PlayerListener implements Listener {
                         {
                             //They're clicking one of the arena's chests - generate it
                             arena.getObjectManager().getChest(event.getClickedBlock().getLocation()).randomlyFill();
-                            event.getPlayer().sendMessage("Filling chest");
                         }
                     }
                     else if (event.getClickedBlock().getType().equals(Material.BED_BLOCK))
