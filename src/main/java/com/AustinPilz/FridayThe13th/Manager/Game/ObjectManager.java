@@ -93,6 +93,7 @@ public class ObjectManager
         //Restore doors to closed state
         fixBrokenDoors();
         brokenDoors.clear();
+        doors.clear();
 
         //Restore switches
         fixBrokenSwitches();

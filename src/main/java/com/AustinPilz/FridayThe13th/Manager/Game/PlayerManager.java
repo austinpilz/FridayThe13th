@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
 
 public class PlayerManager
 {
@@ -643,14 +644,21 @@ public class PlayerManager
      */
     protected void performInProgressActions()
     {
+        FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Game in " + arena.getArenaName() + " beginning...");
+
         //Assign roles and teleport players there
         assignGameRoles();
+
+
         assignSpawnLocations();
+
 
         //Hide waiting scoreboard from everyone
         for (Player player : players.values()) {
             FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
         }
+
+
 
         //Display player bars
         Iterator it = getCounselors().entrySet().iterator();
@@ -661,6 +669,8 @@ public class PlayerManager
 
             counselor.prepareForGameplay();
         }
+
+
 
         //Jason stuff
         jason.prepareforGameplay();

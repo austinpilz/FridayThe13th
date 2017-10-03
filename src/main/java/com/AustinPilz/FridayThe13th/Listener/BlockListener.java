@@ -145,7 +145,6 @@ public class BlockListener implements Listener
                         {
                             //Top 1/2
                             arena.getObjectManager().getArenaDoor(event.getBlock().getRelative(BlockFace.DOWN)).blockBreak();
-
                         }
                         else
                         {
