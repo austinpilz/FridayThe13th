@@ -297,6 +297,13 @@ public class CommandHandler implements CommandExecutor {
                             } catch (GameInProgressException exception) {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaGameInProgress", "The game in {0} is already in progress. You'll need to wait until it's over to join.", ChatColor.RED + arenaName + ChatColor.WHITE));
                             }
+                        } else if (args.length == 1) {
+                            //Auto-join
+                             if (!FridayThe13th.arenaController.playerAutoJoin((Player)sender))
+                             {
+                                 //There was an issue with auto-join
+                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.autoJoinError", "There was an error while attempting to auto-join you to an arena. Please try again."));
+                             }
                         } else {
                             //Incorrect play syntax
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.playSyntaxError", "Incorrect play syntax. Usage: {0}", ChatColor.AQUA + "/f13 play [arenaName]"));

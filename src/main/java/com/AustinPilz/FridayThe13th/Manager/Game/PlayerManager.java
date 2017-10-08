@@ -295,7 +295,7 @@ public class PlayerManager
      * Calculates if there is room for the player to join the game
      * @return
      */
-    private boolean isRoomForPlayerToJoin()
+    public boolean isRoomForPlayerToJoin()
     {
         //Determine if we have enough spawn points for the game's 8 counselors
         if (arena.getLocationManager().getNumberStartingPoints() >= 8)
