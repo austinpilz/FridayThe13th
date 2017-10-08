@@ -170,7 +170,11 @@ public class PlayerListener implements Listener {
 
                             if (lever.isPowered())
                             {
-                                event.setCancelled(true);
+                                if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getF13Player().hasPerk(F13Perk.Counselor_AhDarkness))
+                                {
+                                    //They don't have the "ah, darkness" perk, so they can't turn off levers that are powered on.
+                                    event.setCancelled(true);
+                                }
                             }
                         }
 

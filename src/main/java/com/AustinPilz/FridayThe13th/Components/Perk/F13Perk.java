@@ -13,7 +13,8 @@ public enum F13Perk {
     Counselor_Dramamine(CharacterType.Counselor, "Dramamine", "C-Dramamine", "Random chance to remove nausea effect.", 10000, Material.GLOWSTONE_DUST),
     Counselor_FirstAid(CharacterType.Counselor, "First Aid", "C-FirstAid", "Start every game with an antiseptic spray.", 5000, Material.GLASS_BOTTLE),
     Counselor_Radio(CharacterType.Counselor, "Sat Phone", "C-SatPhone", "Start every game with a radio.", 20000, Material.NETHER_STAR),
-   ;
+    Counselor_AhDarkness(CharacterType.Counselor, "Ah, Darkness", "D-AhDarkness", "Ability to turn off light switches.", 5000, Material.LEVER),
+    ;
 
     private CharacterType characterType;
     private String perkName;
