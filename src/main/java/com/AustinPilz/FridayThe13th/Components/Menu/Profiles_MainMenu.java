@@ -1,6 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components.Menu;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
+import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkullPreview;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;

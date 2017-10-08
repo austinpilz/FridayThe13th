@@ -2,7 +2,7 @@ package com.AustinPilz.FridayThe13th.Components.Profiles;
 
 import com.AustinPilz.FridayThe13th.Components.Level.CounselorTraitLevel;
 import com.AustinPilz.FridayThe13th.Components.Level.F13Level;
-import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
+import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 
 public enum CounselorProfile {

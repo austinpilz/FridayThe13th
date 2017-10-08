@@ -4,6 +4,7 @@ import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
 import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
@@ -629,6 +630,9 @@ public class Counselor
         metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
         item.setItemMeta(metaData);
         getPlayer().getInventory().addItem(item);
+
+        //Update their skin to be Tommy
+        skin.apply(F13Skin.Tommy_Jarvis);
     }
 
     /**

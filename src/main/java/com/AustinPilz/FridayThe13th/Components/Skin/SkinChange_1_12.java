@@ -1,6 +1,5 @@
 package com.AustinPilz.FridayThe13th.Components.Skin;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

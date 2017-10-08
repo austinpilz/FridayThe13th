@@ -1,6 +1,5 @@
 package com.AustinPilz.FridayThe13th.Components.Skin;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.F13Skin;
 import org.bukkit.entity.Player;
 
 public class SkinChange_0_0 implements SkinChange {
