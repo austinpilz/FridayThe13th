@@ -1,10 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Profiles;
 
 import com.AustinPilz.FridayThe13th.Components.Enum.*;
-import com.AustinPilz.FridayThe13th.Components.Level.F13Level;
-import com.AustinPilz.FridayThe13th.Components.Level.SenseLevel;
-import com.AustinPilz.FridayThe13th.Components.Level.StalkLevel;
-import com.AustinPilz.FridayThe13th.Components.Level.WarpLevel;
+import com.AustinPilz.FridayThe13th.Components.Level.*;
 import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 
 public enum JasonProfile {
@@ -17,7 +14,10 @@ public enum JasonProfile {
     PartSeven("Part VII", "J-P7", 7, F13Level.L16, F13Skin.JASON_Part7, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Three, F13SoundEffect.RegularChase),
     PartEight("Part VIII", "J-P8", 8, F13Level.L18, F13Skin.JASON_Part8, 2, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase),
     PartNine("Part IX", "J-P9", 9, F13Level.L20, F13Skin.JASON_Part9, 1, StalkLevel.Five, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase),
-    Retro("Retro", "J-Retro", 10, F13Level.L20, F13Skin.Jason_Retro, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RetroChase);
+    Retro("Retro", "J-Retro", 10, F13Level.L20, F13Skin.Jason_Retro, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RetroChase),
+    Pamela_Voorhees("Pamela Voorhees", "J-Pamela", 11, F13Level.L20, F13Skin.Pamela_Voorhees, 2, StalkLevel.Five, SenseLevel.Five, WarpLevel.Three, F13SoundEffect.RegularChase)
+
+    ;
 
     private String displayName;
     private String internalIdentifier;
