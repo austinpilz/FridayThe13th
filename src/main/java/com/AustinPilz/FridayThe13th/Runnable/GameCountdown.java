@@ -21,6 +21,7 @@ public class GameCountdown implements Runnable
             arena.getGameManager().getGameCountdownManager().updateCountdown(); //Update the display
             arena.getSignManager().updateJoinSigns(); //Update signs
             arena.getGameManager().getGameScoreboardManager().updateScoreboard();
+            arena.getGameManager().getWeatherManager().weatherCheck();
         }
     }
 }

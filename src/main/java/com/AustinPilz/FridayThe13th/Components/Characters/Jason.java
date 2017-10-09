@@ -553,6 +553,9 @@ public class Jason
         if (value && canSense())
         {
             setSenseActive(true);
+
+            //Strike lightning once
+            arena.getGameManager().getWeatherManager().senseActivated();
         }
         else
         {

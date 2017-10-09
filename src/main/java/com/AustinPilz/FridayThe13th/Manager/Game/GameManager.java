@@ -20,6 +20,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Weather;
 
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +55,7 @@ GameManager
     private GameCountdownManager gameCountdownManager;
     private WaitingCountdownDisplayManager waitingCountdownDisplayManager; //Game-wide waiting room countdown
     private GameScoreboardManager gameScoreboardManager;
+    private WeatherManager weatherManager;
 
     /**
      * @param arena Game object
@@ -72,6 +74,7 @@ GameManager
         gameCountdownManager = new GameCountdownManager(arena);
         waitingCountdownDisplayManager = new WaitingCountdownDisplayManager(arena);
         gameScoreboardManager = new GameScoreboardManager(arena);
+        weatherManager = new WeatherManager(arena);
 
         //Change game status to empty
         gameStatus = GameStatus.Empty; //to void null pointer
@@ -113,6 +116,14 @@ GameManager
      * @return
      */
     public GameScoreboardManager getGameScoreboardManager() { return gameScoreboardManager; }
+
+    /**
+     * Returns the game's weather manager
+     * @return
+     */
+    public WeatherManager getWeatherManager() {
+        return weatherManager;
+    }
 
     /**
      * Returns the seconds left in the waiting countdown
@@ -365,6 +376,9 @@ GameManager
         //Phone
         arena.getObjectManager().displayRandomPhone();
 
+        //Start the weather service
+        weatherManager.beginWeatherService();
+
     }
 
     /**
@@ -380,6 +394,9 @@ GameManager
 
         //Replace any items changed during gameplay
         arena.getObjectManager().restorePerGameObjects();
+
+        //Stop the weather service
+        weatherManager.endGame();
 
         //Remove any holograms from the previous game
         for (Hologram hologram: HologramsAPI.getHolograms(FridayThe13th.instance))
