@@ -26,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -192,5 +193,15 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
         //Close database connection
         InputOutput.freeConnection();
+    }
+
+    /**
+     * Returns if today is Friday the 13th
+     * @return
+     */
+    public static boolean isItFridayThe13th()
+    {
+        Calendar today = Calendar.getInstance();
+        return (today.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && today.get(Calendar.DAY_OF_MONTH) == 13);
     }
 }

@@ -32,6 +32,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.golde.bukkit.corpsereborn.nms.Corpses;
 
+import java.util.Calendar;
 import java.util.HashSet;
 
 
@@ -721,7 +722,19 @@ public class Counselor
         int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
         int newXP = Math.max(currentXP, currentXP + gameXP);
 
-        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
+
+        //Check for XP multipliers
+        if (FridayThe13th.isItFridayThe13th())
+        {
+            //It's Friday the 13th, so give them double XP
+            newXP *= 2;
+            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXPF13", "Happy double XP Friday the 13th! You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
+        }
+        else
+        {
+            //It's a normal, boring day.
+            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
+        }
 
         FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
     }
@@ -762,10 +775,6 @@ public class Counselor
      * @return
      */
     public boolean canSee(Location loc2) {
-        return false;
-        /*
-        Location loc1 = player.getLocation();
-        return ((CraftWorld)loc1.getWorld()).getHandle().a(Vec3D.a().create(loc1.getX(), loc1.getY() + player.getEyeHeight(), loc1.getZ()), Vec3D.a().create(loc2.getX(), loc2.getY(), loc2.getZ())) == null;
-        */
+        return (player.getLocation().distance(loc2) <= 4);
     }
 }

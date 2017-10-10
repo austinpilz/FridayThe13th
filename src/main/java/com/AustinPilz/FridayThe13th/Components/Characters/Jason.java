@@ -701,7 +701,18 @@ public class Jason
         int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
         int newXP = Math.max(currentXP, currentXP + gameXP);
 
-        getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
+        //Check for XP multipliers
+        if (FridayThe13th.isItFridayThe13th())
+        {
+            //It's Friday the 13th, so give them double XP
+            newXP *= 2;
+            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXPF13", "Happy double XP Friday the 13th! You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
+        }
+        else
+        {
+            //It's a normal, boring day.
+            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
+        }
 
         FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
     }

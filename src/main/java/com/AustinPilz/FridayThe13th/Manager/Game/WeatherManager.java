@@ -38,8 +38,6 @@ public class WeatherManager
 
         //Make it night
         arena.getBoundary1().getWorld().setTime(20000);
-
-        FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Rain " + rainEnabled + " at " + rainTime);
     }
 
     /**
