@@ -5,18 +5,19 @@ import com.AustinPilz.FridayThe13th.Components.Level.*;
 import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 
 public enum JasonProfile {
-    PartOne("Part I", "J-P1", 1, F13Level.L1, F13Skin.JASON_Part1, 5, StalkLevel.One, SenseLevel.One, WarpLevel.One, F13SoundEffect.RegularChase),
-    PartTwo("Part II", "J-P2", 2, F13Level.L3, F13Skin.JASON_Part2, 5, StalkLevel.One, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase),
-    PartThree("Part III", "J-P3", 3, F13Level.L5, F13Skin.JASON_Part3, 5, StalkLevel.Two, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase),
-    PartFour("Part IV", "J-P4", 4, F13Level.L7, F13Skin.JASON_Part4, 4, StalkLevel.Two, SenseLevel.Three, WarpLevel.Two, F13SoundEffect.RegularChase),
-    PartFive("Part V", "J-P5", 5, F13Level.L9, F13Skin.JASON_Part5, 4, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase),
-    PartSix("Part VI", "J-P6", 6, F13Level.L11, F13Skin.JASON_Part6, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase),
-    PartSeven("Part VII", "J-P7", 7, F13Level.L13, F13Skin.JASON_Part7, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Three, F13SoundEffect.RegularChase),
-    PartEight("Part VIII", "J-P8", 8, F13Level.L15, F13Skin.JASON_Part8, 2, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase),
-    PartNine("Part IX", "J-P9", 9, F13Level.L17, F13Skin.JASON_Part9, 1, StalkLevel.Five, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase),
-    JasonX("Jason X", "J-X", 10, F13Level.L18, F13Skin.Jason_X, 2, StalkLevel.Three, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase),
-    Retro("Retro", "J-Retro", 11, F13Level.L20, F13Skin.Jason_Retro, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RetroChase),
-    Pamela_Voorhees("Pamela Voorhees", "J-Pamela", 12, F13Level.L20, F13Skin.Pamela_Voorhees, 2, StalkLevel.Five, SenseLevel.Five, WarpLevel.One, F13SoundEffect.RegularChase)
+    PartOne("Part I", "J-P1", 1, F13Level.L1, F13Skin.JASON_Part1, 5, StalkLevel.One, SenseLevel.One, WarpLevel.One, F13SoundEffect.RegularChase, false),
+    PartTwo("Part II", "J-P2", 2, F13Level.L3, F13Skin.JASON_Part2, 5, StalkLevel.One, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase, false),
+    PartThree("Part III", "J-P3", 3, F13Level.L5, F13Skin.JASON_Part3, 5, StalkLevel.Two, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase, false),
+    PartFour("Part IV", "J-P4", 4, F13Level.L7, F13Skin.JASON_Part4, 4, StalkLevel.Two, SenseLevel.Three, WarpLevel.Two, F13SoundEffect.RegularChase, false),
+    PartFive("Part V", "J-P5", 5, F13Level.L9, F13Skin.JASON_Part5, 4, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false),
+    PartSix("Part VI", "J-P6", 6, F13Level.L11, F13Skin.JASON_Part6, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false),
+    PartSeven("Part VII", "J-P7", 7, F13Level.L13, F13Skin.JASON_Part7, 3, StalkLevel.Four, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false),
+    PartEight("Part VIII", "J-P8", 8, F13Level.L15, F13Skin.JASON_Part8, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase, false),
+    PartNine("Part IX", "J-P9", 9, F13Level.L17, F13Skin.JASON_Part9, 2, StalkLevel.Four, SenseLevel.Five, WarpLevel.Four, F13SoundEffect.RegularChase, false),
+    JasonX("Jason X", "J-X", 10, F13Level.L18, F13Skin.Jason_X, 2, StalkLevel.Three, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase, false),
+    Retro("Retro", "J-Retro", 11, F13Level.L20, F13Skin.Jason_Retro, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RetroChase, false),
+    Savini("Savini", "J-Savini", 12, F13Level.L20, F13Skin.JASON_Savini, 1, StalkLevel.Five, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase, false),
+    Pamela_Voorhees("Pamela Voorhees", "J-Pamela", 13, F13Level.L10, F13Skin.Pamela_Voorhees, 2, StalkLevel.Five, SenseLevel.Five, WarpLevel.One, F13SoundEffect.RegularChase, true),
 
     ;
 
@@ -29,11 +30,12 @@ public enum JasonProfile {
     private F13Skin skin;
     private F13SoundEffect chaseMusic;
     private int order;
+    private boolean f13Only;
 
     //In-Game Quantifiers
     private int requiredDoorBreaks;
 
-    JasonProfile(String name, String internal, int o, F13Level level, F13Skin s, int doorBreaks, StalkLevel stalk, SenseLevel sense, WarpLevel warp, F13SoundEffect chase) {
+    JasonProfile(String name, String internal, int o, F13Level level, F13Skin s, int doorBreaks, StalkLevel stalk, SenseLevel sense, WarpLevel warp, F13SoundEffect chase, Boolean special) {
         displayName = name;
         internalIdentifier = internal;
         requiredLevel = level;
@@ -43,6 +45,7 @@ public enum JasonProfile {
         skin = s;
         chaseMusic = chase;
         order = o;
+        f13Only = special;
 
         //In-Game Quantifiers
         requiredDoorBreaks = doorBreaks;
@@ -135,5 +138,14 @@ public enum JasonProfile {
      */
     public F13SoundEffect getChaseMusic() {
          return chaseMusic;
+    }
+
+    /**
+     * Returns if the profile is only available on Friday the 13th
+     * @return
+     */
+    public boolean isFridayThe13thOnly()
+    {
+        return f13Only;
     }
 }

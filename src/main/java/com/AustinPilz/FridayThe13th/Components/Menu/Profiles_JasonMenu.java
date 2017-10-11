@@ -29,43 +29,47 @@ public class Profiles_JasonMenu {
         inventory = Bukkit.createInventory(null, 18, ChatColor.RED + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.JasonProfileMenu", "Jason Profiles") + ": " + ChatColor.WHITE + f13Player.getJasonProfile().getDisplayName());
 
         //Display all profiles
-        for (JasonProfile profile : JasonProfile.values()) {
-            ItemStack item;
+        for (JasonProfile profile : JasonProfile.values())
+        {
+            if (!profile.isFridayThe13thOnly() || (profile.isFridayThe13thOnly() && FridayThe13th.isItFridayThe13th()))
+            {
+                ItemStack item;
 
-            List<String> jasonItemLore = new ArrayList<String>();
-            if (f13Player.getLevel().equals(profile.getRequiredLevel()) || f13Player.getLevel().isGreaterThan(profile.getRequiredLevel()) || f13Player.hasPurchasedJasonProfile(profile)) {
-                //The player has access to the profile
-                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"" + profile.getInternalIdentifier() + "\"}"));
+                List<String> jasonItemLore = new ArrayList<String>();
+                if (f13Player.getLevel().equals(profile.getRequiredLevel()) || f13Player.getLevel().isGreaterThan(profile.getRequiredLevel()) || f13Player.hasPurchasedJasonProfile(profile)) {
+                    //The player has access to the profile
+                    jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"" + profile.getInternalIdentifier() + "\"}"));
 
-                if (f13Player.getJasonProfile().equals(profile))
-                {
-                    jasonItemLore.add(ChatColor.GOLD + "Selected");
+                    if (f13Player.getJasonProfile().equals(profile))
+                    {
+                        jasonItemLore.add(ChatColor.GOLD + "Selected");
+                    }
+                    else
+                    {
+                        jasonItemLore.add(ChatColor.DARK_GREEN + "Unlocked");
+                    }
+
+
+                    jasonItemLore.add("");
+                    jasonItemLore.add(ChatColor.WHITE + "Stalk " + ChatColor.GREEN + profile.getStalkLevel().getLevelName());
+                    jasonItemLore.add(ChatColor.WHITE + "Sense " + ChatColor.RED + profile.getSenseLevel().getLevelName());
+                    jasonItemLore.add(ChatColor.WHITE + "Warp " + ChatColor.DARK_PURPLE + profile.getWarpLevel().getLevelName());
+                    jasonItemLore.add(ChatColor.WHITE + "Door Breaks: " + ChatColor.AQUA + profile.getRequiredDoorBreaks());
+
+
                 }
                 else
                 {
-                    jasonItemLore.add(ChatColor.DARK_GREEN + "Unlocked");
+                    //This Jason is locked
+                    jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"Locked\"}"));
+                    jasonItemLore.add(ChatColor.BOLD + "" + ChatColor.RED + "LOCKED");
+                    jasonItemLore.add("");
+                    jasonItemLore.add(ChatColor.WHITE + "Unlocks at level " + ChatColor.AQUA + profile.getRequiredLevel().getLevelNumber());
                 }
 
-
-                jasonItemLore.add("");
-                jasonItemLore.add(ChatColor.WHITE + "Stalk " + ChatColor.GREEN + profile.getStalkLevel().getLevelName());
-                jasonItemLore.add(ChatColor.WHITE + "Sense " + ChatColor.RED + profile.getSenseLevel().getLevelName());
-                jasonItemLore.add(ChatColor.WHITE + "Warp " + ChatColor.DARK_PURPLE + profile.getWarpLevel().getLevelName());
-                jasonItemLore.add(ChatColor.WHITE + "Door Breaks: " + ChatColor.AQUA + profile.getRequiredDoorBreaks());
-
-
+                item = new SkullPreview(profile.getSkin(), profile.getDisplayName(), jasonItemLore);
+                inventory.addItem(item);
             }
-            else
-            {
-                //This Jason is locked
-                jasonItemLore.add(HiddenStringsUtil.encodeString("{\"JasonProfileSelect\": \"Locked\"}"));
-                jasonItemLore.add(ChatColor.BOLD + "" + ChatColor.RED + "LOCKED");
-                jasonItemLore.add("");
-                jasonItemLore.add(ChatColor.WHITE + "Unlocks at level " + ChatColor.AQUA + profile.getRequiredLevel().getLevelNumber());
-            }
-
-            item = new SkullPreview(profile.getSkin(), profile.getDisplayName(), jasonItemLore);
-            inventory.addItem(item);
         }
 
 
