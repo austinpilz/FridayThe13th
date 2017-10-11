@@ -21,6 +21,9 @@ permissions:
     FridayThe13th.API:
             description: Gives admin access to API commands
             default: op
+    FridayThe13th.Build:
+            description: Allows players to build/destroy within arena boundaries
+            default: op
     FridayThe13th.admin:
         description: Gives admin access to admin commands
         default: op

@@ -119,8 +119,23 @@ public class BlockListener implements Listener
             {
                 event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.blockPlace", "You cannot place blocks while playing."));
             }
-        } catch (PlayerNotPlayingException exception) {
-            //Then we don't care
+        }
+        catch (PlayerNotPlayingException exception)
+        {
+            //Check to see if that block exists within the boundaries of any arena. If it does, check their perms. If they don't have f13.build, block the break
+            Iterator arenaIterator = FridayThe13th.arenaController.getArenas().entrySet().iterator();
+            while (arenaIterator.hasNext())
+            {
+                Map.Entry entry = (Map.Entry) arenaIterator.next();
+                Arena arena = (Arena) entry.getValue();
+
+                if (arena.isLocationWithinArenaBoundaries(event.getBlock().getLocation()) && !event.getPlayer().hasPermission("FridayThe13th.Build"))
+                {
+                    //They're trying to place a block within an arena boundary without having permissions, block the action
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.nonPlayingBlockPlace", "You don't have permissions to place blocks in F13 arena boundaries."));
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 
@@ -171,8 +186,24 @@ public class BlockListener implements Listener
                     }
                 }
             }
-        } catch (PlayerNotPlayingException exception)
+        }
+        catch (PlayerNotPlayingException exception)
         {
+            //Check to see if that block exists within the boundaries of any arena. If it does, check their perms. If they don't have f13.build, block the break
+            Iterator arenaIterator = FridayThe13th.arenaController.getArenas().entrySet().iterator();
+            while (arenaIterator.hasNext())
+            {
+                Map.Entry entry = (Map.Entry) arenaIterator.next();
+                Arena arena = (Arena) entry.getValue();
+
+                if (arena.isLocationWithinArenaBoundaries(event.getBlock().getLocation()) && !event.getPlayer().hasPermission("FridayThe13th.Build"))
+                {
+                    //They're trying to break a block within an arena boundary without having permissions, block the action
+                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.nonPlayingBlockBreak", "You don't have permissions to break blocks in F13 arena boundaries."));
+                    event.setCancelled(true);
+                }
+            }
+
             //They're not playing
             if (event.getBlock().getType().equals(Material.WALL_SIGN) || event.getBlock().getType().equals(Material.SIGN_POST))
             {
