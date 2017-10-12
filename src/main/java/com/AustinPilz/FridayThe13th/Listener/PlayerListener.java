@@ -281,7 +281,6 @@ public class PlayerListener implements Listener {
                 } else {
                     //They're a spectator and trying to interact without using one of their special objects
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage("no");
                 }
             } else {
                 event.setCancelled(true); //Disable interaction in the waiting room
