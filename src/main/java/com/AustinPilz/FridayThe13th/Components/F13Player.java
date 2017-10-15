@@ -1,5 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
 import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
 import com.AustinPilz.FridayThe13th.Components.Level.F13Level;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
@@ -183,7 +184,15 @@ public class F13Player {
     public void addXP(int value) {
         experiencePoints += value;
         updateDB();
+
+        F13Level prevLevel = getLevel();
         determineLevel();
+
+        if (getLevel() != prevLevel)
+        {
+            //They leveled up
+            getPlayer().sendMessage(FridayThe13th.consolePrefix + FridayThe13th.language.get(getPlayer(), "chat.xp.LevelUp", "Congratulations! You've leveled up to level {0}", getLevel().getLevelNumber()));
+        }
     }
 
     /**
