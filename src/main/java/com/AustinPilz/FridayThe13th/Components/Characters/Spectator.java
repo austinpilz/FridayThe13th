@@ -49,6 +49,7 @@ public class Spectator
         getPlayer().setAllowFlight(true);
         getPlayer().setFlying(true);
         getPlayer().setHealth(20);
+        getPlayer().setWalkSpeed(0.1f);
 
         //Location
         getPlayer().teleport(arena.getLocationManager().getAvailableStartingPoints().iterator().next()); //Random starting point
