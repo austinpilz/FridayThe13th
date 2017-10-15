@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Statistics;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 
@@ -27,7 +28,7 @@ public class JasonXPManager {
      */
     public void addCounselorKill() {
         counselorKills++;
-        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.counselorKill", "Counselor Kill: +{0}xp", 100), 60);
+        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.counselorKill", "Counselor Kill: +{0}xp", XPAward.Jason_CounselorKill.getXPAward()), 60);
     }
 
     /**
@@ -35,7 +36,7 @@ public class JasonXPManager {
      */
     public void addWindowBreak() {
         windowBreaks++;
-        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.windowBreak", "Window Break: +{0}xp", 10), 60);
+        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.windowBreak", "Window Break: +{0}xp", XPAward.Jason_WindowBreak.getXPAward()), 60);
     }
 
     /**
@@ -43,7 +44,7 @@ public class JasonXPManager {
      */
     public void addDoorBreak() {
         doorBreak++;
-        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.doorBreak", "Door Break: +{0}xp", 30), 60);
+        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.doorBreak", "Door Break: +{0}xp", XPAward.Jason_DoorBreak.getXPAward()), 60);
     }
 
     /**
@@ -51,7 +52,7 @@ public class JasonXPManager {
      */
     public void addSwitchBreak() {
         switchBreak++;
-        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.switchBreak", "Switch Break: +{0}xp", 50), 60);
+        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.switchBreak", "Switch Break: +{0}xp", XPAward.Jason_SwitchBreak.getXPAward()), 60);
     }
 
     /**
@@ -59,7 +60,7 @@ public class JasonXPManager {
      */
     public void addTrapEnsnarement() {
         trapEnsnarement++;
-        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.trapEnsnare", "Trap Ensnarement: +{0}xp", 75), 60);
+        ActionBarAPI.sendActionBar(jason.getPlayer(), FridayThe13th.language.get(jason.getPlayer(), "actionbar.xp.trapEnsnare", "Trap Ensnarement: +{0}xp", XPAward.Jason_TrapEnsnare.getXPAward()), 60);
     }
 
     /**
@@ -80,22 +81,22 @@ public class JasonXPManager {
         int xp = 0;
 
         //Calculate Counselor Kills
-        xp += counselorKills * 100;
+        xp += counselorKills * XPAward.Jason_CounselorKill.getXPAward();
 
         //Calculate Window Breaks
-        xp += windowBreaks * 10;
+        xp += windowBreaks * XPAward.Jason_WindowBreak.getXPAward();
 
         //Calculate Door Breaks
-        xp += doorBreak * 30;
+        xp += doorBreak * XPAward.Jason_DoorBreak.getXPAward();
 
         //Calculate Switch Breaks
-        xp += switchBreak * 50;
+        xp += switchBreak * XPAward.Jason_SwitchBreak.getXPAward();
 
         //Calculate Trap Ensnarement
-        xp += trapEnsnarement * 75;
+        xp += trapEnsnarement * XPAward.Jason_TrapEnsnare.getXPAward();
 
         //Calculate Time Left Bonus
-        xp += timeLeftMinutes * 50;
+        xp += timeLeftMinutes * XPAward.Jason_MinuteLeft.getXPAward();
 
         return xp;
     }

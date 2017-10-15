@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Statistics;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 
@@ -30,7 +31,7 @@ public class CounselorXPManager {
     public void addFriendlyHit() {
         statsFriendlyHits++;
 
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.friendlyHit", "Betrayal: -{0}xp", 1000), 60);
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.friendlyHit", "Betrayal: -{0}xp", XPAward.Counselor_FriendlyHit.getXPAward()), 60);
     }
 
     /**
@@ -39,7 +40,7 @@ public class CounselorXPManager {
     public void addWindowSprint() {
         statsWindowSprints++;
 
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.windowSprint", "Window Sprint: +{0}xp", 50), 60);
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.windowSprint", "Window Sprint: +{0}xp", XPAward.Counselor_WindowSprint.getXPAward()), 60);
     }
 
     /**
@@ -48,7 +49,7 @@ public class CounselorXPManager {
     public void addTrapActivated() {
         statsTrapActivated++;
 
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.trapActivated", "Trap Activated: +{0}xp", 50), 60);
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.trapActivated", "Trap Activated: +{0}xp", XPAward.Counselor_TrapActivated.getXPAward()), 60);
     }
 
     /**
@@ -58,7 +59,7 @@ public class CounselorXPManager {
 
         if (!statsDoorClosed) {
             statsDoorClosed = true;
-            ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.fortification", "Fortification: +{0}xp", 25), 60);
+            ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.fortification", "Fortification: +{0}xp", XPAward.Counselor_DoorClosed.getXPAward()), 60);
         }
     }
 
@@ -68,7 +69,7 @@ public class CounselorXPManager {
     public void addTommyCalled() {
         statsCalledTommy = true;
 
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.tommyCalled", "Tommy Jarvis Called: +{0}xp", 100), 60);
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.tommyCalled", "Tommy Jarvis Called: +{0}xp", XPAward.Counselor_TommyCalled.getXPAward()), 60);
     }
 
     /**
@@ -77,7 +78,7 @@ public class CounselorXPManager {
     public void addSwitchFix() {
         statsSwitchesRepaired++;
 
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.switchRepair", "Switch Repair: +{0}xp", 100), 60);
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.switchRepair", "Switch Repair: +{0}xp", statsSwitchesRepaired * XPAward.Counselor_SwitchRepaired.getXPAward()), 60);
     }
 
     /**
@@ -86,7 +87,7 @@ public class CounselorXPManager {
     public void addJasonStuns() {
         statsJasonStuns++;
 
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.jasonStuns", "Jason Stunned: +{0}xp", 50), 60);
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.jasonStuns", "Jason Stunned: +{0}xp", statsJasonStuns * XPAward.Counselor_JasonStuns.getXPAward()), 60);
     }
 
     public void addJasonKill() {
@@ -103,37 +104,37 @@ public class CounselorXPManager {
 
         //Calculate window sprints
         if (statsWindowSprints > 0) {
-            xp += 50;
+            xp += XPAward.Counselor_WindowSprint.getXPAward();
         }
 
         //Calculate door closed
         if (statsDoorClosed) {
-            xp += 25;
+            xp += XPAward.Counselor_DoorClosed.getXPAward();
         }
 
         //Calculate Tommy Jarvis called
         if (statsCalledTommy) {
-            xp += 100;
+            xp += XPAward.Counselor_TommyCalled.getXPAward();
         }
 
         if (statsJasonKilled) {
-            xp += 1000;
+            xp += XPAward.Counselor_JasonKilled.getXPAward();
         }
 
         //Calculate activated traps
-        xp += statsTrapActivated * 50;
+        xp += statsTrapActivated * XPAward.Counselor_TrapActivated.getXPAward();
 
         //Calculate repaired switches
-        xp += statsSwitchesRepaired * 100;
+        xp += statsSwitchesRepaired * XPAward.Counselor_SwitchRepaired.getXPAward();
 
         //Calculate Jason stuns
-        xp += statsJasonStuns * 50;
+        xp += statsJasonStuns * XPAward.Counselor_JasonStuns.getXPAward();
 
         //Remove friendly hits
-        xp -= statsFriendlyHits * 1000;
+        xp -= statsFriendlyHits * XPAward.Counselor_FriendlyHit.getXPAward();
 
         //For completing a match and staying
-        xp += 100;
+        xp += XPAward.Counselor_MatchCompleted.getXPAward();
 
         return xp;
     }
