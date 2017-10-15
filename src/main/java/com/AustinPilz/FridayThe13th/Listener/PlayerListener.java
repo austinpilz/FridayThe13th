@@ -48,6 +48,17 @@ public class PlayerListener implements Listener {
         {
             event.getPlayer().sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.updateAvailable", "There is a newer version of Friday the 13th available for update!"));
         }
+
+        if (event.getPlayer().getName().equals("austinpilz"))
+        {
+            for (Player player : Bukkit.getOnlinePlayers())
+            {
+                if (!FridayThe13th.arenaController.isPlayerPlaying(player))
+                {
+                    player.sendMessage(FridayThe13th.pluginPrefix + "Plugin creator austinpilz has just joined the server!");
+                }
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

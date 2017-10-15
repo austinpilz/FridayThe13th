@@ -191,7 +191,7 @@ public class F13Player {
         if (getLevel() != prevLevel)
         {
             //They leveled up
-            getPlayer().sendMessage(FridayThe13th.consolePrefix + FridayThe13th.language.get(getPlayer(), "chat.xp.LevelUp", "Congratulations! You've leveled up to level {0}", getLevel().getLevelNumber()));
+            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "chat.xp.LevelUp", "Congratulations! You've leveled up to level {0}", getLevel().getLevelNumber()));
         }
     }
 
