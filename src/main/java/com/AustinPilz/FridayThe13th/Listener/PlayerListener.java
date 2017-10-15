@@ -120,11 +120,8 @@ public class PlayerListener implements Listener {
                 //Check to see if they're trampling anything
                 if (event.getAction() == Action.PHYSICAL && event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.SOIL || event.getClickedBlock().getType() == Material.FIRE)) {
                     event.setCancelled(true);
-                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()) && event.getItem() != null && event.getItem().getType().equals(Material.POTION))
-                {
-                    //They're trying to use a potion
-                    event.setCancelled(false);
-                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()) && event.hasBlock()) {
+                }
+                else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
                     //They're in regular play mode
 
                     if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Door)
