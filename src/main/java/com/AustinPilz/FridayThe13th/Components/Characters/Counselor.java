@@ -645,12 +645,24 @@ public class Counselor
         int direction = 1; //front
         float newZ = (float)(block.getLocation().getZ() + (2 * Math.sin(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
         float newX = (float)(block.getLocation().getX() + (2 * Math.cos(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
-        getPlayer().teleport(new Location(player.getLocation().getWorld(), (double)newX, player.getLocation().getY(), newZ));
 
-        //Damage the player
-        if (damage)
+        Location locationTo = new Location(player.getLocation().getWorld(), (double)newX, player.getLocation().getY(), newZ);
+
+        //Verify that they won't be jumping into a block to suffocate
+        if (locationTo.getBlock().getType().equals(Material.AIR))
         {
-            getPlayer().damage(6);
+            getPlayer().teleport(locationTo);
+
+            //Damage the player
+            if (damage)
+            {
+                getPlayer().damage(6);
+            }
+        }
+        else
+        {
+            //Not a free space
+            ActionBarAPI.sendActionBar(getPlayer(),FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "ingame.WindowJumpNoFreeLoc", "Window jump failed - could not find free location"), 60);
         }
     }
 

@@ -376,6 +376,9 @@ GameManager
         //Phone
         arena.getObjectManager().displayRandomPhone();
 
+        //Radios
+        arena.getObjectManager().placeRadios();
+
         //Start the weather service
         weatherManager.beginWeatherService();
 

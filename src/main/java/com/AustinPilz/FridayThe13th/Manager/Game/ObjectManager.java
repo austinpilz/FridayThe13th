@@ -204,9 +204,6 @@ public class ObjectManager
         {
             chest.randomlyFill();
         }
-
-        //Place the walkie talkies
-        placeRadios();
     }
 
     /**
@@ -280,7 +277,7 @@ public class ObjectManager
     /**
      * Places walkies talkies randomly across the item chests
      */
-    private void placeRadios()
+    protected void placeRadios()
     {
         //Teleport counselors to starting points
         ArenaChest[] chests = itemChests.toArray(new ArenaChest[itemChests.size()]);
