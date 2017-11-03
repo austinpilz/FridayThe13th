@@ -27,7 +27,7 @@ public class Profiles_CounselorMenu {
 
         Inventory inventory;
 
-        inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.CounselorProfileMenu", "Counselor Profiles") + ": " + ChatColor.WHITE + f13Player.getCounselorProfile().getShortName());
+        inventory = Bukkit.createInventory(null, 18, ChatColor.DARK_GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.title.CounselorProfileMenu", "Counselor Profiles") + ": " + ChatColor.WHITE + f13Player.getCounselorProfile().getShortName());
 
         //Display all profiles
         for (CounselorProfile profile : CounselorProfile.values()) {

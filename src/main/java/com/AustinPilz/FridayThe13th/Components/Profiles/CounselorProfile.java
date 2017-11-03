@@ -16,7 +16,8 @@ public enum CounselorProfile {
     Vanessa("Vanessa Jones", "C-Vanessa", "Vanessa", F13Skin.Counselor_Vanessa, F13Level.L3, 7, CounselorTraitLevel.Composure_3, CounselorTraitLevel.Luck_6, CounselorTraitLevel.Intelligence_2, CounselorTraitLevel.Speed_10, CounselorTraitLevel.Stamina_9, CounselorTraitLevel.Stealth_1, CounselorTraitLevel.Strength_4, F13SoundEffect.GirlGasp),
     Tiffany("Tiffany Cox", "C-Tiffany", "Tiffany", F13Skin.Counselor_Tiffany, F13Level.L2, 8, CounselorTraitLevel.Composure_3, CounselorTraitLevel.Luck_4, CounselorTraitLevel.Intelligence_1, CounselorTraitLevel.Speed_6, CounselorTraitLevel.Stamina_9, CounselorTraitLevel.Stealth_10, CounselorTraitLevel.Strength_2, F13SoundEffect.GirlGasp),
     Eric("Eric J.R. Lachappa", "C-Eric", "Eric", F13Skin.Counselor_Eric, F13Level.L5, 9, CounselorTraitLevel.Composure_4, CounselorTraitLevel.Luck_5, CounselorTraitLevel.Intelligence_10, CounselorTraitLevel.Speed_3, CounselorTraitLevel.Stamina_2, CounselorTraitLevel.Stealth_8, CounselorTraitLevel.Strength_3, F13SoundEffect.GuyGasp),
-
+    Mitch("Mitch Floyd", "C-Mitch", "Mitch", F13Skin.Counselor_Mitch, F13Level.L14, 10, CounselorTraitLevel.Composure_9, CounselorTraitLevel.Luck_2, CounselorTraitLevel.Intelligence_8, CounselorTraitLevel.Speed_3, CounselorTraitLevel.Stamina_4, CounselorTraitLevel.Stealth_6, CounselorTraitLevel.Strength_3, F13SoundEffect.GuyGasp),
+    Fox("Fox", "C-Fox", "Fox", F13Skin.Counselor_Fox, F13Level.L20, 11, CounselorTraitLevel.Composure_6, CounselorTraitLevel.Luck_3, CounselorTraitLevel.Intelligence_8, CounselorTraitLevel.Speed_4, CounselorTraitLevel.Stamina_5, CounselorTraitLevel.Stamina_4, CounselorTraitLevel.Strength_7, F13SoundEffect.GirlGasp),
     ;
 
     private String counselorName;
