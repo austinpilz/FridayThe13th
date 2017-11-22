@@ -6,7 +6,7 @@
 
     <groupId>com.austinpilz.friday13</groupId>
     <artifactId>FridayThe13th</artifactId>
-    <version>1.9</version>
+    <version>1.8.3</version>
 
     <repositories>
         <repository>
