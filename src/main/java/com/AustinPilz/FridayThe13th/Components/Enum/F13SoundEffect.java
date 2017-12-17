@@ -1,7 +1,5 @@
 package com.AustinPilz.FridayThe13th.Components.Enum;
 
-import org.bukkit.Bukkit;
-
 public enum F13SoundEffect {
 
     ChiChiChi("f13.chi", 4, 10),
@@ -32,7 +30,7 @@ public enum F13SoundEffect {
 
     /**
      * Returns the custom sound effect name to be played
-     * @return
+     * @return Sound effect name
      */
     public String getResourcePackValue()
     {
@@ -41,7 +39,7 @@ public enum F13SoundEffect {
 
     /**
      * Returns the length of the sound effect in seconds
-     * @return
+     * @return Sound effect length in seconds
      */
     public int getLengthInSeconds()
     {
@@ -50,7 +48,7 @@ public enum F13SoundEffect {
 
     /**
      * Returns the volume to play the sound
-     * @return
+     * @return Volume of the sound effect
      */
     public int getVolume()
     {

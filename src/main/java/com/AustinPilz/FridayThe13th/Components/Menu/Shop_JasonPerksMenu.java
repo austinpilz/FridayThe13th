@@ -1,8 +1,8 @@
 package com.AustinPilz.FridayThe13th.Components.Menu;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.CharacterType;
-import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
+import com.AustinPilz.FridayThe13th.Components.Characters.CharacterType;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;

@@ -16,11 +16,11 @@ public class ChatController
 
     /**
      * Routes chat from a player currently playing F13
-     * @param sender
-     * @param message
-     * @param arena
+     * @param sender Sender of the message
+     * @param message The message
+     * @param arena Arena of the sending player
      */
-    public void routeInternalMesssage(Player sender, String message, Arena arena)
+    public void routeInternalMessage(Player sender, String message, Arena arena)
     {
         Set<Player> recipients = new HashSet<>();
         String prefix = "";
@@ -118,30 +118,13 @@ public class ChatController
     }
 
     /**
-     * Converts a list of uuid strings to Bukkit Player objects
-     * @param uuids
-     * @return
-     */
-    public List<Player> convertUUIDtoOnlinePlayer(List<String> uuids)
-    {
-        List<Player> players = new ArrayList<>();
-
-        for (String uuid : uuids)
-        {
-            players.add(Bukkit.getPlayer(uuid));
-        }
-
-        return players;
-    }
-
-    /**
      * Returns a list of all F13 players
-     * @return
+     * @return List with all F13 players
      */
     public List<Player> getF13Players()
     {
-        List<String> rawUUIDs = new ArrayList<String>(FridayThe13th.arenaController.getPlayers().keySet());
-        List<Player> players = new ArrayList<Player>();
+        List<String> rawUUIDs = new ArrayList<>(FridayThe13th.arenaController.getPlayers().keySet());
+        List<Player> players = new ArrayList<>();
 
         for (String uuid : rawUUIDs)
         {

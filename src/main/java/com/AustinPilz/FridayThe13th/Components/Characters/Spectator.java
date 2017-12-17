@@ -1,7 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -13,26 +12,10 @@ import org.bukkit.entity.Player;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Spectator
-{
-    private Player player;
-    private Arena arena;
-    private F13Player f13Player;
-
-    public Spectator(Player p, Arena a)
+public class Spectator extends F13Character {
+    public Spectator(Player player, Arena arena)
     {
-        player = p;
-        arena = a;
-        f13Player = FridayThe13th.playerController.getPlayer(player);
-    }
-
-    /**
-     * Returns player object of the spectator
-     * @return
-     */
-    public Player getPlayer()
-    {
-        return player;
+        super(player, arena);
     }
 
     /**
@@ -49,7 +32,7 @@ public class Spectator
         getPlayer().setAllowFlight(true);
         getPlayer().setFlying(true);
         getPlayer().setHealth(20);
-        getPlayer().setWalkSpeed(0.1f);
+        getPlayer().setWalkSpeed(0.2f);
 
         //Location
         getPlayer().teleport(arena.getLocationManager().getAvailableStartingPoints().iterator().next()); //Random starting point
@@ -62,10 +45,8 @@ public class Spectator
         ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.becomeSpectator", "You are now in spectating mode.", ChatColor.WHITE), 300);
 
         //Hide this player from everyone else
-        Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-        while (it.hasNext())
-        {
-            Map.Entry entry = (Map.Entry) it.next();
+        for (Object o : arena.getGameManager().getPlayerManager().getPlayers().entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
             Player hideFrom = (Player) entry.getValue();
             hideFrom.hidePlayer(getPlayer());
         }
@@ -90,6 +71,7 @@ public class Spectator
         //Restore their defaults
         getPlayer().setAllowFlight(false);
         getPlayer().getInventory().clear();
+        restoreOriginalSpeeds();
 
         //Clear the action bar and hide spectator displays
         ActionBarAPI.sendActionBar(getPlayer(), "");

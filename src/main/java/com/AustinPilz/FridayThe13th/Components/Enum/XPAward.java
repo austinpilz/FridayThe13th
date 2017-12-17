@@ -16,11 +16,7 @@ public enum XPAward {
     Counselor_SwitchRepaired(100),
     Counselor_JasonStuns(50),
     Counselor_FriendlyHit(1000),
-    Counselor_MatchCompleted(100)
-
-
-
-    ;
+    Counselor_MatchCompleted(100);
 
 
     private int xp;
@@ -32,7 +28,7 @@ public enum XPAward {
 
     /**
      * Returns the XP amount for this award
-     * @return
+     * @return XP amount
      */
     public int getXPAward()
     {

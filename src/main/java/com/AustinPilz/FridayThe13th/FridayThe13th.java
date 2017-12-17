@@ -87,7 +87,6 @@ public class FridayThe13th extends JavaPlugin implements Listener
 
         //InputOutput
         inputOutput = new InputOutput();
-        inputOutput.LoadSettings();
         inputOutput.prepareDB();
         inputOutput.updateDB();
         inputOutput.loadArenas();

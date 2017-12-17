@@ -3,7 +3,7 @@ package com.AustinPilz.FridayThe13th.Listener;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
-import com.AustinPilz.FridayThe13th.Components.Level.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Visuals.ThrowableItem;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
@@ -618,7 +618,7 @@ public class PlayerListener implements Listener {
             try
             {
                 Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()); //See if they're playing
-                FridayThe13th.chatController.routeInternalMesssage(event.getPlayer(), event.getMessage(), arena);
+                FridayThe13th.chatController.routeInternalMessage(event.getPlayer(), event.getMessage(), arena);
             }
             catch (PlayerNotPlayingException exception)
             {

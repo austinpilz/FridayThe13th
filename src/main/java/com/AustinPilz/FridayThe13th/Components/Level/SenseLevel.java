@@ -20,7 +20,7 @@ public enum SenseLevel {
     /**
      * Returns the level name
      *
-     * @return
+     * @return Level name
      */
     public String getLevelName() {
         return levelName;
@@ -29,7 +29,7 @@ public enum SenseLevel {
     /**
      * Returns the depletion rate
      *
-     * @return
+     * @return Depletion rate
      */
     public double getDepletionRate() {
         return depletionRate;
@@ -38,7 +38,7 @@ public enum SenseLevel {
     /**
      * Returns the regeneration rate
      *
-     * @return
+     * @return Regeneration rate
      */
     public double getRegenerationRate() {
         return regenerationRate;

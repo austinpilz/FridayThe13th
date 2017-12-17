@@ -1,6 +1,6 @@
 package com.AustinPilz.FridayThe13th.Components.Perk;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.CharacterType;
+import com.AustinPilz.FridayThe13th.Components.Characters.CharacterType;
 import org.bukkit.Material;
 
 import java.text.NumberFormat;
@@ -35,7 +35,7 @@ public enum F13Perk {
 
     /**
      * Returns the perk's character type
-     * @return
+     * @return Perk's character type
      */
     public CharacterType getCharacterType() {
         return characterType;
@@ -43,7 +43,7 @@ public enum F13Perk {
 
     /**
      * Returns the perk's name
-     * @return
+     * @return Perk's display name
      */
     public String getName()
     {
@@ -52,7 +52,7 @@ public enum F13Perk {
 
     /**
      * Returns the perk's internal identifier
-     * @return
+     * @return Perk's internal identifier
      */
     public String getInternalIdentifier()
     {
@@ -61,7 +61,7 @@ public enum F13Perk {
 
     /**
      * Returns the perk's description
-     * @return
+     * @return Perk's display description
      */
     public String getDescription()
     {
@@ -70,7 +70,7 @@ public enum F13Perk {
 
     /**
      * Returns the cost of the perk in customization points
-     * @return
+     * @return Perk's cost in CP
      */
     public int getCost()
     {
@@ -79,7 +79,7 @@ public enum F13Perk {
 
     /**
      * Returns a formatted version of the perk cost
-     * @return
+     * @return Perk's cost in CP (formatted)
      */
     public String getFormattedCost()
     {
@@ -88,7 +88,7 @@ public enum F13Perk {
 
     /**
      * Returns the material that the perk displays as
-     * @return
+     * @return Perk's display material
      */
     public Material getDisplayMaterial()
     {

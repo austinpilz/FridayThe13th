@@ -2,13 +2,9 @@ package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
-import com.AustinPilz.FridayThe13th.Components.F13Player;
-import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
-import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
-import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
@@ -33,24 +29,16 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jason
+public class Jason extends F13Character
 {
-    //Minecraft Objects
-    private Player player;
-    private F13Player f13Player;
-    private JasonProfile jasonProfile;
-
-    //Game
-    private Arena arena;
 
     //Display
     private JasonAbilityDisplayManager abilityDisplayManager;
     private JasonXPManager xpManager;
-    private SkinChange skin;
 
     //Tasks
-    int taskAbilityDisplay = -1;
-    int taskAbilityRegeneration = -1;
+    private int taskAbilityDisplay = -1;
+    private int taskAbilityRegeneration = -1;
 
     //Stalk
     private double stalkLevel;
@@ -77,22 +65,15 @@ public class Jason
     private boolean warpInitialGenerationComplete;
     private boolean warpActive;
 
-    //Restore values
-    private float originalWalkSpeed;
-    private float originalFlySpeed;
-    private boolean originalAllowFly;
-
     //Stun Potions
     private PotionEffect stun1;
     private PotionEffect stun2;
     private PotionEffect stun3;
     private PotionEffect stun4;
 
-    public Jason(Player p, Arena a)
+    public Jason(Player player, Arena arena)
     {
-        arena = a;
-        player = p;
-        f13Player = FridayThe13th.playerController.getPlayer(player);
+        super(player, arena);
 
         //Display
         abilityDisplayManager = new JasonAbilityDisplayManager(this);
@@ -128,40 +109,11 @@ public class Jason
         stun2 = new PotionEffect(PotionEffectType.CONFUSION, 100, 20);
         stun3 = new PotionEffect(PotionEffectType.GLOWING, 100, 20);
         stun4 = new PotionEffect(PotionEffectType.SLOW, 100, 20);
-
-        //Restore Values
-        originalWalkSpeed = player.getWalkSpeed();
-        originalFlySpeed = player.getFlySpeed();
-        originalAllowFly = player.getAllowFlight();
-
-        //Skin Change
-        if (FridayThe13th.serverVersion.equalsIgnoreCase("v1_12_R1")) {
-            skin = new SkinChange_1_12(getPlayer());
-        } else {
-            skin = new SkinChange_0_0(getPlayer());
-        }
-    }
-
-    /**
-     * Return the player object of Jason
-     */
-    public Player getPlayer()
-    {
-        return this.player;
-    }
-
-    /**
-     * Returns Jason's F13 player object
-     *
-     * @return
-     */
-    public F13Player getF13Player() {
-        return f13Player;
     }
 
     /**
      * Returns Jason's ability display manager
-     * @return
+     * @return Jason's display manager
      */
     public JasonAbilityDisplayManager getAbilityDisplayManager()
     {
@@ -170,8 +122,7 @@ public class Jason
 
     /**
      * Returns the XP manager for Jason
-     *
-     * @return
+     * @return Jason's XP Manager
      */
     public JasonXPManager getXPManager() {
         return xpManager;
@@ -180,7 +131,7 @@ public class Jason
     /**
      * Schedules all Jason runnable tasks
      */
-    public void scheduleTasks()
+    private void scheduleTasks()
     {
         taskAbilityDisplay = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new JasonAbilitiesDisplayUpdate(this), 0, 20);
         taskAbilityRegeneration = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new JasonAbilitiesRegeneration(this), 0, 20);
@@ -237,7 +188,7 @@ public class Jason
         ItemStack jasonTraps = new ItemStack(Material.CARPET, 5, (byte) 12);
         ItemMeta jasonTrapsMeta = jasonTraps.getItemMeta();
         jasonTrapsMeta.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.JasonsTraps", "Trap"));
-        List<String> jasonTrapLore = new ArrayList<String>();
+        List<String> jasonTrapLore = new ArrayList<>();
         jasonTrapLore.add(HiddenStringsUtil.encodeString("{\"PlaceItem\": \"JasonTrap\"}"));
         jasonTrapsMeta.setLore(jasonTrapLore);
         jasonTraps.setItemMeta(jasonTrapsMeta);
@@ -275,7 +226,7 @@ public class Jason
     /* MOVEMENTS */
     /**
      * Sets if Jason is stalking
-     * @param value
+     * @param value If Jason is currently stalking
      */
     public void setStalking(boolean value)
     {
@@ -298,7 +249,7 @@ public class Jason
 
     /**
      * Sets if Jason is walking
-     * @param value
+     * @param value If Jason is currently walking
      */
     public void setWalking(boolean value)
     {
@@ -312,7 +263,7 @@ public class Jason
 
     /**
      * Sets if Jason is sprinting
-     * @param value
+     * @param value If Jason is currently sprinting
      */
     public void setSprinting(boolean value)
     {
@@ -326,7 +277,7 @@ public class Jason
 
     /**
      * Sets if Jason is flying
-     * @param value
+     * @param value If Jason is currently flying
      */
     public void setFlying(boolean value)
     {
@@ -443,7 +394,7 @@ public class Jason
     /**
      * Sets Jason's sense level
      */
-    public void setSenseLevel(double level)
+    private void setSenseLevel(double level)
     {
         senseLevel = level;
     }
@@ -452,7 +403,7 @@ public class Jason
      * Gets Jason's sense level max
      * @return
      */
-    public double getSenseLevelMax()
+    private double getSenseLevelMax()
     {
         return senseLevelMax;
     }
@@ -470,7 +421,7 @@ public class Jason
      * Returns if Jason can use sense ability
      * @return
      */
-    public boolean canSense()
+    private boolean canSense()
     {
         return getSenseLevelPercentage() == 1 && hasInitialSenseGenerationCompleted();
     }
@@ -566,7 +517,7 @@ public class Jason
 
     /**
      * Sets if Jason is currently sensing
-     * @param value
+     * @param value If Jason is currently sensing
      */
     public void setSensing(boolean value)
     {
@@ -660,19 +611,6 @@ public class Jason
         getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
         getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
         getPlayer().removePotionEffect(PotionEffectType.SLOW);
-    }
-
-    /**
-     * Restores the players original speed values
-     */
-    public void restoreOriginalSpeeds()
-    {
-        if (player.isOnline())
-        {
-            player.setFlySpeed(originalFlySpeed);
-            player.setWalkSpeed(originalWalkSpeed);
-            player.setAllowFlight(originalAllowFly);
-        }
     }
 
     /**

@@ -3,11 +3,7 @@ package com.AustinPilz.FridayThe13th.Components.Characters;
 import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
-import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
-import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange;
-import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_0_0;
-import com.AustinPilz.FridayThe13th.Components.Skin.SkinChange_1_12;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
@@ -15,13 +11,11 @@ import com.AustinPilz.FridayThe13th.Manager.Statistics.CounselorXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import net.minecraft.server.v1_12_R1.Vec3D;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,19 +26,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.golde.bukkit.corpsereborn.nms.Corpses;
 
-import java.util.Calendar;
 import java.util.HashSet;
 
 
-public class Counselor
+public class Counselor extends F13Character
 {
-    //Minecraft Objects
-    private Player player;
-    private F13Player f13Player;
-
-    //Game
-    private Arena arena;
-
     //Statistics
     private double stamina;
     private double maxStamina;
@@ -56,12 +42,11 @@ public class Counselor
     private double fearLevel;
     private double maxFearLevel;
     private LightLevelList lightHistory;
-    private HashSet<Corpses.CorpseData> corpses;
+    private HashSet<Corpses.CorpseData> corpsesSeen;
 
     //Managers
-    private CounselorStatsDisplayManager statsDisplayManager;
+    private CounselorStatsDisplayManager counselorStatsDisplayManager;
     private CounselorXPManager counselorXPManager;
-    private SkinChange skin;
 
     //Tasks
     int statsUpdateTask = -1;
@@ -76,24 +61,17 @@ public class Counselor
     private boolean shownFearWarning = false;
     private boolean isTommyJarvis = false;
 
-    //Restore values
-    private float originalWalkSpeed;
-    private float originalFlySpeed;
-    private boolean originalAllowFly;
-
     //Etc
     private boolean awaitingWindowJump;
 
 
     /**
      * Creates new counselor object
-     * @param p Minecraft player object
+     * @param player Minecraft player object
      */
-    public Counselor(Player p, Arena a)
+    public Counselor(Player player, Arena arena)
     {
-        player = p;
-        arena = a;
-        f13Player = FridayThe13th.playerController.getPlayer(player);
+        super(player, arena);
 
         //Stamina
         stamina = 100;
@@ -104,10 +82,10 @@ public class Counselor
         //Fear
         fearLevel = 5;
         maxFearLevel = 60;
-        corpses = new HashSet<>();
+        corpsesSeen = new HashSet<>();
 
         //Initialize Manager
-        statsDisplayManager = new CounselorStatsDisplayManager(this);
+        counselorStatsDisplayManager = new CounselorStatsDisplayManager(this);
         counselorXPManager = new CounselorXPManager(this, arena);
 
         //Fear
@@ -119,55 +97,17 @@ public class Counselor
         potionFearBlind = new PotionEffect(PotionEffectType.BLINDNESS, 400, 1);
         potionSenseByJason = new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 10);
 
-        //Restore Values
-        originalWalkSpeed = player.getWalkSpeed();
-        originalFlySpeed = player.getFlySpeed();
-        originalAllowFly = player.getAllowFlight();
-
         //Etc
         awaitingWindowJump = false;
-
-        //Skin Change
-        if (FridayThe13th.serverVersion.equalsIgnoreCase("v1_12_R1")) {
-            skin = new SkinChange_1_12(getPlayer());
-        } else {
-            skin = new SkinChange_0_0(getPlayer());
-        }
-    }
-
-    /**
-     * Return' the player object of the counselor
-     */
-    public Player getPlayer()
-    {
-        return this.player;
-    }
-
-    /**
-     * Returns Jason's F13 player object
-     *
-     * @return
-     */
-    public F13Player getF13Player() {
-        return f13Player;
-    }
-
-    /**
-     * Returns the arena
-     * @return
-     */
-    public Arena getArena()
-    {
-        return arena;
     }
 
     /**
      * Returns counselor's stats display manager
      * @return
      */
-    public CounselorStatsDisplayManager getStatsDisplayManager()
+    public CounselorStatsDisplayManager getCounselorStatsDisplayManager()
     {
-        return statsDisplayManager;
+        return counselorStatsDisplayManager;
     }
 
     /**
@@ -188,7 +128,7 @@ public class Counselor
         getPlayer().getInventory().clear();
 
         ///Display Status
-        getStatsDisplayManager().displayStats();
+        getCounselorStatsDisplayManager().displayStats();
 
         //Display game-wide scoreboard
         arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
@@ -238,7 +178,7 @@ public class Counselor
     public void scheduleTasks()
     {
         //Start the stats updater
-        getStatsDisplayManager().startUpdaterTask();
+        getCounselorStatsDisplayManager().startUpdaterTask();
 
         //Fear Check Task
         statsUpdateTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorStatsUpdate(this), 0, 20);
@@ -250,7 +190,7 @@ public class Counselor
     public void cancelTasks()
     {
         //End the stats updater
-        getStatsDisplayManager().endUpdaterTask();
+        getCounselorStatsDisplayManager().endUpdaterTask();
 
         //Cancel fearLevel check task
         Bukkit.getScheduler().cancelTask(statsUpdateTask);
@@ -556,7 +496,7 @@ public class Counselor
         setStamina(getMaxStamina());
 
         //Stop stats since they're dead
-        getStatsDisplayManager().hideStats();
+        getCounselorStatsDisplayManager().hideStats();
         cancelTasks();
     }
 
@@ -596,19 +536,6 @@ public class Counselor
         else
         {
             getPlayer().removePotionEffect(PotionEffectType.GLOWING);
-        }
-    }
-
-    /**
-     * Restores the players original speed values
-     */
-    public void restoreOriginalSpeeds()
-    {
-        if (player.isOnline())
-        {
-            player.setFlySpeed(originalFlySpeed);
-            player.setWalkSpeed(originalWalkSpeed);
-            player.setAllowFlight(originalAllowFly);
         }
     }
 
@@ -765,10 +692,10 @@ public class Counselor
      */
     public void corpseSeen(Corpses.CorpseData corpse)
     {
-        if (!corpses.contains(corpse))
+        if (!corpsesSeen.contains(corpse))
         {
             //Add corpse to seen list
-            corpses.add(corpse);
+            corpsesSeen.add(corpse);
 
             //Scare them
             for (int i = 0; i < getF13Player().getCounselorProfile().getComposure().getDepletionRate()-1; i++)

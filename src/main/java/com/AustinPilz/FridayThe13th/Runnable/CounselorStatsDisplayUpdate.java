@@ -15,7 +15,7 @@ public class CounselorStatsDisplayUpdate implements Runnable {
     public void run()
     {
         //Update the displays
-        counselor.getStatsDisplayManager().updateStats(); //Update display of the stats
+        counselor.getCounselorStatsDisplayManager().updateStats(); //Update display of the stats
 
         //Update skin based on health
         counselor.updateSkin();

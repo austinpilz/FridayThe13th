@@ -1,9 +1,8 @@
 package com.AustinPilz.FridayThe13th.Components;
 
-import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
-import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
-import com.AustinPilz.FridayThe13th.Components.Level.F13Level;
+import com.AustinPilz.FridayThe13th.Components.Level.F13PlayerLevel;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
+import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
 import com.AustinPilz.FridayThe13th.Components.Profiles.F13ProfileManager;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
@@ -35,7 +34,7 @@ public class F13Player {
 
 
     //Statistics
-    private F13Level level;
+    private F13PlayerLevel level;
     private int experiencePoints;
     private int customizationPoints;
 
@@ -185,7 +184,7 @@ public class F13Player {
         experiencePoints += value;
         updateDB();
 
-        F13Level prevLevel = getLevel();
+        F13PlayerLevel prevLevel = getLevel();
         determineLevel();
 
         if (getLevel() != prevLevel)
@@ -196,21 +195,11 @@ public class F13Player {
     }
 
     /**
-     * Sets the player's XP
-     *
-     * @param value
-     */
-    private void setXP(int value) {
-        experiencePoints = value;
-        determineLevel();
-    }
-
-    /**
      * Returns the players level
      *
      * @return
      */
-    public F13Level getLevel() {
+    public F13PlayerLevel getLevel() {
         return level;
     }
 
@@ -218,7 +207,7 @@ public class F13Player {
      * Determines the players level
      */
     private void determineLevel() {
-        for (F13Level l : F13Level.values()) {
+        for (F13PlayerLevel l : F13PlayerLevel.values()) {
             if (getXP() >= l.getMinXP() && getXP() < l.getMaxXP()) {
                 this.level = l;
             }
@@ -264,10 +253,10 @@ public class F13Player {
      *
      * @return
      */
-    public F13Level getNextLevel() {
-        F13Level level = getLevel();
+    public F13PlayerLevel getNextLevel() {
+        F13PlayerLevel level = getLevel();
 
-        for (F13Level l : F13Level.values()) {
+        for (F13PlayerLevel l : F13PlayerLevel.values()) {
             if (l.getLevelNumber() == (getLevel().getLevelNumber() + 1)) {
                 level = l;
                 break;

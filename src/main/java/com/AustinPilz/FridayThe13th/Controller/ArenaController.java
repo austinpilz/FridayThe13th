@@ -1,7 +1,6 @@
 package com.AustinPilz.FridayThe13th.Controller;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
@@ -9,7 +8,6 @@ import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -242,7 +240,7 @@ public class ArenaController
                     }
 
 
-                    //Randomize starting points
+                    //Randomize possible arenas
                     Random rnd = ThreadLocalRandom.current();
                     for (int i = arenas.length - 1; i > 0; i--)
                     {

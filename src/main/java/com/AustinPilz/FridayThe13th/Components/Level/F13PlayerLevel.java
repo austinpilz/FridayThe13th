@@ -2,7 +2,7 @@ package com.AustinPilz.FridayThe13th.Components.Level;
 
 import org.bukkit.ChatColor;
 
-public enum F13Level {
+public enum F13PlayerLevel {
     L1(1, 0, 500),
     L2(2, 501, 7500),
     L3(3, 7501, 15500),
@@ -29,14 +29,14 @@ public enum F13Level {
     private final int maxXP;
     private ChatColor chatColor;
 
-    F13Level(int num, int min, int max) {
+    F13PlayerLevel(int num, int min, int max) {
         levelNumber = num;
         minXP = min;
         maxXP = max;
         chatColor = ChatColor.WHITE;
     }
 
-    F13Level(int num, int min, int max, ChatColor color) {
+    F13PlayerLevel(int num, int min, int max, ChatColor color) {
         levelNumber = num;
         minXP = min;
         maxXP = max;
@@ -86,7 +86,7 @@ public enum F13Level {
      * @param level
      * @return
      */
-    public boolean isGreaterThan(F13Level level) {
+    public boolean isGreaterThan(F13PlayerLevel level) {
         return (getLevelNumber() > level.getLevelNumber());
     }
 
@@ -96,7 +96,7 @@ public enum F13Level {
      * @param level
      * @return
      */
-    public boolean isLessThan(F13Level level) {
+    public boolean isLessThan(F13PlayerLevel level) {
         return (getLevelNumber() < level.getLevelNumber());
     }
 }

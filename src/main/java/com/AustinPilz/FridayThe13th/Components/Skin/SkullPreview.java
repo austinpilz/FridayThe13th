@@ -5,7 +5,6 @@ import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -15,7 +14,7 @@ public class SkullPreview extends ItemStack {
 
     public SkullPreview(F13Skin skin, String displayName, List<String> lore) {
         super(Material.SKULL_ITEM, 1, (short) 3);
-        ItemMeta skullMeta = (SkullMeta) this.getItemMeta();
+        ItemMeta skullMeta = this.getItemMeta();
 
         skullMeta.setDisplayName(displayName);
         skullMeta.setLore(lore);
@@ -31,7 +30,7 @@ public class SkullPreview extends ItemStack {
         } catch (NoSuchFieldException | IllegalAccessException exception) {
             exception.printStackTrace();
         }
-        this.setItemMeta(skullMeta);
 
+        this.setItemMeta(skullMeta);
     }
 }

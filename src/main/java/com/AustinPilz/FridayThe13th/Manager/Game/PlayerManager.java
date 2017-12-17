@@ -7,7 +7,10 @@ import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
-import com.AustinPilz.FridayThe13th.Components.Menu.*;
+import com.AustinPilz.FridayThe13th.Components.Menu.Profiles_MainMenu;
+import com.AustinPilz.FridayThe13th.Components.Menu.PurchasedPerksMenu;
+import com.AustinPilz.FridayThe13th.Components.Menu.Shop_MainMenu;
+import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
@@ -895,7 +898,7 @@ public class PlayerManager
                 counselor.restoreOriginalSpeeds();
 
                 //Hide the stats bars
-                counselor.getStatsDisplayManager().hideStats();
+                counselor.getCounselorStatsDisplayManager().hideStats();
 
                 //Remove skin
                 counselor.removeSkin();

@@ -7,14 +7,11 @@ import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.IO.Setting;
-import com.AustinPilz.FridayThe13th.IO.Settings;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -115,7 +112,7 @@ public class BlockListener implements Listener
             }
 
             //Warn them if we cancelled the event
-            if (event.isCancelled() && Settings.getGlobalBoolean(Setting.gameplayWarnOnPlace))
+            if (event.isCancelled())
             {
                 event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.blockPlace", "You cannot place blocks while playing."));
             }

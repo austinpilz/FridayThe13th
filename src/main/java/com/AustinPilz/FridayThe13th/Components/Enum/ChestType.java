@@ -13,6 +13,4 @@ public enum ChestType {
     public String getFieldDescription() {
         return fieldDescription;
     }
-
-
 }

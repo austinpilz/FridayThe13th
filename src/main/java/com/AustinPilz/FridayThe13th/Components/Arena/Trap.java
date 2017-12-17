@@ -3,7 +3,7 @@ package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
-import com.AustinPilz.FridayThe13th.Components.Level.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
@@ -34,7 +34,6 @@ public class Trap {
 
     //Activation Progress
     private boolean isActivated;
-    private double activationProgress;
     private double activationAttempts;
     private int activationAttemptsRequired;
 
@@ -46,7 +45,6 @@ public class Trap {
 
         //Activation
         isActivated = false;
-        activationProgress = 0;
         activationAttempts = 0;
         activationAttemptsRequired = 40;
 
@@ -153,7 +151,7 @@ public class Trap {
      */
     public void steppedOn(Player player) {
         if (isActivated()) {
-            //Deactive the trap
+            //Deactivate the trap
             setActive(false);
 
             //Apply effects to player
@@ -187,7 +185,7 @@ public class Trap {
                     ItemMeta jasonItemMeta = jasonItem.getItemMeta();
                     jasonItemMeta.setDisplayName(ChatColor.RED + FridayThe13th.language.get(player, "game.item.jasonTeleportPlayerTrap", "Teleport to trapped player..."));
 
-                    List<String> jasonItemLore = new ArrayList<String>();
+                    List<String> jasonItemLore = new ArrayList<>();
                     jasonItemLore.add(HiddenStringsUtil.encodeString("{\"TrapTeleport\": \"" + player.getName() + "\"}"));
                     jasonItemMeta.setLore(jasonItemLore);
 

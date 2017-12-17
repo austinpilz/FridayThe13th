@@ -36,8 +36,7 @@ public class F13BlockPlacedEvent extends Event implements Cancellable {
     }
 
     /**
-     * Returns the bukkit player object who placed the block
-     *
+     * Returns the Bukkit player object who placed the block
      * @return
      */
     public Player getPlayer() {

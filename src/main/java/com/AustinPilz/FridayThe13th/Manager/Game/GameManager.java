@@ -3,8 +3,6 @@ package com.AustinPilz.FridayThe13th.Manager.Game;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.GameStatus;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.IO.Setting;
-import com.AustinPilz.FridayThe13th.IO.Settings;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameCountdownManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
@@ -20,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Weather;
 
 import java.util.Iterator;
 import java.util.List;

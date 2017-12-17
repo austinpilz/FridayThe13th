@@ -20,7 +20,7 @@ public enum StalkLevel {
     /**
      * Returns the level name
      *
-     * @return
+     * @return Level Name
      */
     public String getLevelName() {
         return levelName;

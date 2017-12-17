@@ -93,19 +93,27 @@ public enum CounselorTraitLevel {
         regenerationRate = rr;
     }
 
-    public String getTraitName() {
-        return traitName;
-    }
-
+    /**
+     * @return Trait level
+     */
     public int getTraitLevel() {
         return traitLevel;
     }
 
+    /**
+     * @return Data value for trait
+     */
     public double getDataValue() {
         return dataValue;
     }
 
+    /**
+     * @return Depletion level
+     */
     public double getDepletionRate() { return depletionRate; }
 
+    /**
+     * @return Regeneration level
+     */
     public double getRegenerationRate() { return regenerationRate; }
 }

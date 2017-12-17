@@ -1,8 +1,8 @@
 package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Level.F13Level;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Level.F13PlayerLevel;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.coloredcarrot.api.sidebar.Sidebar;
@@ -66,7 +66,7 @@ public class WaitingPlayerStatsDisplayManager {
             statsScoreboard.addEntry(xpValue);
 
             //Display XP until next level, if there is a next level
-            if (player.getLevel().isLessThan(F13Level.L20)) {
+            if (player.getLevel().isLessThan(F13PlayerLevel.L20)) {
 
                 statsScoreboard.addEntry(new SidebarString("      "));
 

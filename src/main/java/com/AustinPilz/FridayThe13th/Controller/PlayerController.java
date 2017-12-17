@@ -18,10 +18,10 @@ public class PlayerController {
     }
 
     /**
-     * Gets F13 player object of supplied bukkit player
+     * Gets F13 player object of supplied Bukkit player
      *
-     * @param player
-     * @return
+     * @param player Player
+     * @return F13Player object of player
      */
     public F13Player getPlayer(Player player) {
         return getPlayer(player.getUniqueId().toString());
@@ -83,17 +83,7 @@ public class PlayerController {
         else
         {
             FridayThe13th.inputOutput.loadPlayer(uuid);
-
-            if (doesPlayerExist(uuid))
-            {
-                //They were in the DB
-                return true;
-            }
-            else
-            {
-                //They weren't in the DB
-                return false;
-            }
+            return doesPlayerExist(uuid);
         }
     }
 
