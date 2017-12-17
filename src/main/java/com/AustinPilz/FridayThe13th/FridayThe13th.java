@@ -17,7 +17,6 @@ import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.PhoneSetupManager;
 import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
-import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
 import com.AustinPilz.FridayThe13th.Runnable.PlayerMemoryClean;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,12 +32,12 @@ import java.util.logging.Logger;
 public class FridayThe13th extends JavaPlugin implements Listener
 {
     public static final String pluginName = "Friday The 13th";
-    public static final String pluginVersion = "1.8.3";
+    public static final String pluginVersion = "1.9";
     public static final String pluginPrefix = ChatColor.RED + "[F13] " + ChatColor.WHITE;
     public static final String pluginAdminPrefix = ChatColor.RED + "[F13:A] " + ChatColor.WHITE;
     public static final String signPrefix = ChatColor.RED + "[F13]";
     public static final String consolePrefix = "[FridayThe13th] ";
-    public static final String pluginURL = "";
+    public static final String pluginURL = "f13mc.com";
     public static String serverVersion = "";
     public static FridayThe13th instance;
 
@@ -74,7 +73,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         try {
             serverVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
         } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
-            //Unknown server version - will lead to NMS not working
+            log.log(Level.SEVERE, consolePrefix + language.get(Bukkit.getConsoleSender(), "console.error.unknownServerVersion", "Unknown Bukkit/Spigot version - disabling NMS."));
         }
 
         //Initialize Game Components
@@ -203,5 +202,15 @@ public class FridayThe13th extends JavaPlugin implements Listener
     {
         Calendar today = Calendar.getInstance();
         return (today.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && today.get(Calendar.DAY_OF_MONTH) == 13);
+    }
+
+    /**
+     * Returns if it is currently December
+     * @return
+     */
+    public static boolean isItDecember()
+    {
+        Calendar today = Calendar.getInstance();
+        return (today.get(Calendar.MONTH) == 12);
     }
 }
