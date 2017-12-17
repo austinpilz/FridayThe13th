@@ -2,6 +2,8 @@ package com.AustinPilz.FridayThe13th.Components.Menu;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
+import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
+import com.AustinPilz.FridayThe13th.Components.Skin.SkullPreview;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
@@ -10,7 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
@@ -57,13 +58,10 @@ public class SpectateMenu {
      * @param player
      */
     public static void addMenuOpenItem(Player player) {
-        ItemStack item = new ItemStack(Material.SKULL_ITEM, 1);
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(player, "game.title.spectateMenu", "Select Player to Spectate"));
+
         List<String> menuItemLore = new ArrayList<String>();
         menuItemLore.add(HiddenStringsUtil.encodeString("{\"Menu\": \"Spectate\"}"));
-        itemMeta.setLore(menuItemLore);
-        item.setItemMeta(itemMeta);
+        ItemStack item = new SkullPreview(CounselorProfile.getRandomCounselorProfile().getSkin(), ChatColor.GREEN + FridayThe13th.language.get(player, "game.title.spectateMenu", "Select Player to Spectate"), menuItemLore);
         player.getInventory().setItem(0, item);
     }
 }

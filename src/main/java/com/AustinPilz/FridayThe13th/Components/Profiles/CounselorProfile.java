@@ -5,6 +5,8 @@ import com.AustinPilz.FridayThe13th.Components.Level.CounselorTraitLevel;
 import com.AustinPilz.FridayThe13th.Components.Level.F13PlayerLevel;
 import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 
+import java.util.Random;
+
 public enum CounselorProfile {
 
     Adam("Adam Palomino", "C-Adam", "Adam", F13Skin.Counselor_Adam, F13PlayerLevel.L5, 1, CounselorTraitLevel.Composure_8, CounselorTraitLevel.Luck_3, CounselorTraitLevel.Intelligence_4, CounselorTraitLevel.Speed_5, CounselorTraitLevel.Stamina_4, CounselorTraitLevel.Stealth_3, CounselorTraitLevel.Strength_8, F13SoundEffect.GuyGasp),
@@ -134,5 +136,15 @@ public enum CounselorProfile {
 
     public F13SoundEffect getGaspSoundEffect() {
         return gaspSoundEffect;
+    }
+
+    /**
+     * Returns a random counselor profile from the available list
+     *
+     * @return Counselor profile
+     */
+    public static CounselorProfile getRandomCounselorProfile() {
+        Random random = new Random();
+        return values()[random.nextInt(values().length)];
     }
 }
