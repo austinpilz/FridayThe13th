@@ -36,7 +36,7 @@ public class CommandHandler implements CommandExecutor {
 
         if (args.length < 1) {
             //f13
-            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.pluginName + " version " + ChatColor.GREEN + FridayThe13th.pluginVersion);
+            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.pluginName + " version " + ChatColor.GREEN + FridayThe13th.pluginVersion + ChatColor.WHITE + " by austinpilz. f13mc.com");
             sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Type " + ChatColor.AQUA + "/F13 help " + ChatColor.GREEN + "for help.");
         } else {
             if (args[0].equalsIgnoreCase("setup")) {
