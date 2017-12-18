@@ -34,17 +34,15 @@ public class ArenaPhone
         //Values
         callAttempts = 0;
         callAttemptsRequired = 75;
-
     }
 
     /**
      * Create's the phone hologram
      */
-    public void createHologram()
+    private void createHologram()
     {
         hologram = HologramsAPI.createHologram(FridayThe13th.instance, location.getBlock().getRelative(BlockFace.UP).getLocation());
         hologram.appendTextLine(ChatColor.WHITE + "Call Tommy");
-        //hologram.getVisibilityManager().hideTo(arena.getGameManager().getPlayerManager().getJason().getPlayer());
     }
 
     /**
@@ -63,15 +61,6 @@ public class ArenaPhone
     public Location getLocation()
     {
         return location;
-    }
-
-    /**
-     * Returns the percentage of repair progress
-     * @return
-     */
-    private double getCallProgressPercent()
-    {
-        return callAttempts/callAttemptsRequired;
     }
 
     /**
@@ -126,6 +115,7 @@ public class ArenaPhone
      */
     public void showPhone()
     {
+        //Display the hologram floating above it
         createHologram();
 
         //Reset values

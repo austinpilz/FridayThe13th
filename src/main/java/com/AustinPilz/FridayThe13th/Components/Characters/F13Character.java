@@ -20,8 +20,9 @@ public class F13Character {
     protected boolean originalAllowFly;
 
     public F13Character(Player player, Arena arena) {
-        //
+        this.player = player;
         this.f13Player = FridayThe13th.playerController.getPlayer(player);
+        this.arena = arena;
 
         //Restore Values
         originalWalkSpeed = player.getWalkSpeed();

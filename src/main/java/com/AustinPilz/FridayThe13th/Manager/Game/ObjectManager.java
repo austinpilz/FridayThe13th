@@ -401,6 +401,15 @@ public class ObjectManager
         }
     }
 
+    private void showAllPhones() {
+        Iterator it = phones.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            ArenaPhone phone = (ArenaPhone) entry.getValue();
+            phone.showPhone();
+        }
+    }
+
     /**
      * Activates one random phone in the arena
      */
