@@ -49,15 +49,15 @@ public class F13Character {
         return arena;
     }
 
-    public float getOriginalWalkSpeed() {
+    private float getOriginalWalkSpeed() {
         return originalWalkSpeed;
     }
 
-    public float getOriginalFlySpeed() {
+    private float getOriginalFlySpeed() {
         return originalFlySpeed;
     }
 
-    public boolean isOriginalAllowFly() {
+    private boolean isOriginallyAllowedFly() {
         return originalAllowFly;
     }
 
@@ -66,9 +66,9 @@ public class F13Character {
      */
     public void restoreOriginalSpeeds() {
         if (player.isOnline()) {
-            player.setFlySpeed(originalFlySpeed);
-            player.setWalkSpeed(originalWalkSpeed);
-            player.setAllowFlight(originalAllowFly);
+            player.setFlySpeed(getOriginalFlySpeed());
+            player.setWalkSpeed(getOriginalWalkSpeed());
+            player.setAllowFlight(isOriginallyAllowedFly());
         }
     }
 

@@ -53,7 +53,6 @@ public class F13Player {
         purchasedJasonProfiles = new HashSet<>();
         purchasedPerks = new HashSet<>();
 
-
         //Spawn Preferences
         spawnPreferenceJason = false;
         spawnPreferenceCounselor = false;

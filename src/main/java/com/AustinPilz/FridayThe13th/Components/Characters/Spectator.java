@@ -19,7 +19,7 @@ public class Spectator extends F13Character {
     }
 
     /**
-     * Enters the counselor into spectating mode
+     * Puts the player into spectate mode
      */
     public void enterSpectatingMode()
     {
@@ -64,7 +64,7 @@ public class Spectator extends F13Character {
     }
 
     /**
-     * Removes the counselor from spectating mode
+     * Removes the player from spectating mode
      */
     public void leaveSpectatingMode()
     {

@@ -21,7 +21,7 @@ public enum JasonProfile {
     Retro("Retro", "J-Retro", 11, F13PlayerLevel.L20, F13Skin.Jason_Retro, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RetroChase, false),
     Savini("Savini", "J-Savini", 12, F13PlayerLevel.L20, F13Skin.Jason_Savini, 1, StalkLevel.Five, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase, false),
     Pamela_Voorhees("Pamela Voorhees", "J-Pamela", 13, F13PlayerLevel.L10, F13Skin.Pamela_Voorhees, 2, StalkLevel.Five, SenseLevel.Five, WarpLevel.One, F13SoundEffect.RegularChase, true),
-
+    Christmas("Christmas Edition", "J-XMAS", 8, F13PlayerLevel.L15, F13Skin.Jason_Christmas, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase, true),
     ;
 
     private String displayName;

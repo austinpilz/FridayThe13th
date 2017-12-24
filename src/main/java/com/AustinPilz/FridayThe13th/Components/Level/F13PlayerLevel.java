@@ -22,7 +22,7 @@ public enum F13PlayerLevel {
     L17(17, 210501, 232500, ChatColor.DARK_RED),
     L18(18, 232501, 255500, ChatColor.DARK_RED),
     L19(19, 255501, 279500, ChatColor.DARK_RED),
-    L20(20, 279501, 304500, ChatColor.RED);
+    L20(20, 279501, 999999, ChatColor.RED);
 
     private final int levelNumber;
     private final int minXP;
