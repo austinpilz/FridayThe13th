@@ -507,7 +507,6 @@ public class Counselor extends F13Character
     {
         getPlayer().removePotionEffect(PotionEffectType.BLINDNESS); //Scared
         getPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
-        getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
         getPlayer().removePotionEffect(PotionEffectType.GLOWING);
         getPlayer().closeInventory(); //Close the spectate inventory if they happen to have it open
     }

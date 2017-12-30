@@ -23,18 +23,17 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ObjectManager
 {
     private Arena arena;
+    private WindowManager windowManager;
+    private PhoneManager phoneManager;
+
     private HashSet<ArenaChest> weaponChests;
     private HashSet<ArenaChest> itemChests;
-    private HashMap<Block, ArenaPhone> phones;
 
-    //Globals
-    private HashSet<BlockFace> windowBlockFaces;
 
     //Per Game Objects
     private HashMap<Block, ArenaDoor> doors;
     private HashSet<Block> brokenDoors;
     private HashMap<Block, ArenaSwitch> brokenSwitches;
-    private HashSet<Block> brokenWindows;
     private HashMap<Block, Trap> traps;
     private HashSet<Corpses.CorpseData> corpses;
 
@@ -45,21 +44,21 @@ public class ObjectManager
     public ObjectManager(Arena arena)
     {
         this.arena = arena;
+        this.windowManager = new WindowManager(arena);
+        this.phoneManager = new PhoneManager(arena);
+
+
+
         this.itemChests = new HashSet<>();
         this.weaponChests = new HashSet<>();
-        this.phones = new HashMap<>();
+
 
         //Per Game Objects
         doors = new HashMap<>();
         brokenDoors = new HashSet<>();
         brokenSwitches = new HashMap<>();
-        brokenWindows = new HashSet<>();
         traps = new HashMap<>();
         corpses = new HashSet<>();
-
-        //Globals
-        windowBlockFaces = new HashSet<>();
-        generateWindowBlockFaces();
     }
 
     /**
@@ -71,19 +70,6 @@ public class ObjectManager
         return this.arena;
     }
 
-    /**
-     * Populates internal list of block faces to check for broken windows
-     */
-    private void generateWindowBlockFaces()
-    {
-        windowBlockFaces.add(BlockFace.UP);
-        windowBlockFaces.add(BlockFace.DOWN);
-        windowBlockFaces.add(BlockFace.NORTH);
-        windowBlockFaces.add(BlockFace.SOUTH);
-        windowBlockFaces.add(BlockFace.EAST);
-        windowBlockFaces.add(BlockFace.WEST);
-        windowBlockFaces.add(BlockFace.SELF);
-    }
 
     /**
      * Restores all per game objects back to their default state
@@ -100,11 +86,10 @@ public class ObjectManager
         brokenSwitches.clear();
 
         //Phones
-        hideAllPhones();
+        getPhoneManager().hideAllPhones();
 
         //Restore windows
-        fixBrokenWindows();
-        brokenWindows.clear();
+        getWindowManager().fixBrokenWindows();
 
         //Restore traps
         removeTraps();
@@ -119,30 +104,19 @@ public class ObjectManager
     }
 
     /**
-     * Adds phone
-     * @param phone
+     * Returns the window manager
+     * @return Window Manager
      */
-    public void addPhone(ArenaPhone phone)
-    {
-        phones.put(phone.getLocation().getBlock(), phone);
+    public WindowManager getWindowManager() {
+        return windowManager;
     }
 
     /**
-     * Removes phone
-     * @param phone
+     * Returns the phone manager
+     * @return Phone Manager
      */
-    public void removePhone(ArenaPhone phone)
-    {
-        phones.remove(phone.getLocation().getBlock());
-    }
-
-    /**
-     * Returns all phones
-     * @return
-     */
-    public HashMap<Block, ArenaPhone> getPhones()
-    {
-        return phones;
+    public PhoneManager getPhoneManager() {
+        return phoneManager;
     }
 
 
@@ -190,21 +164,6 @@ public class ObjectManager
         return weaponChests.size();
     }
 
-    /**
-     * Randomly regenerates chests
-     */
-    private void regenerateChests()
-    {
-        for (ArenaChest chest: weaponChests)
-        {
-            chest.randomlyFill();
-        }
-
-        for (ArenaChest chest: itemChests)
-        {
-            chest.randomlyFill();
-        }
-    }
 
     /**
      * Empties all chests
@@ -227,17 +186,13 @@ public class ObjectManager
      * @param location
      * @return
      */
-    public boolean isChest(Location location)
+    public boolean isLocationAChest(Location location)
     {
-        for (ArenaChest chest: weaponChests)
-        {
-            if (chest.getLocation().equals(location))
-            {
-                return true;
-            }
-        }
+        ArrayList<ArenaChest> chests = new ArrayList<>();
+        chests.addAll(weaponChests);
+        chests.addAll(itemChests);
 
-        for (ArenaChest chest: itemChests)
+        for (ArenaChest chest : chests)
         {
             if (chest.getLocation().equals(location))
             {
@@ -255,15 +210,11 @@ public class ObjectManager
      */
     public ArenaChest getChest(Location location)
     {
-        for (ArenaChest chest: weaponChests)
-        {
-            if (chest.getLocation().equals(location))
-            {
-                return chest;
-            }
-        }
+        ArrayList<ArenaChest> chests = new ArrayList<>();
+        chests.addAll(weaponChests);
+        chests.addAll(itemChests);
 
-        for (ArenaChest chest: itemChests)
+        for (ArenaChest chest : chests)
         {
             if (chest.getLocation().equals(location))
             {
@@ -279,7 +230,6 @@ public class ObjectManager
      */
     protected void placeRadios()
     {
-        //Teleport counselors to starting points
         ArenaChest[] chests = itemChests.toArray(new ArenaChest[itemChests.size()]);
 
         //Randomize starting points
@@ -313,7 +263,7 @@ public class ObjectManager
     }
 
     /**
-     * Returns all switches that are "broken" off
+     * Returns arena door
      * @return
      */
 
@@ -336,9 +286,10 @@ public class ObjectManager
      */
     private void fixBrokenDoors()
     {
+        int offset = 0;
         for (Block block: brokenDoors)
         {
-            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaDoorAction(block, block.getRelative(BlockFace.DOWN), false), 1);
+            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaDoorAction(block, block.getRelative(BlockFace.DOWN), false), 1 + offset++);
         }
     }
 
@@ -359,14 +310,7 @@ public class ObjectManager
         BlockState state = block.getState();
         Lever lever = (Lever)state.getData();
 
-        if (lever.isPowered())
-        {
-            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, false), 1);
-        }
-        else
-        {
-            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, true), 1);
-        }
+        Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, !lever.isPowered()), 2);
 
         //Add to hash set
         brokenSwitches.put(block, new ArenaSwitch(block, arena));
@@ -387,84 +331,9 @@ public class ObjectManager
         }
     }
 
-    /**
-     * Hides all phones
-     */
-    private void hideAllPhones()
-    {
-        Iterator it = phones.entrySet().iterator();
-        while (it.hasNext())
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            ArenaPhone phone = (ArenaPhone) entry.getValue();
-            phone.hidePhone();
-        }
-    }
 
-    private void showAllPhones() {
-        Iterator it = phones.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            ArenaPhone phone = (ArenaPhone) entry.getValue();
-            phone.showPhone();
-        }
-    }
 
-    /**
-     * Activates one random phone in the arena
-     */
-    public void displayRandomPhone()
-    {
-        if (phones.size() > 0)
-        {
-            ArenaPhone[] pl = phones.values().toArray(new ArenaPhone[phones.size()]);
 
-            //Randomize starting points
-            Random rnd = ThreadLocalRandom.current();
-            for (int i = pl.length - 1; i > 0; i--) {
-                int index = rnd.nextInt(i + 1);
-
-                // Simple swap
-                ArenaPhone a = pl[index];
-                pl[index] = pl[i];
-                pl[i] = a;
-            }
-
-            pl[0].showPhone();
-        }
-
-    }
-
-    /**
-     * Breaks window
-     * @param block
-     */
-    public void breakWindow(Block block)
-    {
-        //Break the window
-        brokenWindows.add(block);
-        block.setType(Material.IRON_FENCE);
-
-        //Check to see if it's attached to any other glass panes, break them too
-        for (BlockFace blockface : windowBlockFaces)
-        {
-            if (block.getRelative(blockface).getType().equals(Material.THIN_GLASS))
-            {
-                breakWindow(block.getRelative(blockface));
-            }
-        }
-    }
-
-    /**
-     * Repairs all broken windows
-     */
-    private void fixBrokenWindows()
-    {
-        for (Block b : brokenWindows)
-        {
-            b.setType(Material.THIN_GLASS);
-        }
-    }
 
     public HashMap<Block, Trap> getTraps() {
         return traps;

@@ -19,6 +19,7 @@ public class CounselorXPManager {
     private boolean statsJasonKilled = false;
     private boolean statsCalledTommy = false;
     private boolean statsDoorClosed = false;
+    private boolean statsCalledPolice = false;
 
     public CounselorXPManager(Counselor c, Arena a) {
         counselor = c;
@@ -68,8 +69,15 @@ public class CounselorXPManager {
      */
     public void addTommyCalled() {
         statsCalledTommy = true;
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.setTommyCalled", "Tommy Jarvis Called: +{0}xp", XPAward.Counselor_TommyCalled.getXPAward()), 60);
+    }
 
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.tommyCalled", "Tommy Jarvis Called: +{0}xp", XPAward.Counselor_TommyCalled.getXPAward()), 60);
+    /**
+     * Registers that the counselor called the police
+     */
+    public void addPoliceCalled() {
+        statsCalledPolice = true;
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.setPoliceCalled", "Police Called: +{0}xp", XPAward.Counselor_PoliceCalled.getXPAward()), 60);
     }
 
     /**
@@ -115,6 +123,11 @@ public class CounselorXPManager {
         //Calculate Tommy Jarvis called
         if (statsCalledTommy) {
             xp += XPAward.Counselor_TommyCalled.getXPAward();
+        }
+
+        //Calculate Tommy Jarvis called
+        if (statsCalledPolice) {
+            xp += XPAward.Counselor_PoliceCalled.getXPAward();
         }
 
         if (statsJasonKilled) {

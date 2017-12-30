@@ -28,8 +28,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
-public class PlayerManager
-{
+public class PlayerManager {
     private Arena arena;
 
     //Game Players
@@ -45,8 +44,7 @@ public class PlayerManager
     /**
      * @param arena Game
      */
-    public PlayerManager(Arena arena)
-    {
+    public PlayerManager(Arena arena) {
         this.arena = arena;
         this.players = new HashMap<>();
         this.counselors = new HashMap<>();
@@ -58,8 +56,7 @@ public class PlayerManager
     /**
      * Resets lists of alive and dead players
      */
-    public void resetPlayerStorage()
-    {
+    public void resetPlayerStorage() {
         players.clear();
         counselors.clear();
         alivePlayers.clear();
@@ -69,68 +66,77 @@ public class PlayerManager
 
     /**
      * Returns the number of players in the game
+     *
      * @return
      */
-    public int getNumPlayers()
-    {
+    public int getNumPlayers() {
         return players.size();
     }
 
     /**
      * Returns hash map of current players
+     *
      * @return
      */
-    public HashMap<String, Player> getPlayers()
-    {
+    public HashMap<String, Player> getPlayers() {
         return players;
     }
 
     /**
      * Returns hash map of current counselors
+     *
      * @return
      */
-    public HashMap<String, Counselor> getCounselors() { return counselors; }
+    public HashMap<String, Counselor> getCounselors() {
+        return counselors;
+    }
 
     /**
      * Returns living players
+     *
      * @return
      */
-    public HashMap<String, Player> getAlivePlayers()
-    {
+    public HashMap<String, Player> getAlivePlayers() {
         return alivePlayers;
     }
 
     /**
      * Returns dead players
+     *
      * @return
      */
-    public HashSet<String> getDeadPlayers()
-    {
+    public HashSet<String> getDeadPlayers() {
         return deadPlayers;
     }
 
     /**
      * Returns spectators
+     *
      * @return
      */
-    public HashMap<String, Spectator> getSpectators() { return spectators; }
+    public HashMap<String, Spectator> getSpectators() {
+        return spectators;
+    }
 
     /**
      * Returns existing spectator object for supplied player UUID
+     *
      * @param uuid
      * @return
      */
-    public Spectator getSpectator(String uuid)
-    {
+    public Spectator getSpectator(String uuid) {
         return spectators.get(uuid);
     }
 
     /**
      * Returns existing spectator object for supplied player object
+     *
      * @param player
      * @return
      */
-    public Spectator getSpectator(Player player) { return spectators.get(player.getUniqueId().toString()); }
+    public Spectator getSpectator(Player player) {
+        return spectators.get(player.getUniqueId().toString());
+    }
 
     /**
      * Returns the number of spectators
@@ -143,207 +149,187 @@ public class PlayerManager
 
     /**
      * Returns if the player with supplied uuid is a spectator
+     *
      * @param uuid
      * @return
      */
-    public boolean isSpectator(String uuid)
-    {
+    public boolean isSpectator(String uuid) {
         return spectators.containsKey(uuid);
     }
 
     /**
      * Returns if the player object is a spectator
+     *
      * @param player
      * @return
      */
-    public boolean isSpectator(Player player) { return isSpectator(player.getUniqueId().toString()); }
+    public boolean isSpectator(Player player) {
+        return isSpectator(player.getUniqueId().toString());
+    }
 
     /**
      * Returns if the player is just a spectator and not counselor/jason
+     *
      * @param uuid
      * @return
      */
-    public boolean isJustSpectator(String uuid)
-    {
-        if (isSpectator(uuid))
-        {
+    public boolean isJustSpectator(String uuid) {
+        if (isSpectator(uuid)) {
             Spectator spectator = getSpectator(uuid);
             return !(isCounselor(spectator.getPlayer()) || isJason(spectator.getPlayer()));
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
     /**
      * Adds a spectator to the HashMap
+     *
      * @param spectator
      */
-    private void addSpectator(Spectator spectator)
-    {
+    private void addSpectator(Spectator spectator) {
         spectators.put(spectator.getPlayer().getUniqueId().toString(), spectator);
     }
 
     /**
      * Removes a spectator from the HashMap
+     *
      * @param uuid
      */
-    private void removeSpectator(String uuid)
-    {
+    private void removeSpectator(String uuid) {
         spectators.remove(uuid);
     }
 
     /**
      * Returns the number of players that are alive
+     *
      * @return
      */
-    public int getNumPlayersAlive()
-    {
+    public int getNumPlayersAlive() {
         return alivePlayers.size();
     }
 
     /**
      * Returns the number of players that are dead
+     *
      * @return
      */
-    public int getNumPlayersDead()
-    {
+    public int getNumPlayersDead() {
         return deadPlayers.size();
     }
 
     /**
      * Returns the number of counselors
+     *
      * @return
      */
-    public int getNumCounselors()
-    {
+    public int getNumCounselors() {
         return counselors.size();
     }
+
     /**
      * Returns if the supplied player is a counselor
+     *
      * @param player
      * @return
      */
-    public boolean isCounselor(Player player)
-    {
+    public boolean isCounselor(Player player) {
         return counselors.containsKey(player.getUniqueId().toString());
     }
 
     /**
      * Returns if the supplied payer is jason
+     *
      * @param player
      * @return
      */
-    public boolean isJason(Player player)
-    {
+    public boolean isJason(Player player) {
         return jason != null && jason.getPlayer().equals(player);
     }
 
     /**
      * Returns if the player is in the alive players hash map
+     *
      * @param player
      * @return
      */
-    public boolean isAlive(Player player)
-    {
+    public boolean isAlive(Player player) {
         return alivePlayers.containsKey(player.getUniqueId().toString());
     }
 
     /**
      * Returns the counselor object for the player
+     *
      * @param player
      * @return
      */
-    public Counselor getCounselor (Player player)
-    {
+    public Counselor getCounselor(Player player) {
         return counselors.get(player.getUniqueId().toString());
     }
 
     /**
      * Returns the jason object
+     *
      * @return
      */
 
-    public Jason getJason () { return jason; }
+    public Jason getJason() {
+        return jason;
+    }
+
     /**
      * Returns the counselor object for the player
+     *
      * @param playerUUID
      * @return
      */
-    public Counselor getCounselor (String playerUUID)
-    {
+    public Counselor getCounselor(String playerUUID) {
         return counselors.get(playerUUID);
     }
 
     /**
      * Adds player to the player hash map
+     *
      * @param p
      */
-    private void addPlayer(Player p)
-    {
+    private void addPlayer(Player p) {
         players.put(p.getUniqueId().toString(), p);
     }
 
     /**
      * Removes player from the player hash map
+     *
      * @param playerUUID
      */
-    private void removePlayer(String playerUUID)
-    {
+    private void removePlayer(String playerUUID) {
         players.remove(playerUUID);
     }
 
     /**
      * Calculates if there is room for the player to join the game
+     *
      * @return
      */
-    public boolean isRoomForPlayerToJoin()
-    {
+    public boolean isRoomForPlayerToJoin() {
         //Determine if we have enough spawn points for the game's 8 counselors
-        if (arena.getLocationManager().getNumberStartingPoints() >= 8)
-        {
+        if (arena.getLocationManager().getNumberStartingPoints() >= 8) {
             //We don't have to worry about spawn points
             //Games capped at 8 counselors + Jason.
             return getNumPlayers() < 9;
-        }
-        else
-        {
+        } else {
             //They're are less than 8 spawn points for counselors
             return arena.getLocationManager().getNumberStartingPoints() - getNumPlayers() + 1 > 0;
         }
     }
 
-    /**
-     * Returns the max number of players in the arena
-     * @return
-     */
-    private int getMaxNumberOfPlayers()
-    {
-        if (arena.getLocationManager().getNumberStartingPoints() >= 8)
-        {
-            //We don't have to worry about spawn points
-            //Games capped at 8 counselors + Jason.
-            return 9;
-        }
-        else
-        {
-            //They're are less than 8 spawn points for counselors
-            return arena.getLocationManager().getNumberStartingPoints();
-        }
-    }
-
-
-   /* Display */
+    /* Display */
 
     /**
      * Resets the action bars of all players to nothing
      */
-    public void resetPlayerActionBars()
-    {
+    public void resetPlayerActionBars() {
         Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Player player = (Player) entry.getValue();
             ActionBarAPI.sendActionBar(player, "");
@@ -353,11 +339,9 @@ public class PlayerManager
     /**
      * Displays the waiting countdown for all players
      */
-    public void displayWaitingCountdown()
-    {
+    public void displayWaitingCountdown() {
         Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Player player = (Player) entry.getValue();
             arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player);
@@ -367,8 +351,7 @@ public class PlayerManager
     /**
      * Hides the waiting countdown from all players
      */
-    public void hideWaitingCountdown()
-    {
+    public void hideWaitingCountdown() {
         arena.getGameManager().getWaitingCountdownDisplayManager().hideFromAllPlayers();
     }
 
@@ -377,13 +360,12 @@ public class PlayerManager
 
     /**
      * Adds player to the game, if room is available
+     *
      * @param player
      * @throws GameFullException
      */
-    public synchronized void playerJoinGame(Player player) throws GameFullException, GameInProgressException
-    {
-        if (true)
-        {
+    public synchronized void playerJoinGame(Player player) throws GameFullException, GameInProgressException {
+        if (true) {
             //All is well with the resource pack, they can join
             if (arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) {
                 //Determine if there's room for this user
@@ -399,10 +381,9 @@ public class PlayerManager
 
                         //Announce arrival
                         int playerNumber = players.size();
-                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()) + " (" + playerNumber + "/" + getMaxNumberOfPlayers()+")");
+                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()) + " (" + playerNumber + "/" + arena.getMaxNumberOfPlayers() + ")");
 
-                        if (players.size() == 1)
-                        {
+                        if (players.size() == 1) {
                             arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
                         }
 
@@ -413,14 +394,10 @@ public class PlayerManager
                 } else {
                     throw new GameFullException();
                 }
-            }
-            else
-            {
+            } else {
                 throw new GameInProgressException();
             }
-        }
-        else
-        {
+        } else {
             //They don't have the resource pack, so let's request it
             ResourcePackRequest request = new ResourcePackRequest("f13", player, "https://s3.amazonaws.com/fridaythe13th/F13.zip", FridayThe13th.pluginPrefix + "Resource pack success! Please join the game again", FridayThe13th.pluginPrefix + "Error! You MUST have the resource pack in order to play. You'll need to re-enable server resource packs on this server by returning to your server selection screen, hitting edit and enabling them. Then completely quit and restart your Minecraft client.", false);
             ResourcePackAPI.playerController.getPlayer(player).newResourcePackRequest(request);
@@ -430,14 +407,14 @@ public class PlayerManager
 
     /**
      * Performs actions when a player logs off of server
+     *
      * @param playerUUID
      */
-    public void onPlayerLogout(String playerUUID)
-    {
+    public void onPlayerLogout(String playerUUID) {
         //Hurry and see if we can teleport them out and clear inventory
         Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
         player.teleport(arena.getReturnLocation());
-        player.getInventory().clear(); 
+        player.getInventory().clear();
 
         if (!isJustSpectator(playerUUID)) {
             //Cleanup
@@ -474,17 +451,15 @@ public class PlayerManager
 
     /**
      * Performs actions when a player quits the game via command
+     *
      * @param player
      */
-    public void onplayerQuit(Player player)
-    {
-        if (!isJustSpectator(player.getUniqueId().toString()))
-        {
+    public void onplayerQuit(Player player) {
+        if (!isJustSpectator(player.getUniqueId().toString())) {
             //Clean up
             performPlayerCleanupActions(player.getUniqueId().toString());
 
-            if (arena.getGameManager().isGameInProgress())
-            {
+            if (arena.getGameManager().isGameInProgress()) {
 
                 if (isJason(player)) {
                     //Jason quit off, so end the game
@@ -497,20 +472,15 @@ public class PlayerManager
                         arena.getGameManager().endGame();
                     }
                 }
-            }
-            else
-            {
-                if (players.size() == 0)
-                {
+            } else {
+                if (players.size() == 0) {
                     arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
                 }
             }
 
             //Message everyone in game
             sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitBroadcast", "{0} has left the game.", player.getName()));
-        }
-        else
-        {
+        } else {
             //They're just a spectator leaving spectate mode
             leaveSpectator(player);
         }
@@ -518,10 +488,10 @@ public class PlayerManager
 
     /**
      * Performs actions when a player dies in game
+     *
      * @param player
      */
-    public void onPlayerDeath(Player player)
-    {
+    public void onPlayerDeath(Player player) {
         if (arena.getGameManager().isGameInProgress()) {
             //Transition from alive to dead hash set
             alivePlayers.remove(player.getUniqueId().toString());
@@ -560,33 +530,29 @@ public class PlayerManager
 
     /**
      * Adds the player as a spectator and performs all actions to put them into the game
+     *
      * @param player
      */
-    public void becomeSpectator(Player player)
-    {
+    public void becomeSpectator(Player player) {
         addSpectator(new Spectator(player, arena));
         getSpectator(player).enterSpectatingMode();
 
-        try
-        {
+        try {
             FridayThe13th.arenaController.addPlayer(player.getUniqueId().toString(), arena);
             addPlayer(player);
-        }
-        catch (PlayerAlreadyPlayingException exception)
-        {
+        } catch (PlayerAlreadyPlayingException exception) {
             //Don't need to do anything
         }
     }
 
     /**
      * Removes the player as a spectator and performs all actions to remove them from the game
+     *
      * @param player
      */
-    public void leaveSpectator(Player player)
-    {
+    public void leaveSpectator(Player player) {
         //Need to remove from player lists if they're just a spectator
-        if (isJustSpectator(player.getUniqueId().toString()))
-        {
+        if (isJustSpectator(player.getUniqueId().toString())) {
             FridayThe13th.arenaController.removePlayer(player.getUniqueId().toString());
             removePlayer(player.getUniqueId().toString());
         }
@@ -595,18 +561,15 @@ public class PlayerManager
         removeSpectator(player.getUniqueId().toString());
 
         //Teleport them out if they're not a counselor
-        if (!isCounselor(player))
-        {
-            if (Bukkit.getOfflinePlayer(player.getUniqueId()).isOnline())
-            {
+        if (!isCounselor(player)) {
+            if (Bukkit.getOfflinePlayer(player.getUniqueId()).isOnline()) {
                 player.teleport(arena.getReturnLocation());
             }
         }
 
     }
 
-    public void leaveSpectator(String uuid)
-    {
+    public void leaveSpectator(String uuid) {
         leaveSpectator(getSpectator(uuid).getPlayer());
     }
 
@@ -615,10 +578,10 @@ public class PlayerManager
 
     /**
      * Performs waiting actions for specific player
+     *
      * @param player
      */
-    private void performWaitingActions(Player player)
-    {
+    private void performWaitingActions(Player player) {
         //Teleport player to waiting location
         teleportPlayerToWaitingPoint(player);
 
@@ -645,8 +608,7 @@ public class PlayerManager
     /**
      * Transitions and prepares all players to play the game
      */
-    protected void performInProgressActions()
-    {
+    protected void performInProgressActions() {
         FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Game in " + arena.getArenaName() + " beginning...");
 
         //Assign roles and teleport players there
@@ -662,17 +624,14 @@ public class PlayerManager
         }
 
 
-
         //Display player bars
         Iterator it = getCounselors().entrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
 
             counselor.prepareForGameplay();
         }
-
 
 
         //Jason stuff
@@ -688,16 +647,14 @@ public class PlayerManager
     /**
      * Assigns all players a role (counselor or jason)
      */
-    private void assignGameRoles()
-    {
+    private void assignGameRoles() {
 
         //Populate role preference data
         List<Player> preferJason = new ArrayList<>();
         List<Player> preferCounselor = new ArrayList<>();
         List<Player> noPreference = new ArrayList<>();
 
-        for (Player player : players.values())
-        {
+        for (Player player : players.values()) {
             F13Player f13p = FridayThe13th.playerController.getPlayer(player);
             if (f13p.isSpawnPreferenceJason()) {
                 preferJason.add(player);
@@ -777,8 +734,7 @@ public class PlayerManager
     /**
      * Assigns and teleports players and jason to their spawn locations
      */
-    private void assignSpawnLocations()
-    {
+    private void assignSpawnLocations() {
         //Teleport jason to jason start point
         jason.getPlayer().teleport(arena.getJasonStartLocation());
 
@@ -787,8 +743,7 @@ public class PlayerManager
 
         //Randomize starting points
         Random rnd = ThreadLocalRandom.current();
-        for (int i = counselorLocations.length - 1; i > 0; i--)
-        {
+        for (int i = counselorLocations.length - 1; i > 0; i--) {
             int index = rnd.nextInt(i + 1);
 
             // Simple swap
@@ -800,8 +755,7 @@ public class PlayerManager
         //Assign the spots
         Iterator it = getCounselors().entrySet().iterator();
         int i = 0;
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
             counselor.getPlayer().teleport(counselorLocations[i++]);
@@ -811,8 +765,7 @@ public class PlayerManager
     /**
      * Transtions players from the game once it ends
      */
-    protected void performEndGameActions()
-    {
+    protected void performEndGameActions() {
         //Game ended
         sendMessageToAllPlayers(ChatColor.RED + "Game over! " + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
 
@@ -838,8 +791,7 @@ public class PlayerManager
 
         //Clean everyone up
         Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Player player = (Player) entry.getValue();
             it.remove();
@@ -849,10 +801,10 @@ public class PlayerManager
 
     /**
      * Cleans up a player and restores them to pre-game status
+     *
      * @param playerUUID
      */
-    private void performPlayerCleanupActions(String playerUUID)
-    {
+    private void performPlayerCleanupActions(String playerUUID) {
         //Get offline player to be able to account for both online and offline players
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
 
@@ -862,11 +814,9 @@ public class PlayerManager
         alivePlayers.remove(playerUUID);
         deadPlayers.remove(playerUUID);
 
-        if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty())
-        {
+        if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty()) {
             //Waiting mode, so just teleport them out
-            if (offlinePlayer.isOnline())
-            {
+            if (offlinePlayer.isOnline()) {
                 //Teleport them to the return point
                 Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
 
@@ -878,16 +828,12 @@ public class PlayerManager
                 //Stop all music
                 PlayerSoundAPI.getPlayerSoundManager(player).stopAllSounds();
             }
-        }
-        else
-        {
-            if (isSpectator(playerUUID))
-            {
+        } else {
+            if (isSpectator(playerUUID)) {
                 leaveSpectator(playerUUID);
             }
 
-            if (isCounselor((Player)offlinePlayer))
-            {
+            if (isCounselor((Player) offlinePlayer)) {
                 Counselor counselor = getCounselor(playerUUID);
 
                 //Cancel scheduled tasks
@@ -905,9 +851,7 @@ public class PlayerManager
 
                 //Remove from counselors
                 counselors.remove(playerUUID);
-            }
-            else if (isJason((Player)offlinePlayer))
-            {
+            } else if (isJason((Player) offlinePlayer)) {
                 //Stop tasks
                 jason.cancelTasks();
 
@@ -923,8 +867,7 @@ public class PlayerManager
             }
 
             //Actions done only if they're online
-            if (offlinePlayer.isOnline())
-            {
+            if (offlinePlayer.isOnline()) {
                 Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
 
                 //Hide game-wide scoreboard
@@ -956,19 +899,19 @@ public class PlayerManager
 
     /**
      * Teleports the player to the arena's return point
+     *
      * @param player
      */
-    private void teleportPlayerToReturnPoint(Player player)
-    {
+    private void teleportPlayerToReturnPoint(Player player) {
         player.teleport(arena.getReturnLocation());
     }
 
     /**
      * Teleports the player to the arena's waiting point
+     *
      * @param player
      */
-    private void teleportPlayerToWaitingPoint(Player player)
-    {
+    private void teleportPlayerToWaitingPoint(Player player) {
         player.teleport(arena.getWaitingLocation());
     }
 
@@ -977,13 +920,12 @@ public class PlayerManager
 
     /**
      * Performs jason sense ability actions to applicable counselors
+     *
      * @param value
      */
-    public void jasonSensing(boolean value)
-    {
+    public void jasonSensing(boolean value) {
         Iterator it = getCounselors().entrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
             counselor.setSenseMode(value);
@@ -993,13 +935,10 @@ public class PlayerManager
     /**
      * Selects a random spectating counselor to be Tommy Jarvis
      */
-    public void spawnTommyJarvis()
-    {
+    public void spawnTommyJarvis() {
         //set players stamina higher and max fear higher
-        if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned())
-        {
-            if (getNumPlayersDead() > 0)
-            {
+        if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned()) {
+            if (getNumPlayersDead() > 0) {
                 //Select a random dead player
                 String[] pl = getDeadPlayers().toArray(new String[getDeadPlayers().size()]);
 
@@ -1017,8 +956,7 @@ public class PlayerManager
                 //Randomize starting points
                 Location[] counselorLocations = arena.getLocationManager().getAvailableStartingPoints().toArray(new Location[arena.getLocationManager().getAvailableStartingPoints().size()]);
                 Random rnd2 = ThreadLocalRandom.current();
-                for (int i = counselorLocations.length - 1; i > 0; i--)
-                {
+                for (int i = counselorLocations.length - 1; i > 0; i--) {
                     int index = rnd.nextInt(i + 1);
 
                     // Simple swap
@@ -1030,8 +968,7 @@ public class PlayerManager
                 //Do the things
                 Counselor counselor = getCounselor(pl[0]);
 
-                if (isSpectator(counselor.getPlayer().getUniqueId().toString()))
-                {
+                if (isSpectator(counselor.getPlayer().getUniqueId().toString())) {
                     //Leave spectating mode
                     getSpectator(getCounselor(pl[0]).getPlayer().getUniqueId().toString()).leaveSpectatingMode();
                     removeSpectator(getCounselor(pl[0]).getPlayer().getUniqueId().toString());
@@ -1055,8 +992,7 @@ public class PlayerManager
 
     /* SPECIALS */
 
-    public void fireFirework(Player player, Color color)
-    {
+    public void fireFirework(Player player, Color color) {
         Firework f = player.getWorld().spawn(player.getWorld().getHighestBlockAt(player.getLocation()).getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder()
@@ -1073,13 +1009,12 @@ public class PlayerManager
 
     /**
      * Sends in game message to all players
+     *
      * @param message
      */
-    public void sendMessageToAllPlayers(String message)
-    {
+    public void sendMessageToAllPlayers(String message) {
         Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Player player = (Player) entry.getValue();
             player.sendMessage(FridayThe13th.pluginPrefix + message);
@@ -1089,8 +1024,7 @@ public class PlayerManager
     /**
      * Performs actions when counselors win
      */
-    private void counselorsWin()
-    {
+    private void counselorsWin() {
         sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.counselorsWin", "Counselors win! Jason was slain."));
     }
 

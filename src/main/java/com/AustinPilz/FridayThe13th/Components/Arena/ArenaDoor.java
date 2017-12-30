@@ -44,7 +44,6 @@ public class ArenaDoor
             {
                 //Top 1/2
                 arena.getObjectManager().getBrokenDoors().add(doorBlock.getRelative(BlockFace.DOWN));
-
             }
             else
             {
@@ -66,12 +65,12 @@ public class ArenaDoor
         }
     }
 
-    public int getNumHits()
+    private int getNumHits()
     {
         return hits;
     }
 
-    public int getNumHitsRequired()
+    private int getNumHitsRequired()
     {
         return requiredHits;
     }

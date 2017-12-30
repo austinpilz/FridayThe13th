@@ -34,6 +34,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Chest;
 import org.bukkit.material.Door;
 import org.bukkit.material.Lever;
+import org.bukkit.material.TripwireHook;
 import org.golde.bukkit.corpsereborn.CorpseAPI.events.CorpseClickEvent;
 
 import java.util.Iterator;
@@ -158,82 +159,71 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                    }
-                    else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Lever)
-                    {
-                        if (arena.getObjectManager().getBrokenSwitches().containsKey(event.getClickedBlock()))
-                        {
+                    } else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Lever) {
+                        if (arena.getObjectManager().getBrokenSwitches().containsKey(event.getClickedBlock())) {
                             event.setCancelled(true);
 
-                            if (event.hasItem() && event.getItem().getType().equals(Material.REDSTONE))
-                            {
+                            if (event.hasItem() && event.getItem().getType().equals(Material.REDSTONE)) {
                                 //Register the repair attempt
                                 arena.getObjectManager().getBrokenSwitches().get(event.getClickedBlock()).repairSwitchAttempt(event.getPlayer());
-                            }
-                            else
-                            {
+                            } else {
                                 event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.needRepairWire", "You need repair wire to fix broken switches."));
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Players can only turn off switches on if they're not broken
                             BlockState state = event.getClickedBlock().getState();
                             Lever lever = (Lever)state.getData();
 
-                            if (lever.isPowered())
-                            {
-                                if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getF13Player().hasPerk(F13Perk.Counselor_AhDarkness))
-                                {
+                            if (lever.isPowered()) {
+                                if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getF13Player().hasPerk(F13Perk.Counselor_AhDarkness)) {
                                     //They don't have the "ah, darkness" perk, so they can't turn off levers that are powered on.
                                     event.setCancelled(true);
                                 }
                             }
                         }
 
-                    }
-                    else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Chest)
-                    {
+                    } else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof TripwireHook) {
+                        if (arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(event.getClickedBlock())) {
+                            event.setCancelled(true);
+
+                            if (arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).isBroken()) {
+                                if (event.hasItem() && event.getItem().getType().equals(Material.REDSTONE)) {
+                                    //Register the repair attempt
+                                    arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
+                                } else {
+                                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.needRepairWire-Phone", "You need repair wire to fix broken phones."));
+                                }
+                            } else {
+                                arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
+                            }
+                        }
+                    } else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Chest) {
                         //They're interacting with a chest
-                        if (arena.getObjectManager().isChest(event.getClickedBlock().getLocation()))
-                        {
+                        if (arena.getObjectManager().isLocationAChest(event.getClickedBlock().getLocation())) {
                             //They're clicking one of the arena's chests - generate it
                             arena.getObjectManager().getChest(event.getClickedBlock().getLocation()).randomlyFill();
                         }
-                    }
-                    else if (event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.BED_BLOCK))
-                    {
+                    } else if (event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.BED_BLOCK)) {
                         //Players are not allowed to sleep during the game
                         event.setCancelled(true);
-                    }
-                    else if (event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.TRIPWIRE_HOOK))
-                    {
+                    } else if (event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.TRIPWIRE_HOOK)) {
                         //Touching a phone
-                        if (arena.getObjectManager().getPhones().containsKey(event.getClickedBlock()))
-                        {
-                            arena.getObjectManager().getPhones().get(event.getClickedBlock()).callAttempt(event.getPlayer());
-                        }
-                        else
-                        {
+                        if (arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(event.getClickedBlock())) {
+                            arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
+                        } else {
                             event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.phoneNotManaged", "This phone has not been added to the arena. Ask your admin to add it."));
                         }
-                    }
-                    else if (event.hasBlock() && event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.THIN_GLASS))
-                    {
+                    } else if (event.hasBlock() && event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.THIN_GLASS)) {
                         //Window jumping
-                        if (event.getPlayer().isSprinting())
-                        {
+                        if (event.getPlayer().isSprinting()) {
                             //Fast jump - breaks window
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(true); //So that they don't spam window jumps
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true);
-                            arena.getObjectManager().breakWindow(event.getClickedBlock());
+                            arena.getObjectManager().getWindowManager().breakWindow(event.getClickedBlock());
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(false);
                             arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addWindowSprint(); //Register event for XP
-                        }
-                        else
-                        {
-                            if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isAwaitingWindowJump())
-                            {
+                        } else {
+                            if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isAwaitingWindowJump()) {
                                 arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(true); //So that they don't spam window jumps
                                 ActionBarAPI.sendActionBar(event.getPlayer(), FridayThe13th.language.get(event.getPlayer(), "actionBar.counselor.windowJumpWait", "Don't move! You'll jump in {0} seconds...", "2"), 40);
                                 Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new CounselorWindowJump(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()), event.getPlayer().getLocation(), event.getClickedBlock()), 40);

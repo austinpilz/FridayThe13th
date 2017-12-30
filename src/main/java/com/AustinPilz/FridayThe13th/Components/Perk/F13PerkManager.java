@@ -1,13 +1,11 @@
 package com.AustinPilz.FridayThe13th.Components.Perk;
 
-import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
-
 public class F13PerkManager {
 
     /**
      * Returns F13 perk object from name
-     * @param name
-     * @return
+     * @param name Perk Name
+     * @return F13Perk enum
      */
     public static F13Perk getPerkByInternalIdentifier(String name)
     {

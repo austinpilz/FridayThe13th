@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 public class PhoneSetupSession
@@ -54,14 +53,14 @@ public class PhoneSetupSession
 
     private void phoneSelected()
     {
-        Location phoneLocation = player.getTargetBlock((HashSet<Material>)null, 10).getLocation();
+        Location phoneLocation = player.getTargetBlock(null, 10).getLocation();
 
         if (phoneLocation.getBlock().getType().equals(Material.TRIPWIRE_HOOK))
         {
             try
             {
                 ArenaPhone phone = new ArenaPhone(arena, phoneLocation);
-                arena.getObjectManager().addPhone(phone);
+                arena.getObjectManager().getPhoneManager().addPhone(phone);
                 FridayThe13th.inputOutput.storePhone(phone);
                 FridayThe13th.phoneSetupManager.removePlayerSetupSession(playerUUID);
 

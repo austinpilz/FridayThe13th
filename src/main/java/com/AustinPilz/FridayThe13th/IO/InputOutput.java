@@ -748,7 +748,7 @@ public class InputOutput
                     if (location != null && location.getBlock() != null && location.getBlock().getType().equals(Material.TRIPWIRE_HOOK)) {
                         try {
                             Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
-                            arena.getObjectManager().addPhone(new ArenaPhone(arena, location));
+                            arena.getObjectManager().getPhoneManager().addPhone(new ArenaPhone(arena, location));
                             count++;
                         } catch (ArenaDoesNotExistException exception) {
                             deletePhone(result.getDouble("X"), result.getDouble("Y"), result.getDouble("Z"), result.getString("World"));

@@ -371,7 +371,7 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
                             sender.sendMessage("# Item Chests: " + arena.getObjectManager().getNumChestsItems());
                             sender.sendMessage("# Weapon Chests: " + arena.getObjectManager().getNumChestsWeapon());
-                            sender.sendMessage("# Phones: " + arena.getObjectManager().getPhones().size());
+                            sender.sendMessage("# Phones: " + arena.getObjectManager().getPhoneManager().getNumberOfPhones());
                             sender.sendMessage("# Minutes per Counselor: " + arena.getMinutesPerCounselor());
                             sender.sendMessage("# Waiting Room Seconds: " + arena.getSecondsWaitingRoom());
 

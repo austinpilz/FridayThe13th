@@ -29,10 +29,8 @@ public class LocationManager
      */
     public void addStartingPoint(Location location)
     {
-        //I chose not to add checking for duplicates to allow players to start together if multiple rows of starting points
         startingPoints.add(location);
     }
-
 
     /**
      * Resets available starting points to original set
@@ -42,8 +40,6 @@ public class LocationManager
         availableStartingPoints.clear(); //Clear just in case
         availableStartingPoints.addAll(startingPoints);
     }
-
-    //exception based assign (synchronized)
 
     /**
      * Return's the arena's total number of starting points

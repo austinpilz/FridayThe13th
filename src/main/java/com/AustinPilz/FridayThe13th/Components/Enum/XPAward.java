@@ -11,6 +11,7 @@ public enum XPAward {
     Counselor_WindowSprint(50),
     Counselor_DoorClosed(25),
     Counselor_TommyCalled(100),
+    Counselor_PoliceCalled(150),
     Counselor_JasonKilled(1000),
     Counselor_TrapActivated(50),
     Counselor_SwitchRepaired(100),

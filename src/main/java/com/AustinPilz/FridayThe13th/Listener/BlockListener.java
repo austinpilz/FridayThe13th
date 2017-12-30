@@ -172,14 +172,16 @@ public class BlockListener implements Listener
                             arena.getGameManager().getPlayerManager().getJason().getXPManager().addSwitchBreak();
                         }
                     }
-                    else if (event.getBlock().getType().equals(Material.THIN_GLASS))
-                    {
+                    else if (event.getBlock().getType().equals(Material.THIN_GLASS)) {
                         //Window
-                        arena.getObjectManager().breakWindow(event.getBlock());
+                        arena.getObjectManager().getWindowManager().breakWindow(event.getBlock()); //Jason breaks window
                         arena.getGameManager().getPlayerManager().getJason().getXPManager().addWindowBreak();
 
                         //Play sound for everyone
                         SoundManager.playSoundForNearbyPlayers(F13SoundEffect.GlassBreak, arena, event.getBlock().getLocation(), 10, false, true);
+                    } else if (event.getBlock().getType().equals(Material.TRIPWIRE_HOOK) && arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(event.getBlock())) {
+                        //Jason is breaking a registered phone
+                        arena.getObjectManager().getPhoneManager().getPhone(event.getBlock()).breakPhone();
                     }
                 }
             }

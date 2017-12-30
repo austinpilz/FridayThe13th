@@ -12,6 +12,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Lever;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class ArenaSwitch
 {
     private Block block;
@@ -74,7 +76,7 @@ public class ArenaSwitch
 
     /**
      * Returns the percentage of repair progress
-     * @return
+     * @return Percentage of repair progress
      */
     private double getRepairProgressPercent()
     {
@@ -90,13 +92,7 @@ public class ArenaSwitch
         BlockState state = block.getState();
         Lever lever = (Lever)state.getData();
 
-        if (lever.isPowered())
-        {
-            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, false), 1);
-        }
-        else
-        {
-            Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, true), 1);
-        }
+        Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, !lever.isPowered()), ThreadLocalRandom.current().nextInt(2, 20 + 1));
+
     }
 }

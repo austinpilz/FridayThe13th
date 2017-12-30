@@ -93,15 +93,6 @@ public enum CounselorProfile {
         return requiredLevel;
     }
 
-    /**
-     * Returns the numerical representation of the profile order
-     *
-     * @return
-     */
-    public int getOrder() {
-        return displayOrder;
-    }
-
     public F13Skin getSkin() {
         return skin;
     }

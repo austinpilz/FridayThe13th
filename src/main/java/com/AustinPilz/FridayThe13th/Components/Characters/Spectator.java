@@ -35,7 +35,7 @@ public class Spectator extends F13Character {
         getPlayer().setWalkSpeed(0.2f);
 
         //Location
-        getPlayer().teleport(arena.getLocationManager().getAvailableStartingPoints().iterator().next()); //Random starting point
+        getPlayer().teleport(arena.getLocationManager().getAvailableStartingPoints().iterator().next());
         getPlayer().getInventory().clear();
 
         //Give them the selector

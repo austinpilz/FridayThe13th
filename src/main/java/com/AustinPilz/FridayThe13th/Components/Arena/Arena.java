@@ -191,6 +191,22 @@ public class Arena
     }
 
     /**
+     * Returns the max number of players that can play in the arena
+     *
+     * @return
+     */
+    public int getMaxNumberOfPlayers() {
+        if (getLocationManager().getNumberStartingPoints() >= 8) {
+            //We don't have to worry about spawn points
+            //Games capped at 8 counselors + Jason.
+            return 9;
+        } else {
+            //They're are less than 8 spawn points for counselors
+            return getLocationManager().getNumberStartingPoints() + 1;
+        }
+    }
+
+    /**
      * Updates the arena values in the database
      */
     private void updateInDB() {

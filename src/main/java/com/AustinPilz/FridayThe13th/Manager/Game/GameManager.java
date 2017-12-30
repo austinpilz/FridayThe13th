@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class
-GameManager
-{
+GameManager {
     private Arena arena;
 
     //Game Variables
@@ -37,18 +36,22 @@ GameManager
 
     //Tasks
     //second countdown (only when in waiting and in progress)
-    int gameStatusCheckTask = -1;
-    int gameCountdownTask = -1;
-    int waitingCountdownTask = -1;
-    int waitingScoreboardUpdateTask = -1;
+    private int gameStatusCheckTask = -1;
+    private int gameCountdownTask = -1;
+    private int waitingCountdownTask = -1;
 
     //Tommy Jarvis
     private boolean tommyCalled;
     private boolean tommySpawned;
 
+    //Police
+    private boolean policeCalled;
+    private boolean policePresent;
+    private int timeUntilPolice;
+    private int maxTimeUntilPolice;
 
     //Managers
-    public PlayerManager playerManager;
+    private PlayerManager playerManager;
     private GameCountdownManager gameCountdownManager;
     private WaitingCountdownDisplayManager waitingCountdownDisplayManager; //Game-wide waiting room countdown
     private GameScoreboardManager gameScoreboardManager;
@@ -57,8 +60,7 @@ GameManager
     /**
      * @param arena Game object
      */
-    public GameManager (Arena arena)
-    {
+    public GameManager(Arena arena) {
         this.arena = arena;
         resetGameStatistics();
 
@@ -74,7 +76,7 @@ GameManager
         weatherManager = new WeatherManager(arena);
 
         //Change game status to empty
-        gameStatus = GameStatus.Empty; //to void null pointer
+        gameStatus = GameStatus.Empty; //to avoid null pointer
         changeGameStatus(GameStatus.Empty);
 
         //Start Tasks
@@ -84,38 +86,41 @@ GameManager
 
     /**
      * Returns the arena's player manager
+     *
      * @return
      */
-    public PlayerManager getPlayerManager()
-    {
+    public PlayerManager getPlayerManager() {
         return playerManager;
     }
 
     /**
      * Returns the game countdown display manager
+     *
      * @return
      */
-    public GameCountdownManager getGameCountdownManager()
-    {
+    public GameCountdownManager getGameCountdownManager() {
         return gameCountdownManager;
     }
 
     /**
      * Returns the waiting countdown display manager
      */
-    public WaitingCountdownDisplayManager getWaitingCountdownDisplayManager()
-    {
+    public WaitingCountdownDisplayManager getWaitingCountdownDisplayManager() {
         return waitingCountdownDisplayManager;
     }
 
     /**
      * Returns the game scoreboard display manager
+     *
      * @return
      */
-    public GameScoreboardManager getGameScoreboardManager() { return gameScoreboardManager; }
+    public GameScoreboardManager getGameScoreboardManager() {
+        return gameScoreboardManager;
+    }
 
     /**
      * Returns the game's weather manager
+     *
      * @return
      */
     public WeatherManager getWeatherManager() {
@@ -124,97 +129,94 @@ GameManager
 
     /**
      * Returns the seconds left in the waiting countdown
+     *
      * @return
      */
-    public int getWaitingTimeLeft()
-    {
+    public int getWaitingTimeLeft() {
         return waitingTimeLeftInSeconds;
     }
 
     /**
      * Sets the seconds left in the waiting countdown
+     *
      * @param value
      */
-    public void setWaitingTimeLeft(int value)
-    {
+    public void setWaitingTimeLeft(int value) {
         waitingTimeLeftInSeconds = value;
     }
 
     /**
      * Returns the maximum number of seconds in the waiting countdown
+     *
      * @return
      */
-    public int getWaitingTimeMax()
-    {
+    public int getWaitingTimeMax() {
         return waitingTimeMax;
     }
 
     /**
      * Returns the number of seconds left in the game
+     *
      * @return
      */
-    public int getGameTimeLeft()
-    {
+    public int getGameTimeLeft() {
         return gameTimeLeftInSeconds;
     }
 
     /**
      * Returns the maximum number of seconds per game
+     *
      * @return
      */
-    public int getGameTimeMax()
-    {
+    public int getGameTimeMax() {
         return gameTimeMax;
     }
 
     /**
      * Sets the time left in the game in seconds
+     *
      * @param value
      */
-    public void setGameTimeLeft(int value)
-    {
+    public void setGameTimeLeft(int value) {
         gameTimeLeftInSeconds = Math.max(0, value); //make sure it doesn't go below 0
     }
 
     /**
      * Marks that Tommy Jarvis was called
      */
-    public void tommyCalled()
-    {
+    public void setTommyCalled() {
         tommyCalled = true;
     }
 
     /**
      * Returns if Tommy Jarvis has been called
+     *
      * @return
      */
-    public boolean hasTommyBeenCalled()
-    {
+    public boolean hasTommyBeenCalled() {
         return tommyCalled;
     }
 
     /**
      * Marks that Tommy Jarvis was spawned
      */
-    public void setTommySpawned()
-    {
+    public void setTommySpawned() {
         tommySpawned = true;
     }
 
     /**
      * Returns if Tommy Jarvis has been spawned
+     *
      * @return
      */
-    public boolean hasTommyBeenSpawned()
-    {
+    public boolean hasTommyBeenSpawned() {
         return tommySpawned;
     }
 
     /**
      * Resets the games internal statistics
      */
-    private void resetGameStatistics()
-    {
+    private void resetGameStatistics() {
         setGameTimeLeft(getGameTimeMax());
         waitingTimeLeftInSeconds = getWaitingTimeMax();
         tommyCalled = false;
@@ -224,49 +226,32 @@ GameManager
     /**
      * Performs automated checks on the game to ensure status is always accurate
      */
-    public void checkGameStatus()
-    {
-        if (isGameEmpty())
-        {
-            if (getPlayerManager().getNumPlayers() >= 2)
-            {
+    public void checkGameStatus() {
+        if (isGameEmpty()) {
+            if (getPlayerManager().getNumPlayers() >= 2) {
                 //There are people waiting and we've reached the min, change to waiting
                 changeGameStatus(GameStatus.Waiting);
-            }
-            else
-            {
+            } else {
                 //Need more players before waiting countdown will begin
                 Iterator it = getPlayerManager().getPlayers().entrySet().iterator();
-                while (it.hasNext())
-                {
+                while (it.hasNext()) {
                     Map.Entry entry = (Map.Entry) it.next();
                     Player player = (Player) entry.getValue();
                     ActionBarAPI.sendActionBar(player, ChatColor.RED + FridayThe13th.language.get(player, "actionBar.waitingForMorePlayers", "Waiting for 1 more player before waiting countdown begins..."));
                 }
-
-
             }
-        }
-        else if (isGameWaiting())
-        {
-            if (getPlayerManager().getNumPlayers() >= 2)
-            {
-                if (waitingTimeLeftInSeconds <= 0)
-                {
+        } else if (isGameWaiting()) {
+            if (getPlayerManager().getNumPlayers() >= 2) {
+                if (waitingTimeLeftInSeconds <= 0) {
                     //BEGIN THE GAME
                     changeGameStatus(GameStatus.InProgress);
                 }
-            }
-            else
-            {
-                //Cancel waiting countdown task and go back to empty status
+            } else {
+                //Minimum player requirement no longer met - Cancel waiting countdown task and go back to empty status
                 changeGameStatus(GameStatus.Empty);
             }
-        }
-        else if (isGameInProgress())
-        {
-            if (getPlayerManager().getNumPlayers() < 2)
-            {
+        } else if (isGameInProgress()) {
+            if (getPlayerManager().getNumPlayers() < 2) {
                 endGame(); //End the game since there aren't enough players
             }
         }
@@ -274,54 +259,51 @@ GameManager
 
     /**
      * Returns if the game is empty
+     *
      * @return
      */
-    public boolean isGameEmpty()
-    {
+    public boolean isGameEmpty() {
         return gameStatus.equals(GameStatus.Empty);
     }
 
     /**
      * Returns if the game is waiting
+     *
      * @return
      */
-    public boolean isGameWaiting()
-    {
+    public boolean isGameWaiting() {
         return gameStatus.equals(GameStatus.Waiting);
     }
 
     /**
      * Returns if the game is in progress
+     *
      * @return
      */
-    public boolean isGameInProgress()
-    {
+    public boolean isGameInProgress() {
         return gameStatus.equals(GameStatus.InProgress);
     }
 
     /**
      * Changes the game status
+     *
      * @param status
      */
-    private void changeGameStatus(GameStatus status)
-    {
+    private void changeGameStatus(GameStatus status) {
         //Changing to empty
-        if (status.equals(GameStatus.Empty))
-        {
+        if (status.equals(GameStatus.Empty)) {
             //Cancel tasks
-            Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
+            Bukkit.getScheduler().cancelTask(waitingCountdownTask);
             Bukkit.getScheduler().cancelTask(gameCountdownTask);
 
-            if (isGameWaiting() && getPlayerManager().getNumPlayers() == 0)
-            {
+            if (isGameWaiting() && getPlayerManager().getNumPlayers() == 0) {
                 getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
                 getPlayerManager().resetPlayerStorage(); //Resets all data structures with players since there are none left
             }
 
             gameStatus = GameStatus.Empty; //Change mode
             resetGameStatistics();
-        }
-        else if (status.equals(GameStatus.Waiting)) //Changing to waiting (can only go from empty -> in waiting)
+        } else if (status.equals(GameStatus.Waiting)) //Changing to waiting (can only go from empty -> in waiting)
         {
             gameStatus = GameStatus.Waiting; //Change mode
             resetGameStatistics();
@@ -335,11 +317,9 @@ GameManager
             //Display waiting countdown
             getWaitingCountdownDisplayManager().updateCountdownValue();
             getPlayerManager().displayWaitingCountdown();
-        }
-        else if (status.equals(GameStatus.InProgress)) //Changing to in progress (can only go from waiting -> in progress)
+        } else if (status.equals(GameStatus.InProgress)) //Changing to in progress (can only go from waiting -> in progress)
         {
-            if (isGameWaiting())
-            {
+            if (isGameWaiting()) {
                 Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
                 getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
             }
@@ -350,7 +330,7 @@ GameManager
             beginGame();
 
             //Schedule game countdown
-            gameCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameCountdown(arena),0, 20);
+            gameCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameCountdown(arena), 0, 20);
         }
 
         arena.getSignManager().updateJoinSigns(); //update the join signs
@@ -359,8 +339,7 @@ GameManager
     /**
      * Performs actions to begin the game
      */
-    private void beginGame()
-    {
+    private void beginGame() {
         //Reset location manager spawn point availability
         arena.getLocationManager().resetAvailableStartingPoints();
 
@@ -370,8 +349,8 @@ GameManager
         //Calculate the game time
         calculateGameTime();
 
-        //Phone
-        arena.getObjectManager().displayRandomPhone();
+        //Display game phones
+        arena.getObjectManager().getPhoneManager().displayGamePhones();
 
         //Radios
         arena.getObjectManager().placeRadios();
@@ -384,8 +363,7 @@ GameManager
     /**
      * Ends the game
      */
-    protected void endGame()
-    {
+    protected void endGame() {
         //Remove all players
         getPlayerManager().performEndGameActions();
 
@@ -399,8 +377,7 @@ GameManager
         weatherManager.endGame();
 
         //Remove any holograms from the previous game
-        for (Hologram hologram: HologramsAPI.getHolograms(FridayThe13th.instance))
-        {
+        for (Hologram hologram : HologramsAPI.getHolograms(FridayThe13th.instance)) {
             if (arena.isLocationWithinArenaBoundaries(hologram.getLocation())) {
                 hologram.delete();
 
@@ -410,7 +387,7 @@ GameManager
         //Remove any dropped items on the ground
         List<Entity> entList = arena.getBoundary1().getWorld().getEntities();//get all entities in the world
 
-        for(Entity current : entList) {
+        for (Entity current : entList) {
             if (current instanceof Item && arena.isLocationWithinArenaBoundaries(current.getLocation())) {
                 current.remove();//remove it
             }
@@ -432,8 +409,8 @@ GameManager
      * Calculates the game time based on the number of counselors
      */
     private void calculateGameTime() {
-        double secondsPer = Math.max(arena.getMinutesPerCounselor(), 1.8);
-        gameTimeLeftInSeconds = (int) Math.ceil((secondsPer * arena.getGameManager().getPlayerManager().getNumCounselors()) * 60);
+        double minutesPer = Math.max(arena.getMinutesPerCounselor(), 1.8); //1.8 is the min TPC allowed
+        gameTimeLeftInSeconds = (int) Math.ceil(((minutesPer * arena.getGameManager().getPlayerManager().getNumCounselors())) * 60);
         gameTimeMax = gameTimeLeftInSeconds;
     }
 }
