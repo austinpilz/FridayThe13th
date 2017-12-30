@@ -198,7 +198,7 @@ public class ArenaPhone
                         //The Tommy Jarvis phone call has been placed
                         arena.getGameManager().getPlayerManager().fireFirework(player, Color.GREEN);
                         arena.getGameManager().getPlayerManager().sendMessageToAllPlayers(ChatColor.AQUA + player.getName() + ChatColor.WHITE + " has called the police.");
-                        //TODO: CALL POLICE FLAG - arena.getGameManager().setTommyCalled();
+                        arena.getGameManager().setPoliceCalled(true);
                         callAttempts++;
 
                         //Register xp for police called

@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 public class ChestSetupSession
@@ -57,7 +56,7 @@ public class ChestSetupSession
 
     private void chestSelected()
     {
-        Location chestLocation = player.getTargetBlock((HashSet<Material>)null, 10).getLocation();
+        Location chestLocation = player.getTargetBlock(null, 10).getLocation();
 
         if (chestLocation.getBlock().getType().equals(Material.CHEST))
         {
@@ -85,6 +84,4 @@ public class ChestSetupSession
             FridayThe13th.chestSetupManager.removePlayerSetupSession(playerUUID);
         }
     }
-
-
 }

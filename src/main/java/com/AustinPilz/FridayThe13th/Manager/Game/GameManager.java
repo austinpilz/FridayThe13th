@@ -6,10 +6,7 @@ import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameCountdownManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingCountdownDisplayManager;
-import com.AustinPilz.FridayThe13th.Runnable.GameCountdown;
-import com.AustinPilz.FridayThe13th.Runnable.GameStatusCheck;
-import com.AustinPilz.FridayThe13th.Runnable.PlayerWaitingDisplayUpdate;
-import com.AustinPilz.FridayThe13th.Runnable.WaitingCountdown;
+import com.AustinPilz.FridayThe13th.Runnable.*;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
@@ -46,9 +43,10 @@ GameManager {
 
     //Police
     private boolean policeCalled;
-    private boolean policePresent;
-    private int timeUntilPolice;
-    private int maxTimeUntilPolice;
+    private boolean policeArrived;
+    private int timeUntilPoliceArrive;
+    private int maxTimeUntilPoliceArrive;
+    private int policeArriveCountdownTask = -1;
 
     //Managers
     private PlayerManager playerManager;
@@ -67,6 +65,8 @@ GameManager {
         //Get max times
         waitingTimeMax = arena.getSecondsWaitingRoom();
         gameTimeMax = 0; //Since game time is calculated based on number of counselors during every game
+        maxTimeUntilPoliceArrive = 0;
+        timeUntilPoliceArrive = 0;
 
         //Managers
         playerManager = new PlayerManager(arena);
@@ -214,6 +214,70 @@ GameManager {
     }
 
     /**
+     * @return If the police have been called
+     */
+    public boolean havePoliceBeenCalled() {
+        return policeCalled;
+    }
+
+    /**
+     * Sets if the police have been called
+     *
+     * @param value
+     */
+    public void setPoliceCalled(boolean value) {
+        policeCalled = value;
+
+        if (value) {
+            calculatePoliceArrivalTime();
+            policeArriveCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new PoliceArrivalCountdown(arena), 20, 20);
+        }
+    }
+
+    /**
+     * @return Seconds until police arrive
+     */
+    public int getTimeUntilPoliceArrive() {
+        return timeUntilPoliceArrive;
+    }
+
+    /**
+     * @return Max seconds before the police arrive
+     */
+    public int getMaxTimeUntilPoliceArrive() {
+        return maxTimeUntilPoliceArrive;
+    }
+
+    /**
+     * Sets the number of seconds until the police arrive
+     *
+     * @param seconds
+     */
+    public void setTimeUntilPoliceArrive(int seconds) {
+        timeUntilPoliceArrive = Math.max(seconds, 0);
+    }
+
+    /**
+     * @return If the police have arrived
+     */
+    public boolean havePoliceArrived() {
+        return policeArrived;
+    }
+
+    /**
+     * Sets if the police have arrived
+     *
+     * @param value
+     */
+    public void setPoliceArrived(boolean value) {
+        policeArrived = value;
+
+        if (value) {
+            //TODO: Idk fire fireworks or some shit. Send message to all players.
+        }
+    }
+
+    /**
      * Resets the games internal statistics
      */
     private void resetGameStatistics() {
@@ -221,6 +285,8 @@ GameManager {
         waitingTimeLeftInSeconds = getWaitingTimeMax();
         tommyCalled = false;
         tommySpawned = false;
+        policeCalled = false;
+        policeArrived = false;
     }
 
     /**
@@ -295,6 +361,7 @@ GameManager {
             //Cancel tasks
             Bukkit.getScheduler().cancelTask(waitingCountdownTask);
             Bukkit.getScheduler().cancelTask(gameCountdownTask);
+            Bukkit.getScheduler().cancelTask(policeArriveCountdownTask);
 
             if (isGameWaiting() && getPlayerManager().getNumPlayers() == 0) {
                 getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
@@ -412,5 +479,13 @@ GameManager {
         double minutesPer = Math.max(arena.getMinutesPerCounselor(), 1.8); //1.8 is the min TPC allowed
         gameTimeLeftInSeconds = (int) Math.ceil(((minutesPer * arena.getGameManager().getPlayerManager().getNumCounselors())) * 60);
         gameTimeMax = gameTimeLeftInSeconds;
+    }
+
+    /**
+     * Calculates seconds until the police arrive
+     */
+    private void calculatePoliceArrivalTime() {
+        maxTimeUntilPoliceArrive = Math.min(getGameTimeLeft() / 2, 300);
+        setTimeUntilPoliceArrive(maxTimeUntilPoliceArrive);
     }
 }
