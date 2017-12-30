@@ -105,8 +105,10 @@ public class ArenaPhone
      * Breaks the phone, if applicable
      */
     public void breakPhone() {
-        if (canBeBroken() && !hasCallBeenCompleted()) {
+        if (canBeBroken() && !isBroken && !hasCallBeenCompleted()) {
             isBroken = true;
+            repairAttempts = 0;
+            callAttempts = 0;
             updateHologram();
         }
     }

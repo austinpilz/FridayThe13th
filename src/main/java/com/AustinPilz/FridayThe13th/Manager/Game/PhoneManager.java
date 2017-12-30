@@ -84,9 +84,11 @@ public class PhoneManager {
         randomizedPhones[0].setPhoneType(PhoneType.TommyJarvis);
         randomizedPhones[0].showPhone();
 
-        //Police phone
-        randomizedPhones[1].setPhoneType(PhoneType.Police);
-        randomizedPhones[1].showPhone();
+        //Only assign police phone if there's at least one land escape point
+        if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0) {
+            randomizedPhones[1].setPhoneType(PhoneType.Police);
+            randomizedPhones[1].showPhone();
+        }
     }
 
     /**

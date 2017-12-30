@@ -11,6 +11,8 @@ public class LocationManager
     private HashSet<Location> startingPoints;
     private HashSet<Location> availableStartingPoints;
 
+    private EscapePointManager escapePointManager;
+
     /**
      * @param arena Game object
      */
@@ -21,6 +23,7 @@ public class LocationManager
         //Initialize Objects
         startingPoints = new HashSet<>();
         availableStartingPoints = new HashSet<>();
+        escapePointManager = new EscapePointManager(arena);
     }
 
     /**
@@ -56,5 +59,12 @@ public class LocationManager
     public HashSet<Location> getAvailableStartingPoints()
     {
         return availableStartingPoints;
+    }
+
+    /**
+     * @return Escape Point Manager
+     */
+    public EscapePointManager getEscapePointManager() {
+        return escapePointManager;
     }
 }

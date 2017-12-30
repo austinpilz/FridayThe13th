@@ -565,7 +565,7 @@ public class Counselor extends F13Character
     /**
      * Teleports player through window
      */
-    public void teleportThroughWindow(Block block, boolean damage)
+    public void teleportThroughWindow(Block block, boolean damage, boolean breakWindow)
     {
         //Teleport them
         int direction = 1; //front
@@ -583,6 +583,10 @@ public class Counselor extends F13Character
             if (damage)
             {
                 getPlayer().damage(6);
+            }
+
+            if (breakWindow) {
+                arena.getObjectManager().getWindowManager().breakWindow(block);
             }
         }
         else

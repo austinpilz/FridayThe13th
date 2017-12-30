@@ -8,6 +8,7 @@ public enum XPAward {
     Jason_SwitchBreak(50),
     Jason_TrapEnsnare(75),
     Jason_MinuteLeft(50),
+    Jason_NoEscapes(500),
     Counselor_WindowSprint(50),
     Counselor_DoorClosed(25),
     Counselor_TommyCalled(100),
@@ -17,7 +18,8 @@ public enum XPAward {
     Counselor_SwitchRepaired(100),
     Counselor_JasonStuns(50),
     Counselor_FriendlyHit(1000),
-    Counselor_MatchCompleted(100);
+    Counselor_MatchCompleted(100),
+    Counselor_Escaped(250);
 
 
     private int xp;

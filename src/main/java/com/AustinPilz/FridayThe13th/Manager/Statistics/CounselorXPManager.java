@@ -20,6 +20,7 @@ public class CounselorXPManager {
     private boolean statsCalledTommy = false;
     private boolean statsDoorClosed = false;
     private boolean statsCalledPolice = false;
+    private int escapes = 0;
 
     public CounselorXPManager(Counselor c, Arena a) {
         counselor = c;
@@ -94,12 +95,22 @@ public class CounselorXPManager {
      */
     public void addJasonStuns() {
         statsJasonStuns++;
-
         ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.jasonStuns", "Jason Stunned: +{0}xp", statsJasonStuns * XPAward.Counselor_JasonStuns.getXPAward()), 60);
     }
 
+    /**
+     * Registers that the counselor killed jason
+     */
     public void addJasonKill() {
         statsJasonKilled = true;
+    }
+
+    /**
+     * Registers that the counselor stunned Jason
+     */
+    public void addEscape() {
+        escapes++;
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.counselorEscape", "Escaped: +{0}xp", statsJasonStuns * XPAward.Counselor_Escaped.getXPAward()), 60);
     }
 
     /**
@@ -148,6 +159,9 @@ public class CounselorXPManager {
 
         //For completing a match and staying
         xp += XPAward.Counselor_MatchCompleted.getXPAward();
+
+        //Escapes
+        xp += escapes * XPAward.Counselor_Escaped.getXPAward();
 
         return xp;
     }

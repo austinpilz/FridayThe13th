@@ -3,10 +3,13 @@ package com.AustinPilz.FridayThe13th.Command;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
+import com.AustinPilz.FridayThe13th.Components.Enum.EscapePointType;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
+import com.AustinPilz.FridayThe13th.Components.Level.F13PlayerLevel;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaSetupSessionAlreadyInProgress;
 import com.AustinPilz.FridayThe13th.Exceptions.Chest.ChestSetupSessionAlreadyInProgressException;
+import com.AustinPilz.FridayThe13th.Exceptions.EscapePointSessionAlreadyInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.PhoneSetupSessionAlreadyInProgressException;
@@ -200,6 +203,31 @@ public class CommandHandler implements CommandExecutor {
                                     } catch (ChestSetupSessionAlreadyInProgressException exception) {
                                         //They already have a setup session in progress
                                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addChestItemSessionExisting", "You already have an item chest setup session in progress. You must finish that session before starting a new one."));
+                                    } catch (ArenaDoesNotExistException exception) {
+                                        //An arena with that name does not exist in the arena controller memory
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                    }
+                                } else {
+                                    //Unknown type of chest
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.chestTypeError", "Unknown chest type. Available types are {0} and {1}.", ChatColor.AQUA + "chest:weapon" + ChatColor.WHITE, ChatColor.AQUA + "chest:item" + ChatColor.WHITE));
+                                }
+                            } else if (args[2].contains("escape")) {
+                                if (args[2].equalsIgnoreCase("escape:land")) {
+                                    try {
+                                        FridayThe13th.escapePointSetupManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName, EscapePointType.Land);
+                                    } catch (EscapePointSessionAlreadyInProgressException exception) {
+                                        //They already have a setup session in progress
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addEscapeSessionExisting", "You already have an escape point setup session in progress. You must finish that session before starting a new one."));
+                                    } catch (ArenaDoesNotExistException exception) {
+                                        //An arena with that name does not exist in the arena controller memory
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                    }
+                                } else if (args[2].equalsIgnoreCase("escape:water")) {
+                                    try {
+                                        FridayThe13th.escapePointSetupManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName, EscapePointType.Water);
+                                    } catch (EscapePointSessionAlreadyInProgressException exception) {
+                                        //They already have a setup session in progress
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addEscapeSessionExisting", "You already have an escape point setup session in progress. You must finish that session before starting a new one."));
                                     } catch (ArenaDoesNotExistException exception) {
                                         //An arena with that name does not exist in the arena controller memory
                                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
@@ -458,6 +486,8 @@ public class CommandHandler implements CommandExecutor {
                             FridayThe13th.chestSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
                         } else if (FridayThe13th.phoneSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
                             FridayThe13th.phoneSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
+                        } else if (FridayThe13th.escapePointSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.escapePointSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
                         } else {
                             //There is no active setup session
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noSetupSession", "You currently have no setup session in progress."));
@@ -517,7 +547,10 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage("Player: " + statsUsername);
                             sender.sendMessage("Level: " + player.getLevel().getLevelNumber());
                             sender.sendMessage("XP: " + player.getXP());
-                            sender.sendMessage("XP until Next Level: " + (player.getNextLevel().getMinXP() - player.getXP()));
+
+                            if (player.getLevel().isLessThan(F13PlayerLevel.L20)) {
+                                sender.sendMessage("XP until Next Level: " + (player.getNextLevel().getMinXP() - player.getXP()));
+                            }
 
                             try
                             {

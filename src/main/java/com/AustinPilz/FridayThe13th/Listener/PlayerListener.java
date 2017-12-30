@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Arena.EscapePoint;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
@@ -22,6 +23,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -184,10 +187,8 @@ public class PlayerListener implements Listener {
 
                     } else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof TripwireHook) {
                         if (arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(event.getClickedBlock())) {
-                            event.setCancelled(true);
-
                             if (arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).isBroken()) {
-                                if (event.hasItem() && event.getItem().getType().equals(Material.REDSTONE)) {
+                                if (event.getPlayer().getInventory().contains(Material.REDSTONE)) {
                                     //Register the repair attempt
                                     arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
                                 } else {
@@ -216,12 +217,13 @@ public class PlayerListener implements Listener {
                     } else if (event.hasBlock() && event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.THIN_GLASS)) {
                         //Window jumping
                         if (event.getPlayer().isSprinting()) {
-                            //Fast jump - breaks window
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(true); //So that they don't spam window jumps
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true);
-                            arena.getObjectManager().getWindowManager().breakWindow(event.getClickedBlock());
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(false);
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addWindowSprint(); //Register event for XP
+                            if (arena.getObjectManager().getWindowManager().canPlayerJumpThroughWindow(event.getClickedBlock(), event.getPlayer())) {
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true, true);
+                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addWindowSprint(); //Register event for XP
+                            } else {
+                                ActionBarAPI.sendActionBar(event.getPlayer(), FridayThe13th.language.get(event.getPlayer(), "actionBar.counselor.windowJumpFail2", "Can't jump! No free space on the other side of the window."), 40);
+                            }
+
                         } else {
                             if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isAwaitingWindowJump()) {
                                 arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(true); //So that they don't spam window jumps
@@ -311,7 +313,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         try {
             Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
@@ -319,7 +321,24 @@ public class PlayerListener implements Listener {
             if (arena.getGameManager().isGameInProgress())
             {
                 //Make sure they're within the boundaries
-                if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
+
+                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && arena.getLocationManager().getEscapePointManager().isLocationWithinEscapePoint(event.getTo())) {
+                    EscapePoint escapePoint = arena.getLocationManager().getEscapePointManager().getEscapePointFromLocation(event.getTo());
+                    //Counselor is trying to move into
+                    if ((escapePoint.isWaterPoint() && event.getPlayer().getVehicle() instanceof Boat) || (escapePoint.isLandPoint() && event.getPlayer().getVehicle() instanceof Minecart)) {
+                        //Counselor escaping via vehicle
+
+                    } else {
+                        //Counselor escaping via foot - can only do when police are there
+                        if (escapePoint.isLandPoint() && escapePoint.isPoliceLocation()) {
+                            //They can escape
+                            arena.getGameManager().getPlayerManager().onPlayerEscape(event.getPlayer());
+                        } else {
+                            //Cannot escape on foot if the police aren't there.
+                            event.setCancelled(true);
+                        }
+                    }
+                } else if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.arenaBoundary", "You can't leave the arena boundary while playing."));
                 }

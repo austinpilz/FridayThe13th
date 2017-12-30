@@ -3,7 +3,9 @@ package com.AustinPilz.FridayThe13th.IO;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaChest;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
+import com.AustinPilz.FridayThe13th.Components.Arena.EscapePoint;
 import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
+import com.AustinPilz.FridayThe13th.Components.Enum.EscapePointType;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
@@ -100,6 +102,7 @@ public class InputOutput
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_arenas\" (\"Name\" VARCHAR PRIMARY KEY NOT NULL, \"B1X\" DOUBLE, \"B1Y\" DOUBLE, \"B1Z\" DOUBLE, \"B2X\" DOUBLE, \"B2Y\" DOUBLE, \"B2Z\" DOUBLE, \"ArenaWorld\" VARCHAR, \"WaitX\" DOUBLE, \"WaitY\" DOUBLE, \"WaitZ\" DOUBLE, \"WaitWorld\" VARCHAR, \"ReturnX\" DOUBLE, \"ReturnY\" DOUBLE, \"ReturnZ\" DOUBLE, \"ReturnWorld\" VARCHAR, \"JasonX\" DOUBLE, \"JasonY\" DOUBLE, \"JasonZ\" DOUBLE,  \"MinutesPerCounselor\" DOUBLE DEFAULT 2, \"SecondsWaitingRoom\" DOUBLE DEFAULT 60)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_spawn_points\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_chests\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
+            st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_escape_points\" (\"X1\" DOUBLE, \"Y1\" DOUBLE, \"Z1\" DOUBLE, \"X2\" DOUBLE, \"Y2\" DOUBLE, \"Z2\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_signs\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR, \"Type\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_phones\" (\"X\" DOUBLE, \"Y\" DOUBLE, \"Z\" DOUBLE, \"World\" VARCHAR, \"Arena\" VARCHAR)");
             st.executeUpdate("CREATE TABLE IF NOT EXISTS \"f13_players\" (\"UUID\" VARCHAR PRIMARY KEY NOT NULL, \"SpawnPreference\" VARCHAR, \"XP\" INTEGER DEFAULT 0, \"JasonProfile\" VARCHAR, \"CounselorProfile\" VARCHAR, \"CP\" INTEGER DEFAULT 0)");
@@ -1029,6 +1032,129 @@ public class InputOutput
         catch (SQLException e)
         {
             FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove a purchased player profile from the database for player " + player.getPlayerUUID());
+        }
+    }
+
+    /**
+     * Loads escape points from database into arena memory
+     */
+    public void loadEscapePoints() {
+        try {
+            Connection conn;
+            PreparedStatement ps = null;
+            ResultSet result = null;
+            conn = getConnection();
+            ps = conn.prepareStatement("SELECT `World`, `X1`, `Y1`, `Z1`,`X2`, `Y2`, `Z2`, `Arena`, `Type` FROM `f13_escape_points`");
+            result = ps.executeQuery();
+
+            int count = 0;
+            int removed = 0;
+            while (result.next()) {
+                if (Bukkit.getWorld(result.getString("World")) != null) {
+                    Location boundary1 = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X1"), result.getDouble("Y1"), result.getDouble("Z1"));
+                    Location boundary2 = new Location(Bukkit.getWorld(result.getString("World")), result.getDouble("X2"), result.getDouble("Y2"), result.getDouble("Z2"));
+
+                    try {
+                        //Determine chest type
+                        EscapePointType type = EscapePointType.Land; //default
+
+                        if (result.getString("Type").equals("Land")) {
+                            type = EscapePointType.Land;
+                        } else if (result.getString("Type").equals("Water")) {
+                            type = EscapePointType.Water;
+                        }
+
+                        Arena arena = FridayThe13th.arenaController.getArena(result.getString("Arena"));
+                        arena.getLocationManager().getEscapePointManager().addEscapePoint(new EscapePoint(arena, type, boundary1, boundary2));
+                        count++;
+                    } catch (ArenaDoesNotExistException exception) {
+                        deleteEscapePoint(result.getDouble("X1"), result.getDouble("Y1"), result.getDouble("Z1"), result.getDouble("X2"), result.getDouble("Y2"), result.getDouble("Z2"), result.getString("Type"), result.getString("World"));
+                        removed++;
+                    }
+                } else {
+                    //The world was deleted
+                    deleteEscapePoint(result.getDouble("X1"), result.getDouble("Y1"), result.getDouble("Z1"), result.getDouble("X2"), result.getDouble("Y2"), result.getDouble("Z2"), result.getString("Type"), result.getString("World"));
+                    removed++;
+                }
+            }
+
+            if (count > 0) {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Loaded " + count + " escape point(s).");
+            }
+
+            if (removed > 0) {
+                FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Removed " + removed + " escape point(s) for arenas that no longer exist.");
+            }
+
+            conn.commit();
+            ps.close();
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered a SQL exception while attempting to load chests from database: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Stores escape point to the database
+     *
+     * @throws SaveToDatabaseException
+     */
+    public void storeEscapePoint(EscapePoint escapePoint) throws SaveToDatabaseException {
+        try {
+            String sql;
+            Connection conn = InputOutput.getConnection();
+
+            sql = "INSERT INTO f13_escape_points (`X1`, `Y1`, `Z1`, `X2`, `Y2`, `Z2`, `World`, `Arena`, `Type`) VALUES (?,?,?,?,?,?,?,?,?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+            preparedStatement.setDouble(1, escapePoint.getBoundary1().getX());
+            preparedStatement.setDouble(2, escapePoint.getBoundary1().getY());
+            preparedStatement.setDouble(3, escapePoint.getBoundary1().getZ());
+            preparedStatement.setDouble(4, escapePoint.getBoundary2().getX());
+            preparedStatement.setDouble(5, escapePoint.getBoundary2().getY());
+            preparedStatement.setDouble(6, escapePoint.getBoundary2().getZ());
+            preparedStatement.setString(7, escapePoint.getBoundary2().getWorld().getName());
+            preparedStatement.setString(8, escapePoint.getArena().getArenaName());
+            preparedStatement.setString(9, escapePoint.getType().getFieldDescription());
+
+            preparedStatement.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to store an escape point to the database: " + e.getMessage());
+            throw new SaveToDatabaseException();
+        }
+    }
+
+    /**
+     * Removes an escape point from the database
+     *
+     * @param X1
+     * @param Y1
+     * @param Z1
+     * @param X2
+     * @param Y2
+     * @param Z2
+     * @param type
+     * @param world
+     */
+    public void deleteEscapePoint(double X1, double Y1, double Z1, double X2, double Y2, double Z2, String type, String world) {
+        try {
+            Connection conn = InputOutput.getConnection();
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM f13_escape_points WHERE World = ? AND X1 = ? AND Y1 = ? AND Z1 = ? AND X2 = ? AND Y2 = ? AND Z2 = ? AND Type = ?");
+            ps.setString(1, world);
+            ps.setDouble(2, X1);
+            ps.setDouble(3, Y1);
+            ps.setDouble(4, Z1);
+            ps.setDouble(5, X2);
+            ps.setDouble(6, Y2);
+            ps.setDouble(7, Z2);
+            ps.setString(8, type);
+            ps.executeUpdate();
+            conn.commit();
+            ps.close();
+
+        } catch (SQLException e) {
+            FridayThe13th.log.log(Level.WARNING, FridayThe13th.consolePrefix + "Encountered an error while attempting to remove an escape point from the database: " + e.getMessage());
         }
     }
 }

@@ -25,7 +25,7 @@ public class CounselorWindowJump implements Runnable
     {
         if (counselor.getPlayer().getLocation().distance(initialLocation) < 1)
         {
-            counselor.teleportThroughWindow(block, false);
+            counselor.teleportThroughWindow(block, false, false);
         }
         else
         {

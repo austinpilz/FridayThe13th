@@ -1,9 +1,11 @@
 package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 
@@ -35,8 +37,7 @@ public class WindowManager {
 
     /**
      * Breaks window
-     *
-     * @param block
+     * @param block Window to break
      */
     public void breakWindow(Block block) {
         //Break the window
@@ -60,5 +61,22 @@ public class WindowManager {
         }
 
         brokenWindows.clear();
+    }
+
+    /**
+     * Checks to see if the player could successfully jump through the window
+     *
+     * @param block  Window block
+     * @param player Player
+     * @return If they player could safely jump through window
+     */
+    public boolean canPlayerJumpThroughWindow(Block block, Player player) {
+        //Teleport them
+        int direction = 1; //front
+        float newZ = (float) (block.getLocation().getZ() + (2 * Math.sin(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
+        float newX = (float) (block.getLocation().getX() + (2 * Math.cos(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
+
+        Location locationTo = new Location(player.getLocation().getWorld(), (double) newX, player.getLocation().getY(), newZ);
+        return locationTo.getBlock().getType().equals(Material.AIR);
     }
 }

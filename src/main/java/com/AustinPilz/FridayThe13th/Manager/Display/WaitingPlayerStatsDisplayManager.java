@@ -19,7 +19,7 @@ public class WaitingPlayerStatsDisplayManager {
 
     public WaitingPlayerStatsDisplayManager(F13Player p) {
         player = p;
-        statsScoreboard = new Sidebar(ChatColor.RED + "" + ChatColor.BOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.scoreboard.title", "Friday The 13th"), FridayThe13th.instance, 20);
+        statsScoreboard = new Sidebar(ChatColor.RED + "" + ChatColor.BOLD + FridayThe13th.language.get(player.getPlayer(), "game.scoreboard.title", "Friday The 13th"), FridayThe13th.instance, 999);
     }
 
     /**
@@ -27,6 +27,7 @@ public class WaitingPlayerStatsDisplayManager {
      */
     public void updateStatsScoreboard() {
         try {
+
             Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getPlayerUUID());
 
             List<SidebarString> newList = new ArrayList<>(statsScoreboard.getEntries());
@@ -77,10 +78,12 @@ public class WaitingPlayerStatsDisplayManager {
                 statsScoreboard.addEntry(xpNeededValue);
             }
 
+
             statsScoreboard.update();
         } catch (PlayerNotPlayingException exception) {
             //They're not playing, so don't update
         }
+
     }
 
     /**

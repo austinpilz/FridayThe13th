@@ -13,10 +13,7 @@ import com.AustinPilz.FridayThe13th.IO.SpigotUpdateChecker;
 import com.AustinPilz.FridayThe13th.Listener.BlockListener;
 import com.AustinPilz.FridayThe13th.Listener.F13EventsListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
-import com.AustinPilz.FridayThe13th.Manager.Setup.ArenaCreationManager;
-import com.AustinPilz.FridayThe13th.Manager.Setup.ChestSetupManager;
-import com.AustinPilz.FridayThe13th.Manager.Setup.PhoneSetupManager;
-import com.AustinPilz.FridayThe13th.Manager.Setup.SpawnPointCreationManager;
+import com.AustinPilz.FridayThe13th.Manager.Setup.*;
 import com.AustinPilz.FridayThe13th.Runnable.PlayerMemoryClean;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,6 +51,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static SpawnPointCreationManager spawnPointCreationManager;
     public static ChestSetupManager chestSetupManager;
     public static PhoneSetupManager phoneSetupManager;
+    public static EscapePointSetupManager escapePointSetupManager;
     public static InputOutput inputOutput;
 
     //3rd Party Plugins
@@ -84,6 +82,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         spawnPointCreationManager = new SpawnPointCreationManager();
         chestSetupManager = new ChestSetupManager();
         phoneSetupManager = new PhoneSetupManager();
+        escapePointSetupManager = new EscapePointSetupManager();
 
         //InputOutput
         inputOutput = new InputOutput();
@@ -94,6 +93,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         inputOutput.loadChests();
         inputOutput.loadSigns();
         inputOutput.loadPhones();
+        inputOutput.loadEscapePoints();
 
         //Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);

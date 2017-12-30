@@ -15,6 +15,7 @@ import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Runnable.CounselorPrepare;
 import com.austinpilz.ResourcePackAPI.Components.ResourcePackRequest;
 import com.austinpilz.ResourcePackAPI.ResourcePackAPI;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -40,6 +41,7 @@ public class PlayerManager {
     //Game Stat
     private HashMap<String, Player> alivePlayers;
     private HashSet<String> deadPlayers;
+    private HashSet<Player> escapedPlayers;
 
     /**
      * @param arena Game
@@ -51,6 +53,7 @@ public class PlayerManager {
         this.alivePlayers = new HashMap<>();
         this.deadPlayers = new HashSet<>();
         this.spectators = new HashMap<>();
+        this.escapedPlayers = new HashSet<>();
     }
 
     /**
@@ -62,6 +65,7 @@ public class PlayerManager {
         alivePlayers.clear();
         deadPlayers.clear();
         spectators.clear();
+        escapedPlayers.clear();
     }
 
     /**
@@ -526,6 +530,35 @@ public class PlayerManager {
         }
     }
 
+    /**
+     * Performs actions when a player escapes
+     *
+     * @param player
+     */
+    public void onPlayerEscape(Player player) {
+        if (arena.getGameManager().isGameInProgress()) {
+            alivePlayers.remove(player.getUniqueId().toString());
+            escapedPlayers.add(player);
+
+            //Check to see if they're jason, which would end the game
+            if (isCounselor(player)) {
+                if (getNumPlayersAlive() > 1) {
+                    //They're are others still alive, enter spectating mode
+                    getCounselor(player).transitionToSpectatingMode();
+                    becomeSpectator(player);
+                } else {
+                    //They were the last to die, so end the game
+                    arena.getGameManager().endGame();
+                }
+            }
+            //Award them XP
+            getCounselor(player).getXPManager().addEscape();
+
+            //Let everyone know
+            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerEscapeBroadcast", "{0} escaped.", player.getName()));
+        }
+    }
+
     /* Spectator Actions */
 
     /**
@@ -586,7 +619,7 @@ public class PlayerManager {
         teleportPlayerToWaitingPoint(player);
 
         //Show the countdown timer
-        FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().displayStatsScoreboard();
+        //FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().displayStatsScoreboard();
         arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player);
 
         //Change game mode & clear inventory
@@ -603,6 +636,7 @@ public class PlayerManager {
 
         //Begin waiting room music
         PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), F13SoundEffect.LobbyMusic.getResourcePackValue(), F13SoundEffect.LobbyMusic.getLengthInSeconds(), 10, true, true);
+
     }
 
     /**
@@ -613,26 +647,23 @@ public class PlayerManager {
 
         //Assign roles and teleport players there
         assignGameRoles();
-
-
         assignSpawnLocations();
-
 
         //Hide waiting scoreboard from everyone
         for (Player player : players.values()) {
             FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
         }
 
-
-        //Display player bars
+        //Prepare everyone for gameplay
+        int prepareDelay = 20;
         Iterator it = getCounselors().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
 
-            counselor.prepareForGameplay();
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(FridayThe13th.instance, new CounselorPrepare(counselor), prepareDelay);
+            prepareDelay += 2;
         }
-
 
         //Jason stuff
         jason.prepareforGameplay();
@@ -1018,6 +1049,20 @@ public class PlayerManager {
             Map.Entry entry = (Map.Entry) it.next();
             Player player = (Player) entry.getValue();
             player.sendMessage(FridayThe13th.pluginPrefix + message);
+        }
+    }
+
+    /**
+     * Sends in game message to all players
+     *
+     * @param message
+     */
+    public void sendActionBarMessageToAllPlayers(String message, int ticksDuration) {
+        Iterator it = getPlayers().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            Player player = (Player) entry.getValue();
+            ActionBarAPI.sendActionBar(player, message, ticksDuration);
         }
     }
 

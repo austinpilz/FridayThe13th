@@ -46,12 +46,8 @@ public class ObjectManager
         this.arena = arena;
         this.windowManager = new WindowManager(arena);
         this.phoneManager = new PhoneManager(arena);
-
-
-
         this.itemChests = new HashSet<>();
         this.weaponChests = new HashSet<>();
-
 
         //Per Game Objects
         doors = new HashMap<>();

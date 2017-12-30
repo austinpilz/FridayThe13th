@@ -28,7 +28,6 @@ GameManager {
     private int gameTimeLeftInSeconds;
     private int gameTimeMax;
     private int waitingTimeLeftInSeconds;
-    private int waitingTimeMax;
     private GameStatus gameStatus;
 
     //Tasks
@@ -63,7 +62,6 @@ GameManager {
         resetGameStatistics();
 
         //Get max times
-        waitingTimeMax = arena.getSecondsWaitingRoom();
         gameTimeMax = 0; //Since game time is calculated based on number of counselors during every game
         maxTimeUntilPoliceArrive = 0;
         timeUntilPoliceArrive = 0;
@@ -145,14 +143,6 @@ GameManager {
         waitingTimeLeftInSeconds = value;
     }
 
-    /**
-     * Returns the maximum number of seconds in the waiting countdown
-     *
-     * @return
-     */
-    public int getWaitingTimeMax() {
-        return waitingTimeMax;
-    }
 
     /**
      * Returns the number of seconds left in the game
@@ -273,7 +263,8 @@ GameManager {
         policeArrived = value;
 
         if (value) {
-            //TODO: Idk fire fireworks or some shit. Send message to all players.
+            arena.getLocationManager().getEscapePointManager().selectRandomEscapePointForPolice();
+            getPlayerManager().sendActionBarMessageToAllPlayers(ChatColor.DARK_AQUA + "The police have arrived!", 80);
         }
     }
 
@@ -282,7 +273,7 @@ GameManager {
      */
     private void resetGameStatistics() {
         setGameTimeLeft(getGameTimeMax());
-        waitingTimeLeftInSeconds = getWaitingTimeMax();
+        waitingTimeLeftInSeconds = arena.getSecondsWaitingRoom();
         tommyCalled = false;
         tommySpawned = false;
         policeCalled = false;
@@ -409,6 +400,7 @@ GameManager {
     private void beginGame() {
         //Reset location manager spawn point availability
         arena.getLocationManager().resetAvailableStartingPoints();
+        arena.getLocationManager().getEscapePointManager().resetEscapePoints();
 
         //Assign all players roles
         getPlayerManager().performInProgressActions();
@@ -439,6 +431,7 @@ GameManager {
 
         //Replace any items changed during gameplay
         arena.getObjectManager().restorePerGameObjects();
+        arena.getLocationManager().getEscapePointManager().resetEscapePoints();
 
         //Stop the weather service
         weatherManager.endGame();

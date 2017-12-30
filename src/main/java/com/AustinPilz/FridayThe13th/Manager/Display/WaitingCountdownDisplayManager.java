@@ -54,16 +54,10 @@ public class WaitingCountdownDisplayManager
      */
     public void updateCountdownValue()
     {
-        float value = ((((float)arena.getGameManager().getWaitingTimeLeft() - 0) * (1 - 0)) / (arena.getGameManager().getWaitingTimeMax() - 0)) + 0;
+        float value = ((((float) arena.getGameManager().getWaitingTimeLeft() - 0) * (1 - 0)) / (arena.getSecondsWaitingRoom() - 0)) + 0;
         waitingBar.setProgress(value);
 
         int rem = arena.getGameManager().getWaitingTimeLeft() % 3600;
         int sec = rem % 60;
-
-        if (sec < 5)
-        {
-            //Play tick/tock sound for all players
-
-        }
     }
 }
