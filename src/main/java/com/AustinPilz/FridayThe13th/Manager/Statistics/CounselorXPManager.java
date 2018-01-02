@@ -110,7 +110,7 @@ public class CounselorXPManager {
      */
     public void addEscape() {
         escapes++;
-        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.counselorEscape", "Escaped: +{0}xp", statsJasonStuns * XPAward.Counselor_Escaped.getXPAward()), 60);
+        ActionBarAPI.sendActionBar(counselor.getPlayer(), FridayThe13th.language.get(counselor.getPlayer(), "actionbar.xp.counselorEscape", "Escaped: +{0}xp", escapes * XPAward.Counselor_Escaped.getXPAward()), 60);
     }
 
     /**

@@ -412,11 +412,10 @@ GameManager {
         arena.getObjectManager().getPhoneManager().displayGamePhones();
 
         //Radios
-        arena.getObjectManager().placeRadios();
+        arena.getObjectManager().placePerItemGames();
 
         //Start the weather service
         weatherManager.beginWeatherService();
-
     }
 
     /**

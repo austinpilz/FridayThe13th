@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Components.Arena.EscapePoint;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
@@ -188,11 +189,16 @@ public class PlayerListener implements Listener {
                     } else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof TripwireHook) {
                         if (arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(event.getClickedBlock())) {
                             if (arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).isBroken()) {
-                                if (event.getPlayer().getInventory().contains(Material.REDSTONE)) {
+                                ArenaPhone phone = arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock());
+                                if ((!phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.BONE)) || (phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.REDSTONE))) {
                                     //Register the repair attempt
                                     arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
                                 } else {
-                                    event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.needRepairWire-Phone", "You need repair wire to fix broken phones."));
+                                    if (!phone.isFusePresent()) {
+                                        event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.needPhoneFuse", "You need a phone fuse to fix broken phones."));
+                                    } else {
+                                        event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.needPhoneRepairWire", "You need a repair wire to fix broken phones."));
+                                    }
                                 }
                             } else {
                                 arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
@@ -320,23 +326,25 @@ public class PlayerListener implements Listener {
 
             if (arena.getGameManager().isGameInProgress())
             {
-                //Make sure they're within the boundaries
-
-                if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && arena.getLocationManager().getEscapePointManager().isLocationWithinEscapePoint(event.getTo())) {
-                    EscapePoint escapePoint = arena.getLocationManager().getEscapePointManager().getEscapePointFromLocation(event.getTo());
-                    //Counselor is trying to move into
-                    if ((escapePoint.isWaterPoint() && event.getPlayer().getVehicle() instanceof Boat) || (escapePoint.isLandPoint() && event.getPlayer().getVehicle() instanceof Minecart)) {
-                        //Counselor escaping via vehicle
-
-                    } else {
-                        //Counselor escaping via foot - can only do when police are there
-                        if (escapePoint.isLandPoint() && escapePoint.isPoliceLocation()) {
-                            //They can escape
-                            arena.getGameManager().getPlayerManager().onPlayerEscape(event.getPlayer());
+                if (arena.getLocationManager().getEscapePointManager().isLocationWithinEscapePoint(event.getTo())) {
+                    if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                        EscapePoint escapePoint = arena.getLocationManager().getEscapePointManager().getEscapePointFromLocation(event.getTo());
+                        //Counselor is trying to move into
+                        if ((escapePoint.isWaterPoint() && event.getPlayer().getVehicle() instanceof Boat) || (escapePoint.isLandPoint() && event.getPlayer().getVehicle() instanceof Minecart)) {
+                            //Counselor escaping via vehicle
+                            //TODO
                         } else {
-                            //Cannot escape on foot if the police aren't there.
-                            event.setCancelled(true);
+                            //Counselor escaping via foot - can only do when police are there
+                            if (escapePoint.isLandPoint() && escapePoint.isPoliceLocation()) {
+                                //They can escape
+                                arena.getGameManager().getPlayerManager().onPlayerEscape(event.getPlayer());
+                            } else {
+                                //Cannot escape on foot if the police aren't there.
+                                event.setCancelled(true);
+                            }
                         }
+                    } else {
+                        event.setCancelled(true); //Non-counselors cannot enter escape point areas
                     }
                 } else if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
                     event.setCancelled(true);

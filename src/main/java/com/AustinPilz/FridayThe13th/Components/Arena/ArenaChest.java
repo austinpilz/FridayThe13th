@@ -235,6 +235,17 @@ public class ArenaChest
     }
 
     /**
+     * Places the phone fuse in the chest
+     */
+    public void placePhoneFuse() {
+        ItemStack item = new ItemStack(Material.BONE, 1);
+        ItemMeta metaData = item.getItemMeta();
+        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.PhoneFuse", "Phone Fuse"));
+        item.setItemMeta(metaData);
+        getChest().getBlockInventory().addItem(item);
+    }
+
+    /**
      * Clears the inventory of the chest
      */
     public void clear()

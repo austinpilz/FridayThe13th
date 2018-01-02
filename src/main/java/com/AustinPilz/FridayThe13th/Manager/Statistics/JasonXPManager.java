@@ -98,6 +98,11 @@ public class JasonXPManager {
         //Calculate Time Left Bonus
         xp += timeLeftMinutes * XPAward.Jason_MinuteLeft.getXPAward();
 
+        //Calculate bonus if no players escaped
+        if (arena.getGameManager().getPlayerManager().getNumCounselors() > 0 && arena.getGameManager().getPlayerManager().getNumPlayersEscaped() == 0) {
+            xp += XPAward.Jason_NoEscapes.getXPAward();
+        }
+
         return xp;
     }
 }

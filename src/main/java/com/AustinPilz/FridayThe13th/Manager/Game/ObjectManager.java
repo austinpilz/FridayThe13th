@@ -222,9 +222,29 @@ public class ObjectManager
     }
 
     /**
-     * Places walkies talkies randomly across the item chests
+     * Places per item games randomly
      */
-    protected void placeRadios()
+    protected void placePerItemGames() {
+        //RADIOS
+        ArenaChest[] radioChests = getRandomizedItemChests();
+        double numChestsToPlaceForRadios = Math.min(Math.round((arena.getGameManager().getPlayerManager().getNumCounselors() + 1) / 2), radioChests.length);
+        int i;
+        for (i = 1; i <= numChestsToPlaceForRadios; i++) {
+            radioChests[i].placeRadio();
+        }
+
+        //Place the phone fuse
+        ArenaChest[] fuseChests = getRandomizedItemChests();
+        if (fuseChests.length > 0) {
+            fuseChests[0].placePhoneFuse();
+        }
+
+    }
+
+    /**
+     * @return Ranomized item chest array
+     */
+    private ArenaChest[] getRandomizedItemChests()
     {
         ArenaChest[] chests = itemChests.toArray(new ArenaChest[itemChests.size()]);
 
@@ -240,14 +260,9 @@ public class ObjectManager
             chests[i] = a;
         }
 
-        //We only place 1/2 as many radios as counselors - ensure we don't attempt to place more than we have chests
-        double numnChestsToPlace = Math.min(Math.round((arena.getGameManager().getPlayerManager().getNumCounselors()+1)/2), chests.length);
-
-        for (int i = 1; i <= numnChestsToPlace; i++)
-        {
-            chests[i].placeRadio();
-        }
+        return chests;
     }
+
 
     /**
      * Returns all doors that are "broken" open

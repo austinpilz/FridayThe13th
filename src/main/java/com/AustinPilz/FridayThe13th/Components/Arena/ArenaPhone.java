@@ -20,6 +20,7 @@ public class ArenaPhone
     private Hologram hologram;
     private boolean isVisible;
     private boolean isBroken;
+    private boolean isFusePresent;
 
     private double callAttempts;
     private int callAttemptsRequired;
@@ -36,6 +37,7 @@ public class ArenaPhone
         setPhoneType(PhoneType.None);
         isVisible = false;
         isBroken = false;
+        isFusePresent = false;
 
         //Values
         callAttempts = 0;
@@ -92,6 +94,13 @@ public class ArenaPhone
      */
     public boolean isBroken() {
         return isBroken;
+    }
+
+    /**
+     * @return If the fuse is present in the phone
+     */
+    public boolean isFusePresent() {
+        return isFusePresent;
     }
 
     /**
@@ -189,7 +198,14 @@ public class ArenaPhone
 
                     if (hasRepairBeenCompleted()) {
                         isBroken = false;
-                        InventoryActions.remove(player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
+
+                        if (!isFusePresent) {
+                            isFusePresent = true;
+                            InventoryActions.remove(player.getPlayer().getInventory(), Material.BONE, 1, (short) -1);
+                        } else {
+                            InventoryActions.remove(player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
+                        }
+
                         ActionBarAPI.sendActionBar(player, ChatColor.GREEN + FridayThe13th.language.get(player, "actionbar.repair.phone", "Phone repair successful!"), 60);
                     }
                 } else {

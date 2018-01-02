@@ -78,16 +78,18 @@ public class PhoneManager {
      * Determines phone types and displays them accordingly for players
      */
     public void displayGamePhones() {
-        ArenaPhone[] randomizedPhones = getRandomizedPhoneArray();
+        if (phones.size() > 0) {
+            ArenaPhone[] randomizedPhones = getRandomizedPhoneArray();
 
-        //Tommy Jarvis phone
-        randomizedPhones[0].setPhoneType(PhoneType.TommyJarvis);
-        randomizedPhones[0].showPhone();
+            //Tommy Jarvis phone
+            randomizedPhones[0].setPhoneType(PhoneType.TommyJarvis);
+            randomizedPhones[0].showPhone();
 
-        //Only assign police phone if there's at least one land escape point
-        if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0) {
-            randomizedPhones[1].setPhoneType(PhoneType.Police);
-            randomizedPhones[1].showPhone();
+            //Only assign police phone if there's at least one land escape point
+            if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0) {
+                randomizedPhones[1].setPhoneType(PhoneType.Police);
+                randomizedPhones[1].showPhone();
+            }
         }
     }
 

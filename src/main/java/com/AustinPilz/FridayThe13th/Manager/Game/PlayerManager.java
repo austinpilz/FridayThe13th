@@ -40,7 +40,7 @@ public class PlayerManager {
 
     //Game Stat
     private HashMap<String, Player> alivePlayers;
-    private HashSet<String> deadPlayers;
+    private HashSet<Player> deadPlayers;
     private HashSet<Player> escapedPlayers;
 
     /**
@@ -109,7 +109,7 @@ public class PlayerManager {
      *
      * @return
      */
-    public HashSet<String> getDeadPlayers() {
+    public HashSet<Player> getDeadPlayers() {
         return deadPlayers;
     }
 
@@ -220,6 +220,13 @@ public class PlayerManager {
      */
     public int getNumPlayersDead() {
         return deadPlayers.size();
+    }
+
+    /**
+     * @return Number of counselors that escaped
+     */
+    public int getNumPlayersEscaped() {
+        return escapedPlayers.size();
     }
 
     /**
@@ -499,7 +506,7 @@ public class PlayerManager {
         if (arena.getGameManager().isGameInProgress()) {
             //Transition from alive to dead hash set
             alivePlayers.remove(player.getUniqueId().toString());
-            deadPlayers.add(player.getUniqueId().toString());
+            deadPlayers.add(player);
 
             //Check to see if they're jason, which would end the game
             if (isJason(player)) {
@@ -537,11 +544,17 @@ public class PlayerManager {
      */
     public void onPlayerEscape(Player player) {
         if (arena.getGameManager().isGameInProgress()) {
-            alivePlayers.remove(player.getUniqueId().toString());
-            escapedPlayers.add(player);
-
             //Check to see if they're jason, which would end the game
             if (isCounselor(player)) {
+                alivePlayers.remove(player.getUniqueId().toString());
+                escapedPlayers.add(player);
+
+                //Award them XP
+                getCounselor(player).getXPManager().addEscape();
+
+                //Let everyone know
+                sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerEscapeBroadcast", "{0} escaped.", player.getName()));
+
                 if (getNumPlayersAlive() > 1) {
                     //They're are others still alive, enter spectating mode
                     getCounselor(player).transitionToSpectatingMode();
@@ -551,11 +564,6 @@ public class PlayerManager {
                     arena.getGameManager().endGame();
                 }
             }
-            //Award them XP
-            getCounselor(player).getXPManager().addEscape();
-
-            //Let everyone know
-            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerEscapeBroadcast", "{0} escaped.", player.getName()));
         }
     }
 
@@ -798,7 +806,10 @@ public class PlayerManager {
      */
     protected void performEndGameActions() {
         //Game ended
-        sendMessageToAllPlayers(ChatColor.RED + "Game over! " + ChatColor.WHITE + getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed." + " Thanks for playing Friday the 13th.");
+        sendMessageToAllPlayers(ChatColor.RED + "" + ChatColor.BOLD + "Game over!");
+        sendMessageToAllPlayers(getNumPlayersDead() + "/" + getNumCounselors() + " counselors killed.");
+        sendMessageToAllPlayers(getNumPlayersEscaped() + "/" + getNumCounselors() + " counselors escaped.");
+        sendMessageToAllPlayers("Thanks for playing Friday the 13th.");
 
         //Award XP to Counselors and Jason
         Iterator counselorIterator = getCounselors().entrySet().iterator();
@@ -843,7 +854,6 @@ public class PlayerManager {
         FridayThe13th.arenaController.removePlayer(playerUUID);
         removePlayer(playerUUID);
         alivePlayers.remove(playerUUID);
-        deadPlayers.remove(playerUUID);
 
         if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty()) {
             //Waiting mode, so just teleport them out
@@ -900,6 +910,7 @@ public class PlayerManager {
             //Actions done only if they're online
             if (offlinePlayer.isOnline()) {
                 Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
+                deadPlayers.remove(playerUUID);
 
                 //Hide game-wide scoreboard
                 arena.getGameManager().getGameScoreboardManager().hideFromPlayer(player);
@@ -969,9 +980,14 @@ public class PlayerManager {
     public void spawnTommyJarvis() {
         //set players stamina higher and max fear higher
         if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned()) {
-            if (getNumPlayersDead() > 0) {
-                //Select a random dead player
-                String[] pl = getDeadPlayers().toArray(new String[getDeadPlayers().size()]);
+
+            HashSet<Player> players = new HashSet<>();
+            players.addAll(escapedPlayers);
+            players.addAll(deadPlayers);
+
+            if (players.size() > 0) {
+                //Select a random player
+                Player[] pl = getDeadPlayers().toArray(new Player[getDeadPlayers().size()]);
 
                 //Randomize starting points
                 Random rnd = ThreadLocalRandom.current();
@@ -979,7 +995,7 @@ public class PlayerManager {
                     int index = rnd.nextInt(i + 1);
 
                     // Simple swap
-                    String a = pl[index];
+                    Player a = pl[index];
                     pl[index] = pl[i];
                     pl[i] = a;
                 }
@@ -1012,7 +1028,7 @@ public class PlayerManager {
 
                 //Move from dead->alive hashmap
                 alivePlayers.put(counselor.getPlayer().getUniqueId().toString(), getCounselor(pl[0]).getPlayer());
-                deadPlayers.remove(counselor.getPlayer().getUniqueId().toString());
+                deadPlayers.remove(counselor.getPlayer());
 
                 //Message everyone
                 sendMessageToAllPlayers(ChatColor.AQUA + counselor.getPlayer().getName() + ChatColor.WHITE + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.chat.TommyRisen", "has risen from the dead as Tommy Jarvis."));

@@ -1,11 +1,10 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Enum.EscapePointType;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
+import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Runnable.EscapePointEffect;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Firework;
-import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.Arrays;
 
@@ -16,6 +15,7 @@ public class EscapePoint {
     private Location boundary2;
     private EscapePointType type;
     private boolean isPoliceLocation;
+    private int policeEffectTask;
 
     public EscapePoint(Arena arena, EscapePointType type, Location boundary1, Location boundary2) {
         this.arena = arena;
@@ -23,6 +23,7 @@ public class EscapePoint {
         this.boundary1 = boundary1;
         this.boundary2 = boundary2;
         isPoliceLocation = false;
+        policeEffectTask = -1;
     }
 
     /**
@@ -77,33 +78,15 @@ public class EscapePoint {
     /**
      * Sets the escape point as the police location
      *
-     * @param value
+     * @param value Boolean
      */
     public void setPoliceLocation(boolean value) {
         isPoliceLocation = value;
 
         if (value) {
-            Firework f = getBoundary1().getWorld().spawn(getBoundary1().getWorld().getHighestBlockAt(getBoundary1()).getLocation(), Firework.class);
-            FireworkMeta fm = f.getFireworkMeta();
-            fm.addEffect(FireworkEffect.builder()
-                    .flicker(true)
-                    .trail(true)
-                    .with(FireworkEffect.Type.BALL_LARGE)
-                    .withColor(Color.RED)
-                    .build());
-            fm.setPower(1);
-            f.setFireworkMeta(fm);
-
-            Firework f2 = getBoundary1().getWorld().spawn(getBoundary1().getWorld().getHighestBlockAt(getBoundary2()).getLocation(), Firework.class);
-            FireworkMeta fm2 = f2.getFireworkMeta();
-            fm2.addEffect(FireworkEffect.builder()
-                    .flicker(true)
-                    .trail(true)
-                    .with(FireworkEffect.Type.BALL_LARGE)
-                    .withColor(Color.BLUE)
-                    .build());
-            fm2.setPower(1);
-            f2.setFireworkMeta(fm2);
+            policeEffectTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new EscapePointEffect(this), 0, 200);
+        } else {
+            Bukkit.getScheduler().cancelTask(policeEffectTask);
         }
     }
 
