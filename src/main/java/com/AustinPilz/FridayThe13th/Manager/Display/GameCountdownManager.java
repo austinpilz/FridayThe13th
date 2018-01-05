@@ -1,7 +1,6 @@
 package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
-import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
@@ -21,6 +20,7 @@ public class GameCountdownManager
     private Arena arena;
     private BossBar gameCountdownBar;
 
+
     public GameCountdownManager (Arena arena)
     {
         this.arena = arena;
@@ -30,15 +30,6 @@ public class GameCountdownManager
 
     public void updateCountdown()
     {
-        Iterator counselorIterator = arena.getGameManager().getPlayerManager().getCounselors().entrySet().iterator();
-        while (counselorIterator.hasNext())
-        {
-            Map.Entry entry = (Map.Entry) counselorIterator.next();
-            Counselor counselor = (Counselor) entry.getValue();
-        }
-
-
-
         if (arena.getGameManager().getGameTimeLeft() == 0)
         {
             arena.getGameManager().gameTimeUp(); //game ran out of time

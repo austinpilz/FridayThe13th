@@ -1,5 +1,8 @@
-package com.AustinPilz.FridayThe13th.Components.Profiles;
+package com.AustinPilz.FridayThe13th.Manager;
 
+
+import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
+import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 
 public class F13ProfileManager {
 

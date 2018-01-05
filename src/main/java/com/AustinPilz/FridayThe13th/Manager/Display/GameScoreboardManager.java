@@ -41,7 +41,7 @@ public class GameScoreboardManager
         SidebarString arenaTitle = new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Game", "Game"));
         gameScoreboard.addEntry(arenaTitle);
 
-        SidebarString arenaName = new SidebarString(arena.getArenaName());
+        SidebarString arenaName = new SidebarString(arena.getName());
         gameScoreboard.addEntry(arenaName);
 
         gameScoreboard.addEntry(new SidebarString(" "));
@@ -73,7 +73,21 @@ public class GameScoreboardManager
         gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.AliveDead", "Alive / Dead")));
         gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + "" + alive + ChatColor.WHITE + " / " + ChatColor.RED + "" + arena.getGameManager().getPlayerManager().getNumPlayersDead()));
 
-        if (arena.getGameManager().getPlayerManager().getNumSpectators() > 0)
+        if (arena.getGameManager().havePoliceBeenCalled()) {
+            gameScoreboard.addEntry(new SidebarString("    "));
+            gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Police", "Police")));
+
+            if (arena.getGameManager().havePoliceArrived()) {
+                gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.PoliceArrived", "Arrived")));
+            } else {
+                int rem2 = arena.getGameManager().getTimeUntilPoliceArrive() % 3600;
+                int mn2 = rem2 / 60;
+                int sec2 = rem2 % 60;
+
+                gameScoreboard.addEntry(new SidebarString(mn2 + "m " + sec2 + "s"));
+            }
+
+        } else if (arena.getGameManager().getPlayerManager().getNumSpectators() > 0)
         {
             gameScoreboard.addEntry(new SidebarString("    "));
             gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Spectators", "Spectators")));

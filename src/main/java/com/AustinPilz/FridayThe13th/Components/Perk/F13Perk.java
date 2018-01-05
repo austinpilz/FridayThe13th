@@ -10,11 +10,14 @@ public enum F13Perk {
     Jason_Part2Pickaxe(CharacterType.Jason, "Part II Pickaxe", "J-Part2PickAxe", "Works only with Jason Part II.", 10000, Material.DIAMOND_PICKAXE),
     Jason_AxeThrow(CharacterType.Jason, "Axe Throw", "J-AxeThrow", "Jason throws axe to kill.", 15000, Material.DIAMOND_AXE),
 
-    Counselor_Dramamine(CharacterType.Counselor, "Dramamine", "C-Dramamine", "Random chance to remove nausea effect.", 10000, Material.GLOWSTONE_DUST),
+    Counselor_Dramamine(CharacterType.Counselor, "Dramamine", "C-Dramamine", "No more nausea effect.", 10000, Material.GLOWSTONE_DUST),
     Counselor_FirstAid(CharacterType.Counselor, "First Aid", "C-FirstAid", "Start every game with an antiseptic spray.", 5000, Material.GLASS_BOTTLE),
     Counselor_Radio(CharacterType.Counselor, "Sat Phone", "C-SatPhone", "Start every game with a radio.", 20000, Material.NETHER_STAR),
     Counselor_AhDarkness(CharacterType.Counselor, "Ah, Darkness", "C-AhDarkness", "Ability to turn off light switches.", 5000, Material.LEVER),
     ;
+
+    //Counselor - Low Profile - Less likely to be sensed
+    //Counselor - Medic - Get 2 uses out of every potion
 
     private CharacterType characterType;
     private String perkName;

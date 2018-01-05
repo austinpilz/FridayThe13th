@@ -64,7 +64,7 @@ public class ChatController
                 areAnyPlayersRecipients = true;
             }
 
-            //Always add all of the spectators - they get all messages
+            //Always add all of the spectators - but don't consider them being a player hearing the message
             for (Spectator spectator : arena.getGameManager().getPlayerManager().getSpectators().values())
             {
                 recipients.add(spectator.getPlayer());
@@ -105,7 +105,6 @@ public class ChatController
             //Waiting room
             prefix = ChatColor.GRAY + "[" + FridayThe13th.language.get(sender, "game.chatPrefix.Waiting", "Waiting") + "]" + ChatColor.WHITE;
         }
-
 
         //Final message
         String finalMessage = wasHeard + FridayThe13th.playerController.getPlayer(sender).getLevel().getChatPrefix() + prefix + " " + sender.getName() + ChatColor.WHITE + ": " + message;

@@ -47,7 +47,7 @@ public class EscapePointSetupSession {
 
     private void lowPointSelect() {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "To add " + pointType.getFieldDescription().toLowerCase() + " escape point, go to the lowest boundary point and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + ".");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -58,7 +58,7 @@ public class EscapePointSetupSession {
         boundary1 = player.getLocation();
 
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "Now go to the highest boundary and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + ".");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -74,7 +74,7 @@ public class EscapePointSetupSession {
             arena.getLocationManager().getEscapePointManager().addEscapePoint(escapePoint);
         } catch (SaveToDatabaseException exception) {
             this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-            this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+            this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
             this.player.sendMessage("");
             this.player.sendMessage(ChatColor.WHITE + "Escape point setup " + ChatColor.RED + "failed" + ChatColor.WHITE + ". See console.");
             this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -84,7 +84,7 @@ public class EscapePointSetupSession {
         }
 
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "Escape point setup " + ChatColor.GREEN + "success" + ChatColor.WHITE + ".");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");

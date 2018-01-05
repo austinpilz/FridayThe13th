@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PurchasedPerksMenu {
+public class Shop_PurchasedPerksMenu {
     /**
      * Opens the menu for the supplied player
      *

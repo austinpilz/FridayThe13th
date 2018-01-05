@@ -44,7 +44,7 @@ public class PhoneSetupSession
     private void beginSelection()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "To add phone, put it in your crosshairs and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + ".");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -57,21 +57,22 @@ public class PhoneSetupSession
 
         if (phoneLocation.getBlock().getType().equals(Material.TRIPWIRE_HOOK))
         {
-            try
-            {
-                ArenaPhone phone = new ArenaPhone(arena, phoneLocation);
-                arena.getObjectManager().getPhoneManager().addPhone(phone);
-                FridayThe13th.inputOutput.storePhone(phone);
-                FridayThe13th.phoneSetupManager.removePlayerSetupSession(playerUUID);
+            if (!arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(phoneLocation.getBlock())) {
+                try {
+                    ArenaPhone phone = new ArenaPhone(arena, phoneLocation);
+                    arena.getObjectManager().getPhoneManager().addPhone(phone);
+                    FridayThe13th.inputOutput.storePhone(phone);
+                    FridayThe13th.phoneSetupManager.removePlayerSetupSession(playerUUID);
 
-                player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Success!" + ChatColor.WHITE + " You've added the phone to " + arena.getArenaName() + ".");
-            }
-            catch (SaveToDatabaseException exception)
+                    player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Success!" + ChatColor.WHITE + " You've added the phone to " + arena.getName() + ".");
+                } catch (SaveToDatabaseException exception) {
+                    player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! There was an issue while attempting to save phone to the database.");
+                } finally {
+                    FridayThe13th.chestSetupManager.removePlayerSetupSession(playerUUID);
+                }
+            } else
             {
-                player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! There was an issue while attempting to save phone to the database.");
-            }
-            finally
-            {
+                player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.RED + "Error!" + ChatColor.WHITE + " That phone has already been added to the arena.");
                 FridayThe13th.chestSetupManager.removePlayerSetupSession(playerUUID);
             }
         }

@@ -71,7 +71,6 @@ public class CounselorStatsDisplayManager
         }
 
         updaterTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new CounselorStatsDisplayUpdate(counselor), 0, 20);
-
     }
 
     /**

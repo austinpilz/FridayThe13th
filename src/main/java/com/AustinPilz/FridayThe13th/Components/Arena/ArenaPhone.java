@@ -201,7 +201,7 @@ public class ArenaPhone
 
                         if (!isFusePresent) {
                             isFusePresent = true;
-                            InventoryActions.remove(player.getPlayer().getInventory(), Material.BONE, 1, (short) -1);
+                            InventoryActions.remove(player.getPlayer().getInventory(), Material.END_ROD, 1, (short) -1);
                         } else {
                             InventoryActions.remove(player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
                         }

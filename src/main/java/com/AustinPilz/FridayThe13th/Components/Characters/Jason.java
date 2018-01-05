@@ -197,7 +197,7 @@ public class Jason extends F13Character
         getPlayer().getInventory().clear(); //clear inventory before hand
         getPlayer().getInventory().addItem(sword);
         getPlayer().getInventory().addItem(bow);
-        getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, 2));
+        getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, getF13Player().getJasonProfile().getNumStartingKnives()));
         getPlayer().getInventory().addItem(sensePotion);
         getPlayer().getInventory().addItem(jasonTraps);
 

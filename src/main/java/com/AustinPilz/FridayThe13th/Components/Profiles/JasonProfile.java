@@ -8,20 +8,20 @@ import com.AustinPilz.FridayThe13th.Components.Level.WarpLevel;
 import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 
 public enum JasonProfile {
-    PartOne("Part I", "J-P1", 1, F13PlayerLevel.L1, F13Skin.JASON_Part1, 5, StalkLevel.One, SenseLevel.One, WarpLevel.One, F13SoundEffect.RegularChase, false),
-    PartTwo("Part II", "J-P2", 2, F13PlayerLevel.L3, F13Skin.JASON_Part2, 5, StalkLevel.One, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase, false),
-    PartThree("Part III", "J-P3", 3, F13PlayerLevel.L5, F13Skin.JASON_Part3, 5, StalkLevel.Two, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase, false),
-    PartFour("Part IV", "J-P4", 4, F13PlayerLevel.L7, F13Skin.JASON_Part4, 4, StalkLevel.Two, SenseLevel.Three, WarpLevel.Two, F13SoundEffect.RegularChase, false),
-    PartFive("Part V", "J-P5", 5, F13PlayerLevel.L9, F13Skin.JASON_Part5, 4, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false),
-    PartSix("Part VI", "J-P6", 6, F13PlayerLevel.L11, F13Skin.JASON_Part6, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false),
-    PartSeven("Part VII", "J-P7", 7, F13PlayerLevel.L13, F13Skin.JASON_Part7, 3, StalkLevel.Four, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false),
-    PartEight("Part VIII", "J-P8", 8, F13PlayerLevel.L15, F13Skin.JASON_Part8, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase, false),
-    PartNine("Part IX", "J-P9", 9, F13PlayerLevel.L17, F13Skin.JASON_Part9, 2, StalkLevel.Four, SenseLevel.Five, WarpLevel.Four, F13SoundEffect.RegularChase, false),
-    JasonX("Jason X", "J-X", 10, F13PlayerLevel.L18, F13Skin.Jason_X, 2, StalkLevel.Three, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase, false),
-    Retro("Retro", "J-Retro", 11, F13PlayerLevel.L20, F13Skin.Jason_Retro, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RetroChase, false),
-    Savini("Savini", "J-Savini", 12, F13PlayerLevel.L20, F13Skin.Jason_Savini, 1, StalkLevel.Five, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase, false),
-    Pamela_Voorhees("Pamela Voorhees", "J-Pamela", 13, F13PlayerLevel.L10, F13Skin.Pamela_Voorhees, 2, StalkLevel.Five, SenseLevel.Five, WarpLevel.One, F13SoundEffect.RegularChase, true),
-    Christmas("Christmas Edition", "J-XMAS", 8, F13PlayerLevel.L15, F13Skin.Jason_Christmas, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase, true),
+    PartOne("Part I", "J-P1", 1, F13PlayerLevel.L1, F13Skin.JASON_Part1, 5, StalkLevel.One, SenseLevel.One, WarpLevel.One, F13SoundEffect.RegularChase, false, 1),
+    PartTwo("Part II", "J-P2", 2, F13PlayerLevel.L3, F13Skin.JASON_Part2, 5, StalkLevel.One, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase, false, 1),
+    PartThree("Part III", "J-P3", 3, F13PlayerLevel.L5, F13Skin.JASON_Part3, 5, StalkLevel.Two, SenseLevel.Two, WarpLevel.Two, F13SoundEffect.RegularChase, false, 2),
+    PartFour("Part IV", "J-P4", 4, F13PlayerLevel.L7, F13Skin.JASON_Part4, 4, StalkLevel.Two, SenseLevel.Three, WarpLevel.Two, F13SoundEffect.RegularChase, false, 2),
+    PartFive("Part V", "J-P5", 5, F13PlayerLevel.L9, F13Skin.JASON_Part5, 4, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false, 3),
+    PartSix("Part VI", "J-P6", 6, F13PlayerLevel.L11, F13Skin.JASON_Part6, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false, 3),
+    PartSeven("Part VII", "J-P7", 7, F13PlayerLevel.L13, F13Skin.JASON_Part7, 3, StalkLevel.Four, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RegularChase, false, 4),
+    PartEight("Part VIII", "J-P8", 8, F13PlayerLevel.L15, F13Skin.JASON_Part8, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase, false, 4),
+    PartNine("Part IX", "J-P9", 9, F13PlayerLevel.L17, F13Skin.JASON_Part9, 2, StalkLevel.Four, SenseLevel.Five, WarpLevel.Four, F13SoundEffect.RegularChase, false, 5),
+    JasonX("Jason X", "J-X", 10, F13PlayerLevel.L18, F13Skin.Jason_X, 2, StalkLevel.Three, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase, false, 5),
+    Retro("Retro", "J-Retro", 11, F13PlayerLevel.L20, F13Skin.Jason_Retro, 3, StalkLevel.Three, SenseLevel.Three, WarpLevel.Three, F13SoundEffect.RetroChase, false, 5),
+    Savini("Savini", "J-Savini", 12, F13PlayerLevel.L20, F13Skin.Jason_Savini, 1, StalkLevel.Five, SenseLevel.Five, WarpLevel.Five, F13SoundEffect.RegularChase, false, 6),
+    Pamela_Voorhees("Pamela Voorhees", "J-Pamela", 13, F13PlayerLevel.L10, F13Skin.Pamela_Voorhees, 2, StalkLevel.Five, SenseLevel.Five, WarpLevel.One, F13SoundEffect.RegularChase, true, 1),
+    Christmas("Christmas Edition", "J-XMAS", 8, F13PlayerLevel.L15, F13Skin.Jason_Christmas, 3, StalkLevel.Four, SenseLevel.Four, WarpLevel.Four, F13SoundEffect.RegularChase, true, 4),
     ;
 
     private String displayName;
@@ -34,11 +34,12 @@ public enum JasonProfile {
     private F13SoundEffect chaseMusic;
     private int order;
     private boolean f13Only;
+    private int numStartingKnives;
 
     //In-Game Quantifiers
     private int requiredDoorBreaks;
 
-    JasonProfile(String name, String internal, int o, F13PlayerLevel level, F13Skin s, int doorBreaks, StalkLevel stalk, SenseLevel sense, WarpLevel warp, F13SoundEffect chase, Boolean special) {
+    JasonProfile(String name, String internal, int o, F13PlayerLevel level, F13Skin s, int doorBreaks, StalkLevel stalk, SenseLevel sense, WarpLevel warp, F13SoundEffect chase, Boolean special, int numStartingKnives) {
         displayName = name;
         internalIdentifier = internal;
         requiredLevel = level;
@@ -49,6 +50,7 @@ public enum JasonProfile {
         chaseMusic = chase;
         order = o;
         f13Only = special;
+        this.numStartingKnives = numStartingKnives;
 
         //In-Game Quantifiers
         requiredDoorBreaks = doorBreaks;
@@ -150,5 +152,14 @@ public enum JasonProfile {
     public boolean isFridayThe13thOnly()
     {
         return f13Only;
+    }
+
+    /**
+     * Returns the number of starting knives
+     *
+     * @return
+     */
+    public int getNumStartingKnives() {
+        return numStartingKnives;
     }
 }

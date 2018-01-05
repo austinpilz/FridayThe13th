@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.*;
 import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
+import com.AustinPilz.FridayThe13th.Factory.F13ItemFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
@@ -25,6 +26,7 @@ public class ObjectManager
     private Arena arena;
     private WindowManager windowManager;
     private PhoneManager phoneManager;
+    private VehicleManager vehicleManager;
 
     private HashSet<ArenaChest> weaponChests;
     private HashSet<ArenaChest> itemChests;
@@ -37,6 +39,9 @@ public class ObjectManager
     private HashMap<Block, Trap> traps;
     private HashSet<Corpses.CorpseData> corpses;
 
+    //TODO - Make ChestManager, DoorManager, SwitchManager, TrapManager, CorpseManager
+    //TODO - Make sure door position is set back
+
 
     /**
      * @param arena Game object
@@ -46,6 +51,7 @@ public class ObjectManager
         this.arena = arena;
         this.windowManager = new WindowManager(arena);
         this.phoneManager = new PhoneManager(arena);
+        this.vehicleManager = new VehicleManager(arena);
         this.itemChests = new HashSet<>();
         this.weaponChests = new HashSet<>();
 
@@ -115,6 +121,14 @@ public class ObjectManager
         return phoneManager;
     }
 
+    /**
+     * Returns the vehicle manager
+     *
+     * @return Vehicle Manager
+     */
+    public VehicleManager getVehicleManager() {
+        return vehicleManager;
+    }
 
     /**
      * Adds a new chest
@@ -230,15 +244,33 @@ public class ObjectManager
         double numChestsToPlaceForRadios = Math.min(Math.round((arena.getGameManager().getPlayerManager().getNumCounselors() + 1) / 2), radioChests.length);
         int i;
         for (i = 1; i <= numChestsToPlaceForRadios; i++) {
-            radioChests[i].placeRadio();
+            radioChests[i].placeItem(F13ItemFactory.getRadio());
         }
 
         //Place the phone fuse
         ArenaChest[] fuseChests = getRandomizedItemChests();
         if (fuseChests.length > 0) {
-            fuseChests[0].placePhoneFuse();
+            fuseChests[0].placeItem(F13ItemFactory.getPhoneFuse());
         }
 
+        //Place the vehicle items
+        ArenaChest[] vehicleChests = getRandomizedItemChests();
+        if (vehicleChests.length >= arena.getObjectManager().getVehicleManager().getMinRequiredChests()) {
+            int index = 0;
+
+            for (int x = 0; x < arena.getObjectManager().getVehicleManager().getNumCars(); x++) {
+                vehicleChests[index++].placeItem(F13ItemFactory.getVehicleGas());
+                vehicleChests[index++].placeItem(F13ItemFactory.getVehicleBattery());
+                vehicleChests[index++].placeItem(F13ItemFactory.getVehicleKeys());
+            }
+
+            for (int x = 0; x < arena.getObjectManager().getVehicleManager().getNumBoats(); x++) {
+                vehicleChests[index++].placeItem(F13ItemFactory.getVehicleGas());
+                vehicleChests[index++].placeItem(F13ItemFactory.getVehiclePropeller());
+            }
+        } else {
+            Bukkit.broadcastMessage("Not enough for vehicles :( ");
+        }
     }
 
     /**

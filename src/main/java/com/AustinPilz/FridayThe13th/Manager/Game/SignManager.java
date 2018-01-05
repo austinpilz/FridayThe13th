@@ -55,20 +55,20 @@ public class SignManager
         }
     }
 
-    private void updateSign(Sign sign)
-    {
+    /**
+     * Updates the sign's display
+     *
+     * @param sign
+     */
+    private void updateSign(Sign sign) {
         sign.setLine(0, ChatColor.RED + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.signPrefix", FridayThe13th.signPrefix));
-        sign.setLine(1, arena.getArenaName());
+        sign.setLine(1, arena.getName());
 
-        if (arena.getGameManager().isGameEmpty())
-        {
-            if (arena.getGameManager().getPlayerManager().getNumPlayers() == 0)
-            {
+        if (arena.getGameManager().isGameEmpty()) {
+            if (arena.getGameManager().getPlayerManager().getNumPlayers() == 0) {
                 //Display empty
                 sign.setLine(2, ChatColor.GREEN + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Empty", "Empty"));
-            }
-            else
-            {
+            } else {
                 //Display counter
                 if (arena.getLocationManager().getNumberStartingPoints() >= 8) {
                     sign.setLine(2, arena.getGameManager().getPlayerManager().getNumPlayers() + " / 9");
@@ -78,14 +78,10 @@ public class SignManager
             }
 
             sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
-        }
-        else if (arena.getGameManager().isGameWaiting())
-        {
+        } else if (arena.getGameManager().isGameWaiting()) {
             sign.setLine(2, ChatColor.AQUA + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Waiting", "Waiting") + ChatColor.BLACK + " - " + arena.getGameManager().getWaitingTimeLeft() + "s");
             sign.setLine(3, FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.ClickToJoin", "Click To Join!"));
-        }
-        else if (arena.getGameManager().isGameInProgress())
-        {
+        } else if (arena.getGameManager().isGameInProgress()) {
             int rem = arena.getGameManager().getGameTimeLeft() % 3600;
             int mn = rem / 60;
             int sec = rem % 60;
@@ -98,17 +94,24 @@ public class SignManager
     }
 
     /**
+     * Removes all signs from memory and database
+     */
+    public void deleteSigns() {
+        for (Sign sign : joinSigns) {
+            markDeleted(sign);
+            FridayThe13th.inputOutput.deleteSign(sign.getX(), sign.getY(), sign.getZ(), sign.getWorld().getName());
+            removeJoinSign(sign);
+        }
+    }
+
+    /**
      * Marks all signs as deleted
      */
-    public void markDeleted()
-    {
-        for (Sign sign : joinSigns)
-        {
-            sign.setLine(0, ChatColor.RED + FridayThe13th.signPrefix);
-            sign.setLine(1, "["+FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Deleted", "Deleted")+"]");
-            sign.setLine(2, "");
-            sign.setLine(3, "");
-            sign.update();
-        }
+    private void markDeleted(Sign sign) {
+        sign.setLine(0, ChatColor.RED + FridayThe13th.signPrefix);
+        sign.setLine(1, "[" + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sign.Deleted", "Deleted") + "]");
+        sign.setLine(2, "");
+        sign.setLine(3, "");
+        sign.update();
     }
 }

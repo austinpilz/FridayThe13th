@@ -3,11 +3,11 @@ package com.AustinPilz.FridayThe13th.Components;
 import com.AustinPilz.FridayThe13th.Components.Level.F13PlayerLevel;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
-import com.AustinPilz.FridayThe13th.Components.Profiles.F13ProfileManager;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingPlayerStatsDisplayManager;
+import com.AustinPilz.FridayThe13th.Manager.F13ProfileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

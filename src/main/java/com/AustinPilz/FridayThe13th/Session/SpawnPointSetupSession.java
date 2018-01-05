@@ -41,7 +41,7 @@ public class SpawnPointSetupSession
     private void beginSelection()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "To add spawn point, go to desired point and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + " to use your current location.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -52,7 +52,7 @@ public class SpawnPointSetupSession
     {
         if (arena.isLocationWithinArenaBoundaries(player.getLocation())) {
             this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-            this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+            this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
             this.player.sendMessage("");
             this.player.sendMessage(ChatColor.WHITE + "Spawn point selected " + ChatColor.GREEN + "successfully" + ChatColor.WHITE + ".");
             this.player.sendMessage(ChatColor.RED + "--------------------------------------");

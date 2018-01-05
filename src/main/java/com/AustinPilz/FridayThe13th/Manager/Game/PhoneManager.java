@@ -3,6 +3,7 @@ package com.AustinPilz.FridayThe13th.Manager.Game;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Components.Enum.PhoneType;
+import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.block.Block;
 
 import java.util.HashMap;
@@ -78,7 +79,7 @@ public class PhoneManager {
      * Determines phone types and displays them accordingly for players
      */
     public void displayGamePhones() {
-        if (phones.size() > 0) {
+        if (phones.size() >= 2) {
             ArenaPhone[] randomizedPhones = getRandomizedPhoneArray();
 
             //Tommy Jarvis phone
@@ -90,6 +91,20 @@ public class PhoneManager {
                 randomizedPhones[1].setPhoneType(PhoneType.Police);
                 randomizedPhones[1].showPhone();
             }
+        }
+    }
+
+    /**
+     * Deletes all phones from memory and database
+     */
+    public void deletePhones() {
+        Iterator it = phones.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            ArenaPhone phone = (ArenaPhone) entry.getValue();
+            phone.hidePhone();
+            FridayThe13th.inputOutput.deletePhone(phone.getLocation().getX(), phone.getLocation().getY(), phone.getLocation().getZ(), phone.getLocation().getWorld().getName());
+            it.remove();
         }
     }
 

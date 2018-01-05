@@ -190,7 +190,7 @@ public class PlayerListener implements Listener {
                         if (arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(event.getClickedBlock())) {
                             if (arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).isBroken()) {
                                 ArenaPhone phone = arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock());
-                                if ((!phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.BONE)) || (phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.REDSTONE))) {
+                                if ((!phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.END_ROD)) || (phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.REDSTONE))) {
                                     //Register the repair attempt
                                     arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
                                 } else {
@@ -209,6 +209,8 @@ public class PlayerListener implements Listener {
                         if (arena.getObjectManager().isLocationAChest(event.getClickedBlock().getLocation())) {
                             //They're clicking one of the arena's chests - generate it
                             arena.getObjectManager().getChest(event.getClickedBlock().getLocation()).randomlyFill();
+                        } else {
+                            event.setCancelled(true); //They can't open non-arena chests
                         }
                     } else if (event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.BED_BLOCK)) {
                         //Players are not allowed to sleep during the game
@@ -308,7 +310,7 @@ public class PlayerListener implements Listener {
                         try {
                             arena.getGameManager().getPlayerManager().playerJoinGame(event.getPlayer());
                         } catch (GameFullException e) {
-                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.gameFull", "The game in {0} is currently full.", ChatColor.RED + arena.getArenaName() + ChatColor.WHITE));
+                            event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.gameFull", "The game in {0} is currently full.", ChatColor.RED + arena.getName() + ChatColor.WHITE));
                         } catch (GameInProgressException e) {
                             //Enter as a spectator
                             arena.getGameManager().getPlayerManager().becomeSpectator(event.getPlayer());
@@ -676,15 +678,6 @@ public class PlayerListener implements Listener {
 
         if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer())) {
             event.setCancelled(true); //Cannot manipulate armor stands while playing
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onEntityInteract(PlayerInteractAtEntityEvent event) {
-        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer())) {
-            if (!(event.getRightClicked() instanceof Player)) {
-                event.setCancelled(true); //Players cannot interact with any entity that is not another player
-            }
         }
     }
 

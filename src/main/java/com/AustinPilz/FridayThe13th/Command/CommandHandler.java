@@ -6,6 +6,7 @@ import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
 import com.AustinPilz.FridayThe13th.Components.Enum.EscapePointType;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Level.F13PlayerLevel;
+import com.AustinPilz.FridayThe13th.Components.Vehicle.VehicleType;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaSetupSessionAlreadyInProgress;
 import com.AustinPilz.FridayThe13th.Exceptions.Chest.ChestSetupSessionAlreadyInProgressException;
@@ -68,6 +69,8 @@ public class CommandHandler implements CommandExecutor {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
                 }
+            } else if (args[0].equalsIgnoreCase("test")) {
+                //
             } else if (args[0].equalsIgnoreCase("memory")) {
                 if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + "-- F13 Active Memory Storage --");
@@ -95,9 +98,7 @@ public class CommandHandler implements CommandExecutor {
                                         arena.getGameManager().gameTimeUp();
                                     }
 
-                                    arena.getSignManager().markDeleted();
-                                    FridayThe13th.arenaController.removeArena(arena);
-                                    FridayThe13th.inputOutput.deleteArena(arenaName);
+                                    arena.delete();
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.message.arenaDeleted", "Game {0} has been deleted successfully.", ChatColor.RED + arenaName + ChatColor.WHITE));
 
                                 } catch (ArenaDoesNotExistException exception) {
@@ -211,6 +212,31 @@ public class CommandHandler implements CommandExecutor {
                                     //Unknown type of chest
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.chestTypeError", "Unknown chest type. Available types are {0} and {1}.", ChatColor.AQUA + "chest:weapon" + ChatColor.WHITE, ChatColor.AQUA + "chest:item" + ChatColor.WHITE));
                                 }
+                            } else if (args[2].contains("vehicle")) {
+                                if (args[2].equalsIgnoreCase("vehicle:car")) {
+                                    try {
+                                        FridayThe13th.vehicleSetupManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName, VehicleType.Car);
+                                    } catch (ChestSetupSessionAlreadyInProgressException exception) {
+                                        //They already have a setup session in progress
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addVehicleSessionExisting", "You already have a vehicle setup session in progress. You must finish that session before starting a new one."));
+                                    } catch (ArenaDoesNotExistException exception) {
+                                        //An arena with that name does not exist in the arena controller memory
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                    }
+                                } else if (args[2].equalsIgnoreCase("vehicle:boat")) {
+                                    try {
+                                        FridayThe13th.vehicleSetupManager.startSetupSession(((Player) sender).getUniqueId().toString(), arenaName, VehicleType.Boat);
+                                    } catch (ChestSetupSessionAlreadyInProgressException exception) {
+                                        //They already have a setup session in progress
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.addVehicleSessionExisting", "You already have a vehicle setup session in progress. You must finish that session before starting a new one."));
+                                    } catch (ArenaDoesNotExistException exception) {
+                                        //An arena with that name does not exist in the arena controller memory
+                                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
+                                    }
+                                } else {
+                                    //Unknown type of chest
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.vehicleTypeError", "Unknown vehicle type. Available types are {0} and {1}.", ChatColor.AQUA + "vehicle:car" + ChatColor.WHITE, ChatColor.AQUA + "vehicle:weapon" + ChatColor.WHITE));
+                                }
                             } else if (args[2].contains("escape")) {
                                 if (args[2].equalsIgnoreCase("escape:land")) {
                                     try {
@@ -267,7 +293,7 @@ public class CommandHandler implements CommandExecutor {
                                     minutes = Math.max(1.8, minutes);
 
                                     arena.setMinutesPerCounselor(minutes);
-                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setField", "Success! Minutes per counselor in {0} have been set to {1}.", ChatColor.AQUA + arena.getArenaName() + ChatColor.WHITE, ChatColor.GREEN + "" + minutes + ChatColor.WHITE));
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setField", "Success! Minutes per counselor in {0} have been set to {1}.", ChatColor.AQUA + arena.getName() + ChatColor.WHITE, ChatColor.GREEN + "" + minutes + ChatColor.WHITE));
                                 } catch (NumberFormatException e) {
                                     //They didn't provide numbers
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setValueSyntaxError", "Error. The value of the field must be a number."));
@@ -279,7 +305,7 @@ public class CommandHandler implements CommandExecutor {
                                     seconds = Math.max(1, seconds);
 
                                     arena.setSecondsWaitingRoom(seconds);
-                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setWaitingRoomTime", "Success! Waiting room time in {0} has been set to {1} seconds.", ChatColor.AQUA + arena.getArenaName() + ChatColor.WHITE, ChatColor.GREEN + "" + seconds + ChatColor.WHITE));
+                                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.success.setWaitingRoomTime", "Success! Waiting room time in {0} has been set to {1} seconds.", ChatColor.AQUA + arena.getName() + ChatColor.WHITE, ChatColor.GREEN + "" + seconds + ChatColor.WHITE));
                                 } catch (NumberFormatException e) {
                                     //They didn't provide numbers
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setValueSyntaxError", "Error. The value of the field must be a number."));
@@ -320,11 +346,10 @@ public class CommandHandler implements CommandExecutor {
                             }
                         } else if (args.length == 1) {
                             //Auto-join
-                             if (!FridayThe13th.arenaController.playerAutoJoin((Player)sender))
-                             {
-                                 //There was an issue with auto-join
-                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.autoJoinError", "There was an error while attempting to auto-join you to an arena. Please try again."));
-                             }
+                            if (!FridayThe13th.arenaController.playerAutoJoin((Player)sender)) {
+                                //There was an issue with auto-join
+                                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.autoJoinError", "There was an error while attempting to auto-join you to an arena. Please try again."));
+                            }
                         } else {
                             //Incorrect play syntax
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.playSyntaxError", "Incorrect play syntax. Usage: {0}", ChatColor.AQUA + "/f13 play [arenaName]"));
@@ -378,7 +403,7 @@ public class CommandHandler implements CommandExecutor {
                         try {
                             Arena arena = FridayThe13th.arenaController.getArena(arenaName);
 
-                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.STRIKETHROUGH + "-----" + ChatColor.RESET + ChatColor.RED + arena.getArenaName() + ChatColor.WHITE + ChatColor.STRIKETHROUGH + " -----");
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.STRIKETHROUGH + "-----" + ChatColor.RESET + ChatColor.RED + arena.getName() + ChatColor.WHITE + ChatColor.STRIKETHROUGH + " -----");
 
                             if (arena.getGameManager().isGameEmpty()) {
                                 sender.sendMessage("Game Status: " + ChatColor.RED + "Empty");
@@ -402,6 +427,25 @@ public class CommandHandler implements CommandExecutor {
                             sender.sendMessage("# Phones: " + arena.getObjectManager().getPhoneManager().getNumberOfPhones());
                             sender.sendMessage("# Minutes per Counselor: " + arena.getMinutesPerCounselor());
                             sender.sendMessage("# Waiting Room Seconds: " + arena.getSecondsWaitingRoom());
+                            sender.sendMessage("# Lifetime Games: " + arena.getNumLifetimeGames());
+
+                            //Cars
+                            if (arena.getObjectManager().getVehicleManager().getNumCars() > 0) {
+                                sender.sendMessage("# Cars: " + arena.getObjectManager().getVehicleManager().getNumCars());
+                            }
+
+                            //Boats
+                            if (arena.getObjectManager().getVehicleManager().getNumBoats() > 0) {
+                                sender.sendMessage("# Boats: " + arena.getObjectManager().getVehicleManager().getNumBoats());
+                            }
+
+                            if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0) {
+                                sender.sendMessage("# Land Escape Points: " + arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints());
+                            }
+
+                            if (arena.getLocationManager().getEscapePointManager().getNumberOfWaterEscapePoints() > 0) {
+                                sender.sendMessage("# Water Escape Points: " + arena.getLocationManager().getEscapePointManager().getNumberOfWaterEscapePoints());
+                            }
 
 
                         } catch (ArenaDoesNotExistException exception) {
@@ -488,6 +532,8 @@ public class CommandHandler implements CommandExecutor {
                             FridayThe13th.phoneSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
                         } else if (FridayThe13th.escapePointSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
                             FridayThe13th.escapePointSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
+                        } else if (FridayThe13th.vehicleSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.vehicleSetupManager.getPlayerSetupSession(((Player) sender).getUniqueId().toString()).selectionMade();
                         } else {
                             //There is no active setup session
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noSetupSession", "You currently have no setup session in progress."));
@@ -523,24 +569,19 @@ public class CommandHandler implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("stats")) {
                 if (sender.hasPermission("FridayThe13th.User")) {
-                    if (args.length >= 1 && args.length <= 2)
-                    {
+                    if (args.length >= 1 && args.length <= 2) {
                         //Retrieve their own stats
                         String statsUsername = "";
 
-                        if (args.length == 1)
-                        {
+                        if (args.length == 1) {
                             //No username provided, so get stats for sender
                             statsUsername = sender.getName();
-                        }
-                        else if (args.length == 2)
-                        {
+                        } else if (args.length == 2) {
                             //Get stats for supplied player
                             statsUsername = args[1];
                         }
 
-                        if (FridayThe13th.playerController.hasPlayerPlayed(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString()))
-                        {
+                        if (FridayThe13th.playerController.hasPlayerPlayed(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString())) {
                             F13Player player = FridayThe13th.playerController.getPlayer(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString());
 
                             sender.sendMessage(FridayThe13th.pluginPrefix + ChatColor.STRIKETHROUGH + ChatColor.RED + "---- " + ChatColor.RESET + "Player Stats" + ChatColor.STRIKETHROUGH + ChatColor.RED + "---- ");
@@ -552,38 +593,28 @@ public class CommandHandler implements CommandExecutor {
                                 sender.sendMessage("XP until Next Level: " + (player.getNextLevel().getMinXP() - player.getXP()));
                             }
 
-                            try
-                            {
+                            try {
                                 Arena arena = FridayThe13th.arenaController.getPlayerArena(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString());
                                 {
-                                    sender.sendMessage("Current arena: " + ChatColor.GREEN + arena.getArenaName());
+                                    sender.sendMessage("Current arena: " + ChatColor.GREEN + arena.getName());
                                 }
-                            }
-                            catch (PlayerNotPlayingException exception)
-                            {
+                            } catch (PlayerNotPlayingException exception) {
                                 //They're not playing, so we don't care
                             }
 
                             //Customization points
-                            if (player.getPlayerUUID().equals(Bukkit.getOfflinePlayer(sender.getName()).getUniqueId().toString()))
-                            {
+                            if (player.getPlayerUUID().equals(Bukkit.getOfflinePlayer(sender.getName()).getUniqueId().toString())) {
                                 sender.sendMessage("Customization Points: " + player.getCP());
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //The player has never played F13 before
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.statsPlayerError", "The player {0} has never played F13 before on this server.", ChatColor.AQUA + statsUsername + ChatColor.WHITE));
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //Syntax error
                         sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.statsSyntaxError", "Incorrect stats syntax. Usage: {0}", ChatColor.GREEN + "/f13 stats" + ChatColor.AQUA + "[playerName]"));
                     }
-                }
-                else
-                {
+                } else {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
                 }
@@ -599,7 +630,7 @@ public class CommandHandler implements CommandExecutor {
                             Map.Entry entry = (Map.Entry) it.next();
                             Arena arena = (Arena) entry.getValue();
 
-                            sender.sendMessage(count++ + ".) " + arena.getArenaName());
+                            sender.sendMessage(count++ + ".) " + arena.getName());
                         }
                     } else {
                         //There are no arenas

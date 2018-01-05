@@ -30,8 +30,8 @@ public class PlayerController {
     /**
      * Gets F13 player object of supplied player UUID
      *
-     * @param uuid
-     * @return
+     * @param uuid UUID of the player
+     * @return F13Player object
      */
     public F13Player getPlayer(String uuid) {
         if (!doesPlayerExist(uuid)) {
@@ -52,8 +52,7 @@ public class PlayerController {
 
     /**
      * Adds F13 player
-     *
-     * @param player
+     * @param player F13 Player Object
      */
     public void addPlayer(F13Player player) {
         players.put(player.getPlayerUUID(), player);
@@ -62,8 +61,8 @@ public class PlayerController {
     /**
      * Returns if the F13 is in memory
      *
-     * @param uuid
-     * @return
+     * @param uuid UUID of the player
+     * @return If the player has played F13 before
      */
     private boolean doesPlayerExist(String uuid) {
         return players.containsKey(uuid);
@@ -71,8 +70,8 @@ public class PlayerController {
 
     /**
      * Returns if the player has ever played Friday the 13th before
-     * @param uuid
-     * @return
+     * @param uuid UUID of player
+     * @return If the player has played F13 before
      */
     public boolean hasPlayerPlayed(String uuid)
     {
@@ -88,9 +87,7 @@ public class PlayerController {
     }
 
     /**
-     * Returns the number of F13 players in memory
-     *
-     * @return
+     * @return Number of F13 players in memory
      */
     public int getNumPlayers() {
         return players.size();

@@ -178,7 +178,7 @@ public class Trap {
 
                 if (arena.getGameManager().getPlayerManager().isAlive(player)) {
                     //Notify Jason
-                    arena.getGameManager().getPlayerManager().getJason().getPlayer().sendMessage(FridayThe13th.pluginPrefix + "A counselor stepped in your trap. Click the inventory diamond to teleport there.");
+                    arena.getGameManager().getPlayerManager().getJason().getPlayer().sendMessage(FridayThe13th.pluginPrefix + "A counselor stepped in your trap. Click the inventory item to teleport there.");
 
                     //Give him item to teleport to
                     ItemStack jasonItem = new ItemStack(Material.EYE_OF_ENDER, 1);

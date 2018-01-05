@@ -39,7 +39,7 @@ public class WaitingPlayerStatsDisplayManager {
             SidebarString arenaTitle = new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "waiting.sidebar.Game", "Game"));
             statsScoreboard.addEntry(arenaTitle);
 
-            SidebarString arenaName = new SidebarString(arena.getArenaName());
+            SidebarString arenaName = new SidebarString(arena.getName());
             statsScoreboard.addEntry(arenaName);
 
             statsScoreboard.addEntry(new SidebarString("   "));

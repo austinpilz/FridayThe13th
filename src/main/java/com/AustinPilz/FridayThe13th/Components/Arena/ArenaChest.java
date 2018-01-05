@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Components.Arena;
 
 
 import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
+import com.AustinPilz.FridayThe13th.Factory.F13ItemFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
 import org.bukkit.Bukkit;
@@ -181,13 +182,9 @@ public class ArenaChest
 
                     //Redstone
                     double redstoneChance = Math.random() * 100;
-                    if ((redstoneChance -= 40) < 0) //40% of the time
+                    if ((redstoneChance -= 20) < 0) //40% of the time
                     {
-                        ItemStack item = new ItemStack(Material.REDSTONE, 1);
-                        ItemMeta metaData = item.getItemMeta();
-                        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.RepairWire", "Repair Wire"));
-                        item.setItemMeta(metaData);
-                        getChest().getBlockInventory().addItem(item);
+                        placeItem(F13ItemFactory.getRepairWire());
                     }
 
                     //Map
@@ -224,24 +221,9 @@ public class ArenaChest
     }
 
     /**
-     * Places a radio in the chest
-     */
-    public void placeRadio() {
-        ItemStack item = new ItemStack(Material.NETHER_STAR, 1);
-        ItemMeta metaData = item.getItemMeta();
-        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
-        item.setItemMeta(metaData);
-        getChest().getBlockInventory().addItem(item);
-    }
-
-    /**
      * Places the phone fuse in the chest
      */
-    public void placePhoneFuse() {
-        ItemStack item = new ItemStack(Material.BONE, 1);
-        ItemMeta metaData = item.getItemMeta();
-        metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.PhoneFuse", "Phone Fuse"));
-        item.setItemMeta(metaData);
+    public void placeItem(ItemStack item) {
         getChest().getBlockInventory().addItem(item);
     }
 

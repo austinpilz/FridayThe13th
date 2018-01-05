@@ -414,6 +414,9 @@ GameManager {
         //Radios
         arena.getObjectManager().placePerItemGames();
 
+        //Vehicles
+        arena.getObjectManager().getVehicleManager().prepareVehicles();
+
         //Start the weather service
         weatherManager.beginWeatherService();
     }
@@ -422,38 +425,44 @@ GameManager {
      * Ends the game
      */
     protected void endGame() {
-        //Remove all players
-        getPlayerManager().performEndGameActions();
+        if (isGameInProgress()) {
+            //Remove all players
+            getPlayerManager().performEndGameActions();
 
-        //Make countdown bar for any counselors disappear
-        getGameCountdownManager().hideCountdownBar();
+            //Make countdown bar for any counselors disappear
+            getGameCountdownManager().hideCountdownBar();
 
-        //Replace any items changed during gameplay
-        arena.getObjectManager().restorePerGameObjects();
-        arena.getLocationManager().getEscapePointManager().resetEscapePoints();
+            //Replace any items changed during gameplay
+            arena.getObjectManager().restorePerGameObjects();
+            arena.getLocationManager().getEscapePointManager().resetEscapePoints();
+            arena.getObjectManager().getVehicleManager().resetVehicles();
 
-        //Stop the weather service
-        weatherManager.endGame();
+            //Stop the weather service
+            weatherManager.endGame();
 
-        //Remove any holograms from the previous game
-        for (Hologram hologram : HologramsAPI.getHolograms(FridayThe13th.instance)) {
-            if (arena.isLocationWithinArenaBoundaries(hologram.getLocation())) {
-                hologram.delete();
+            //Remove any holograms from the previous game
+            for (Hologram hologram : HologramsAPI.getHolograms(FridayThe13th.instance)) {
+                if (arena.isLocationWithinArenaBoundaries(hologram.getLocation())) {
+                    hologram.delete();
 
+                }
             }
-        }
 
-        //Remove any dropped items on the ground
-        List<Entity> entList = arena.getBoundary1().getWorld().getEntities();//get all entities in the world
+            //Remove any dropped items on the ground
+            List<Entity> entList = arena.getBoundary1().getWorld().getEntities();//get all entities in the world
 
-        for (Entity current : entList) {
-            if (current instanceof Item && arena.isLocationWithinArenaBoundaries(current.getLocation())) {
-                current.remove();//remove it
+            for (Entity current : entList) {
+                if (current instanceof Item && arena.isLocationWithinArenaBoundaries(current.getLocation())) {
+                    current.remove();//remove it
+                }
             }
-        }
 
-        //Don't need to worry about tasks and timers here, handled automatically
-        changeGameStatus(GameStatus.Empty);
+            //Don't need to worry about tasks and timers here, handled automatically
+            changeGameStatus(GameStatus.Empty);
+
+            //Increment arena lifetime game counter
+            arena.incrementLifetimeGames();
+        }
     }
 
     /**
@@ -479,5 +488,21 @@ GameManager {
     private void calculatePoliceArrivalTime() {
         maxTimeUntilPoliceArrive = Math.min(getGameTimeLeft() / 2, 300);
         setTimeUntilPoliceArrive(maxTimeUntilPoliceArrive);
+    }
+
+    /**
+     * Clears the arena of all players - does not award XP
+     */
+    public void clearArena() {
+        if (isGameEmpty() || isGameWaiting()) {
+            Iterator it = getPlayerManager().getPlayers().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry) it.next();
+                Player player = (Player) entry.getValue();
+                getPlayerManager().onplayerQuit(player);
+            }
+        } else if (isGameInProgress()) {
+            endGame();
+        }
     }
 }

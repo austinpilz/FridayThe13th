@@ -8,6 +8,7 @@ import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -26,14 +27,14 @@ public class ArenaController
 
     /**
      * Adds arena into the controller memory
-     * @param arena
-     * @throws ArenaAlreadyExistsException
+     * @param arena Arena object
+     * @throws ArenaAlreadyExistsException The arena already exists in memory
      */
     public void addArena(Arena arena) throws ArenaAlreadyExistsException
     {
         if (!arenas.containsValue(arena))
         {
-            arenas.put(arena.getArenaName(), arena);
+            arenas.put(arena.getName(), arena);
         }
         else
         {
@@ -43,17 +44,17 @@ public class ArenaController
 
     /**
      * Removes the arena from the controller memory
-     * @param arena
+     * @param arena Arena object
      */
     public void removeArena(Arena arena)
     {
-        arenas.remove(arena.getArenaName());
+        arenas.remove(arena.getName());
     }
 
     /**
      * Returns the arena supplied by name
      * @param name Name of desired arena
-     * @return
+     * @return Arena object
      */
     public Arena getArena(String name) throws ArenaDoesNotExistException
     {
@@ -70,7 +71,7 @@ public class ArenaController
     /**
      * Returns if the supplied arena by name exists in the controller memory
      * @param name Name of the arena
-     * @return
+     * @return If the arena exists
      */
     public boolean doesArenaExist(String name)
     {
@@ -79,7 +80,7 @@ public class ArenaController
 
     /**
      * Returns the number of arenas loaded in the controller memory
-     * @return
+     * @return The number of arenas
      */
     public int getNumberOfArenas()
     {
@@ -321,5 +322,45 @@ public class ArenaController
         }
 
         return emptyArenas;
+    }
+
+    /**
+     * Returns if the supplied location is within one of the F13 arenas
+     *
+     * @param location
+     * @return If location is within an arena
+     */
+    public boolean isLocationWithinAnArena(Location location) {
+        ArrayList<Arena> emptyArenas = new ArrayList<>();
+
+        Iterator it = arenas.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            Arena arena = (Arena) entry.getValue();
+            if (arena.isLocationWithinArenaBoundaries(location)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param location
+     * @return The arena object that encompasses the supplied location
+     */
+    public Arena getArenaFromLocation(Location location) {
+        ArrayList<Arena> emptyArenas = new ArrayList<>();
+
+        Iterator it = arenas.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            Arena arena = (Arena) entry.getValue();
+            if (arena.isLocationWithinArenaBoundaries(location)) {
+                return arena;
+            }
+        }
+
+        return null;
     }
 }

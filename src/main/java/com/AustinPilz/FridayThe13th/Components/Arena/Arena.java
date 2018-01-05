@@ -28,7 +28,9 @@ public class Arena
     private GameManager gameManager; //Manages the active game, players, etc.
     private SignManager signManager;
 
-    public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation, double minPerCounselor, int secWaitingRoom)
+    private int lifetimeGames;
+
+    public Arena(String arenaName, Location boundary1, Location boundary2, Location waitingLocation, Location returnLocation, Location jasonStartLocation, double minPerCounselor, int secWaitingRoom, int lifetimeGames)
     {
         //Values
         this.arenaName = arenaName;
@@ -39,6 +41,7 @@ public class Arena
         this.jasonStartLocation = jasonStartLocation;
         this.minutesPerCounselor = minPerCounselor;
         this.secondsWaitingRoom = secWaitingRoom;
+        this.lifetimeGames = lifetimeGames;
 
         //Initialize
         locationManager = new LocationManager(this);
@@ -51,7 +54,7 @@ public class Arena
      * Returns the arena's name
      * @return
      */
-    public String getArenaName()
+    public String getName()
     {
         return arenaName;
     }
@@ -207,9 +210,58 @@ public class Arena
     }
 
     /**
+     * @return Number of lifetime games in this arena
+     */
+    public int getNumLifetimeGames() {
+        return lifetimeGames;
+    }
+
+    /**
+     * Increments the number of lifetime games in the arena
+     */
+    public void incrementLifetimeGames() {
+        lifetimeGames++;
+        updateInDB();
+    }
+
+    /**
      * Updates the arena values in the database
      */
     private void updateInDB() {
         FridayThe13th.inputOutput.updateArena(this);
+    }
+
+    /**
+     * Deletes the arena
+     */
+    public void delete() {
+        //Cancel all game tasks
+        //TODO
+
+        //Remove from DB
+        FridayThe13th.inputOutput.deleteArena(getName());
+
+        //Remove chests
+        //TODO
+
+        //Remove spawn points
+        //TODO
+
+        //Remove escape points
+        getLocationManager().getEscapePointManager().deleteEscapePoints();
+
+        //Remove signs
+        getSignManager().deleteSigns();
+
+        //Remove phones
+        getObjectManager().getPhoneManager().deletePhones();
+
+        //Remove vehicles
+        getObjectManager().getVehicleManager().deleteVehicles();
+
+
+        // arena.getSignManager().markDeleted();
+        //                                    FridayThe13th.arenaController.removeArena(arena);
+        //                                    FridayThe13th.inputOutput.deleteArena(arenaName);
     }
 }

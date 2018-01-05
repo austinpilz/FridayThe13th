@@ -13,11 +13,11 @@ import com.AustinPilz.FridayThe13th.IO.SpigotUpdateChecker;
 import com.AustinPilz.FridayThe13th.Listener.BlockListener;
 import com.AustinPilz.FridayThe13th.Listener.F13EventsListener;
 import com.AustinPilz.FridayThe13th.Listener.PlayerListener;
+import com.AustinPilz.FridayThe13th.Listener.VehicleListener;
 import com.AustinPilz.FridayThe13th.Manager.Setup.*;
 import com.AustinPilz.FridayThe13th.Runnable.PlayerMemoryClean;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -52,6 +52,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
     public static ChestSetupManager chestSetupManager;
     public static PhoneSetupManager phoneSetupManager;
     public static EscapePointSetupManager escapePointSetupManager;
+    public static VehicleSetupManager vehicleSetupManager;
     public static InputOutput inputOutput;
 
     //3rd Party Plugins
@@ -83,6 +84,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         chestSetupManager = new ChestSetupManager();
         phoneSetupManager = new PhoneSetupManager();
         escapePointSetupManager = new EscapePointSetupManager();
+        vehicleSetupManager = new VehicleSetupManager();
 
         //InputOutput
         inputOutput = new InputOutput();
@@ -94,10 +96,12 @@ public class FridayThe13th extends JavaPlugin implements Listener
         inputOutput.loadSigns();
         inputOutput.loadPhones();
         inputOutput.loadEscapePoints();
+        inputOutput.loadVehicles();
 
         //Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
+        getServer().getPluginManager().registerEvents(new VehicleListener(), this);
         getServer().getPluginManager().registerEvents(new F13EventsListener(), this);
 
         //Schedule tasks
@@ -147,7 +151,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
             return;
         }
 
-        //Check for Update
+        //Check Spigot API for plugin update
         try
         {
             updateChecker = new SpigotUpdateChecker();
@@ -184,9 +188,7 @@ public class FridayThe13th extends JavaPlugin implements Listener
         //End every game, restore players, etc.
         for (Arena arena : arenaController.getArenas().values())
         {
-            for (Player player : arena.getGameManager().getPlayerManager().getPlayers().values()) {
-                arena.getGameManager().getPlayerManager().onplayerQuit(player);
-            }
+            arena.getGameManager().clearArena();
         }
 
         //Close database connection

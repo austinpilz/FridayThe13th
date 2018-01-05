@@ -315,15 +315,7 @@ public class Counselor extends F13Character
         if (getStamina() == 0)
         {
             //Add confusion effect - if no dramamine
-            if (getF13Player().hasPerk(F13Perk.Counselor_Dramamine))
-            {
-                double chance = Math.random() * 100;
-                if ((chance -= 75) < 0) //75%
-                {
-                    getPlayer().addPotionEffect(potionOutOfBreath);
-                }
-            }
-            else
+            if (!getF13Player().hasPerk(F13Perk.Counselor_Dramamine))
             {
                 //No perk, apply potion
                 getPlayer().addPotionEffect(potionOutOfBreath);
@@ -393,7 +385,6 @@ public class Counselor extends F13Character
      */
     public void updateFearLevel()
     {
-
         //Add new light history
         Block block = player.getLocation().getBlock().getRelative(0, 1, 0);
         Double lightLevel = (Double)(double)block.getLightLevel();

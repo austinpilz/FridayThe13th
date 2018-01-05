@@ -47,7 +47,7 @@ public class ChestSetupSession
     private void beginSelection()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getArenaName() + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + "Game " + ChatColor.RED + this.arena.getName() + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + "To add " + chestType.getFieldDescription().toLowerCase() + " chest, put chest in your crosshairs and execute " + ChatColor.GREEN + "/f13 here" + ChatColor.WHITE + ".");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -60,21 +60,20 @@ public class ChestSetupSession
 
         if (chestLocation.getBlock().getType().equals(Material.CHEST))
         {
-           try
-            {
-                ArenaChest newChest = new ArenaChest(arena, chestLocation, chestType);
-                FridayThe13th.inputOutput.storeChest(newChest);
-                arena.getObjectManager().addChest(newChest);
+            if (!arena.getObjectManager().isLocationAChest(chestLocation)) {
+                try {
+                    ArenaChest newChest = new ArenaChest(arena, chestLocation, chestType);
+                    FridayThe13th.inputOutput.storeChest(newChest);
+                    arena.getObjectManager().addChest(newChest);
 
-                player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Success!" + ChatColor.WHITE + " You've added the " + chestType.getFieldDescription().toLowerCase() + " chest to " + arena.getArenaName() + ".");
-            }
-            catch (SaveToDatabaseException exception)
-            {
-                player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! There was an issue while attempting to save chest to the database.");
-            }
-            finally
-            {
-                FridayThe13th.chestSetupManager.removePlayerSetupSession(playerUUID);
+                    player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Success!" + ChatColor.WHITE + " You've added the " + chestType.getFieldDescription().toLowerCase() + " chest to " + arena.getName() + ".");
+                } catch (SaveToDatabaseException exception) {
+                    player.sendMessage(FridayThe13th.pluginAdminPrefix + "Error! There was an issue while attempting to save chest to the database.");
+                } finally {
+                    FridayThe13th.chestSetupManager.removePlayerSetupSession(playerUUID);
+                }
+            } else {
+                player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.RED + "Error!" + ChatColor.WHITE + " That chest has already been added to the arena.");
             }
         }
         else

@@ -1,14 +1,12 @@
 package com.AustinPilz.FridayThe13th.Listener;
 
-import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
-import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
-import com.AustinPilz.FridayThe13th.Components.Profiles.F13ProfileManager;
-import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 import com.AustinPilz.FridayThe13th.Components.Menu.*;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
+import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
+import com.AustinPilz.FridayThe13th.Manager.F13ProfileManager;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,7 +58,7 @@ public class F13EventsListener implements Listener {
                     Shop_CounselorPerksMenu.openMenu(event.getPlayer());
                 } else if (action.equals("Purchased_Perks")) {
                     //Open purchased perks menu
-                    PurchasedPerksMenu.openMenu(event.getPlayer());
+                    Shop_PurchasedPerksMenu.openMenu(event.getPlayer());
                 }
                 event.setCancelled(true);
             } else if (json.containsKey("SpawnPrefSelect")) {
@@ -129,7 +127,7 @@ public class F13EventsListener implements Listener {
                     if (FridayThe13th.playerController.getPlayer(event.getPlayer()).purchasePerk(perk))
                     {
                         //Open their ender chest thing
-                        PurchasedPerksMenu.openMenu(event.getPlayer());
+                        Shop_PurchasedPerksMenu.openMenu(event.getPlayer());
                     }
                 }
                 event.setCancelled(true);

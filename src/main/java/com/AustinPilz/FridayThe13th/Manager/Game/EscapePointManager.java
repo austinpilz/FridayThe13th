@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.EscapePoint;
+import com.AustinPilz.FridayThe13th.FridayThe13th;
 import org.bukkit.Location;
 
 import java.util.HashSet;
@@ -102,6 +103,31 @@ public class EscapePointManager {
         }
 
         return count;
+    }
+
+    /**
+     * @return The number of water escape points
+     */
+    public int getNumberOfWaterEscapePoints() {
+        int count = 0;
+        for (EscapePoint point : escapePoints) {
+            if (point.isWaterPoint()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Deletes all escape points from memory and database
+     */
+    public void deleteEscapePoints() {
+        for (EscapePoint point : escapePoints) {
+            FridayThe13th.inputOutput.deleteEscapePoint(point.getBoundary1().getX(), point.getBoundary1().getY(), point.getBoundary1().getZ(), point.getBoundary2().getX(), point.getBoundary2().getY(), point.getBoundary2().getZ(), point.getType().getFieldDescription(), point.getArena().getName());
+        }
+
+        escapePoints.clear();
     }
 
     /**
