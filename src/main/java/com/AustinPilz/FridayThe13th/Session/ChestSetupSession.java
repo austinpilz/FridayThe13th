@@ -74,6 +74,7 @@ public class ChestSetupSession
                 }
             } else {
                 player.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.RED + "Error!" + ChatColor.WHITE + " That chest has already been added to the arena.");
+                FridayThe13th.chestSetupManager.removePlayerSetupSession(playerUUID);
             }
         }
         else
