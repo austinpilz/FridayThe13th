@@ -545,6 +545,38 @@ public class CommandHandler implements CommandExecutor {
                     //No permissions
                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
                 }
+            } else if (args[0].equalsIgnoreCase("cancel")) {
+                if (sender.hasPermission("FridayThe13th.Admin") || sender.hasPermission("FridayThe13th.*")) {
+                    if (sender instanceof Player) {
+                        if (FridayThe13th.arenaCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.arenaCreationManager.removePlayerSetupSession(((Player) sender).getUniqueId().toString());
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setupSessionCanceled", "Setup session canceled"));
+                        } else if (FridayThe13th.spawnPointCreationManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.spawnPointCreationManager.removePlayerSetupSession(((Player) sender).getUniqueId().toString());
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setupSessionCanceled", "Setup session canceled"));
+                        } else if (FridayThe13th.chestSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.chestSetupManager.removePlayerSetupSession(((Player) sender).getUniqueId().toString());
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setupSessionCanceled", "Setup session canceled"));
+                        } else if (FridayThe13th.phoneSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.phoneSetupManager.removePlayerSetupSession(((Player) sender).getUniqueId().toString());
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setupSessionCanceled", "Setup session canceled"));
+                        } else if (FridayThe13th.escapePointSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.escapePointSetupManager.removePlayerSetupSession(((Player) sender).getUniqueId().toString());
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setupSessionCanceled", "Setup session canceled"));
+                        } else if (FridayThe13th.vehicleSetupManager.doesUserHaveActiveSession(((Player) sender).getUniqueId().toString())) {
+                            FridayThe13th.vehicleSetupManager.removePlayerSetupSession(((Player) sender).getUniqueId().toString());
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.setupSessionCanceled", "Setup session canceled"));
+                        } else {
+                            //There is no active setup session
+                            sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noSetupSession", "You currently have no setup session in progress."));
+                        }
+                    } else {
+                        sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.consoleSender", "This command must be executed by an in-game player, not the console."));
+                    }
+                } else {
+                    //No permissions
+                    sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.noPermission", "You don't have permission to access this command."));
+                }
             } else if (args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("leave")) {
                 if (sender.hasPermission("FridayThe13th.User")) {
                     //Setup commands cannot be executed by the console
