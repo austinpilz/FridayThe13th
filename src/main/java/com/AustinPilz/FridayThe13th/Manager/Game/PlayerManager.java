@@ -476,6 +476,13 @@ public class PlayerManager {
      */
     public void onplayerQuit(Player player) {
         if (!isJustSpectator(player.getUniqueId().toString())) {
+
+            if (isCounselor(player) && !isAlive(player)) {
+                getCounselor(player).awardCP();
+                getCounselor(player).awardXP();
+            }
+
+
             //Clean up
             performPlayerCleanupActions(player.getUniqueId().toString());
 
@@ -486,13 +493,6 @@ public class PlayerManager {
                     sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getName()));
                     arena.getGameManager().endGame();
                 } else if (isCounselor(player)) {
-                    //They're a counselor
-
-                    if (!isAlive(player)) {
-                        //Award them XP since they're dead
-                        getCounselor(player).awardCP();
-                        getCounselor(player).awardXP();
-                    }
 
                     if (getNumPlayersAlive() <= 1) {
                         //They were the last one

@@ -108,7 +108,8 @@ public class VehicleListener implements Listener {
                                     event.getVehicle().teleport(event.getFrom());
                                 }
                             } else {
-                                event.getVehicle().setVelocity(event.getVehicle().getVelocity().multiply(2));
+                                ((Minecart) event.getVehicle()).setMaxSpeed(0.4D);
+                                event.getVehicle().setVelocity(event.getVehicle().getVelocity().multiply(1.3));
                             }
                         } catch (PlayerNotPlayingException exception) {
                             //Ignore
