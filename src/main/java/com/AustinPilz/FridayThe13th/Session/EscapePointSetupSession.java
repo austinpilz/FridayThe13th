@@ -20,7 +20,6 @@ public class EscapePointSetupSession {
     private EscapePointType pointType;
 
     private Location boundary1;
-    private Location boundary2;
 
     public EscapePointSetupSession(Arena arena, String playerUUID, EscapePointType pointType) {
         this.arena = arena;
@@ -66,8 +65,7 @@ public class EscapePointSetupSession {
     }
 
     private void selectionComplete() {
-        boundary2 = player.getLocation();
-        EscapePoint escapePoint = new EscapePoint(arena, pointType, boundary1, boundary2);
+        EscapePoint escapePoint = new EscapePoint(arena, pointType, boundary1, player.getLocation());
 
         try {
             FridayThe13th.inputOutput.storeEscapePoint(escapePoint);

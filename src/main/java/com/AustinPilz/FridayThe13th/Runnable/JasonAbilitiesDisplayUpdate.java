@@ -5,7 +5,7 @@ import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 
 public class JasonAbilitiesDisplayUpdate implements Runnable
 {
-    Jason jason;
+    private Jason jason;
 
     public JasonAbilitiesDisplayUpdate (Jason jason)
     {

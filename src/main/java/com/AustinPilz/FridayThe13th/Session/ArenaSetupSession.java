@@ -21,7 +21,6 @@ public class ArenaSetupSession
     private Location arenaBoundary2;
     private Location waitingLocation;
     private Location returnLocation;
-    private Location jasonStartLocation;
 
     public ArenaSetupSession(String playerUUID, String arenaName)
     {
@@ -61,7 +60,7 @@ public class ArenaSetupSession
     private void beginArenaCreation()
     {
         this.player.sendMessage(ChatColor.RED + "----------Friday The 13th----------");
-        this.player.sendMessage(ChatColor.WHITE + FridayThe13th.language.get(player, "setup.arena.begin", "To begin the setup process for arena ") + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
+        this.player.sendMessage(ChatColor.WHITE + FridayThe13th.language.get(player, "setup.arena.begin", "To begin the setup process for arena") + " " + ChatColor.RED + this.arenaName + ChatColor.WHITE + ":");
         this.player.sendMessage("");
         this.player.sendMessage(ChatColor.WHITE + FridayThe13th.language.get(player, "setup.arena.begin2", "Go to the lowest point of the arena boundary and execute {0} to use your current location.", ChatColor.AQUA + "/f13 here" + ChatColor.WHITE));
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
@@ -121,7 +120,7 @@ public class ArenaSetupSession
         this.player.sendMessage(ChatColor.WHITE + "Jason start location selected. Game setup " + ChatColor.GREEN + "success " + ChatColor.WHITE + ". You'll need to use commands to now add player starting location(s) and other game objects.");
         this.player.sendMessage(ChatColor.RED + "--------------------------------------");
         this.state++;
-        this.jasonStartLocation = player.getLocation();
+        Location jasonStartLocation = player.getLocation();
 
         //Create Game
         Arena arena = new Arena(arenaName, arenaBoundary1, arenaBoundary2, waitingLocation, returnLocation, jasonStartLocation, 1.8, 60, 0);

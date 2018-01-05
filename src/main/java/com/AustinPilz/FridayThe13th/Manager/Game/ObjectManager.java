@@ -6,7 +6,7 @@ import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
 import com.AustinPilz.FridayThe13th.Factory.F13ItemFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
-import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
+import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchPowerAction;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -353,7 +353,7 @@ public class ObjectManager
         BlockState state = block.getState();
         Lever lever = (Lever)state.getData();
 
-        Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, !lever.isPowered()), 2);
+        Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchPowerAction(block, !lever.isPowered()), 2);
 
         //Add to hash set
         brokenSwitches.put(block, new ArenaSwitch(block, arena));

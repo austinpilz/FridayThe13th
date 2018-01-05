@@ -14,7 +14,6 @@ public class SpawnPointSetupSession
 {
     private Arena arena;
     private Player player;
-    private Location spawnLocation;
     private int state;
 
     public SpawnPointSetupSession(Arena arena, String playerUUID)
@@ -57,7 +56,7 @@ public class SpawnPointSetupSession
             this.player.sendMessage(ChatColor.WHITE + "Spawn point selected " + ChatColor.GREEN + "successfully" + ChatColor.WHITE + ".");
             this.player.sendMessage(ChatColor.RED + "--------------------------------------");
             this.state++;
-            spawnLocation = player.getLocation();
+            Location spawnLocation = player.getLocation();
 
             //Add to database
             try {

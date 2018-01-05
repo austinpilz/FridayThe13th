@@ -373,7 +373,7 @@ GameManager {
             resetGameStatistics();
 
             //Start the tasks
-            waitingCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new WaitingCountdown(arena), 20, 20);
+            waitingCountdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameWaitingCountdown(arena), 20, 20);
 
             //Reset players visuals (remove action bars)
             getPlayerManager().resetPlayerActionBars();

@@ -1,7 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchAction;
+import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchPowerAction;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
@@ -92,7 +92,7 @@ public class ArenaSwitch
         BlockState state = block.getState();
         Lever lever = (Lever)state.getData();
 
-        Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchAction(block, !lever.isPowered()), ThreadLocalRandom.current().nextInt(2, 20 + 1));
+        Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new ArenaSwitchPowerAction(block, !lever.isPowered()), ThreadLocalRandom.current().nextInt(2, 20 + 1));
 
     }
 }
