@@ -18,10 +18,9 @@ public class GameCountdown implements Runnable
         if (arena.getGameManager().isGameInProgress())
         {
             arena.getGameManager().setGameTimeLeft(arena.getGameManager().getGameTimeLeft() - 1); //Decrement a second
-            arena.getGameManager().getGameCountdownManager().updateCountdown(); //Update the display
-            arena.getSignManager().updateJoinSigns(); //Update signs
-            arena.getGameManager().getGameScoreboardManager().updateScoreboard();
-            arena.getGameManager().getWeatherManager().weatherCheck();
+            arena.getGameManager().getGameCountdownManager().updateCountdown(); //Update the countdown display & in-game messages
+            arena.getGameManager().getGameScoreboardManager().updateScoreboard(); //Update the sidebar scoreboard with stats
+            arena.getGameManager().getWeatherManager().weatherCheck(); //Check weather
         }
     }
 }

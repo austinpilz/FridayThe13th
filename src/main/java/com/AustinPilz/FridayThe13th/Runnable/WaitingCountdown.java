@@ -14,13 +14,10 @@ public class WaitingCountdown implements Runnable
     @Override
     public void run()
     {
-        if (arena.getGameManager().getWaitingTimeLeft() > 0)
+        if (arena.getGameManager().isGameWaiting() && arena.getGameManager().getWaitingTimeLeft() > 0)
         {
             arena.getGameManager().setWaitingTimeLeft(arena.getGameManager().getWaitingTimeLeft() - 1);
             arena.getGameManager().getWaitingCountdownDisplayManager().updateCountdownValue();
-
-            //Update the signs
-            arena.getSignManager().updateJoinSigns();
         }
     }
 }

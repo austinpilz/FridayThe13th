@@ -15,6 +15,7 @@ public class GameStatusCheck implements Runnable
     public void run()
     {
         arena.getGameManager().checkGameStatus();
+        arena.getSignManager().updateJoinSigns(); //Update signs
     }
 
 }

@@ -417,14 +417,34 @@ public class CommandHandler implements CommandExecutor {
                                 int sec = rem % 60;
                                 sender.sendMessage("Time Left: " + mn + "m " + sec + "sec");
                                 sender.sendMessage("# Players: " + arena.getGameManager().getPlayerManager().getNumPlayers());
-                                sender.sendMessage("# Spectators: " + arena.getGameManager().getPlayerManager().getNumSpectators());
+
+                                if (arena.getGameManager().getPlayerManager().getNumSpectators() > 0) {
+                                    sender.sendMessage("# Spectators: " + arena.getGameManager().getPlayerManager().getNumSpectators());
+                                }
+
                                 sender.sendMessage(ChatColor.STRIKETHROUGH + "--------------");
                             }
 
-                            sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
-                            sender.sendMessage("# Item Chests: " + arena.getObjectManager().getNumChestsItems());
-                            sender.sendMessage("# Weapon Chests: " + arena.getObjectManager().getNumChestsWeapon());
-                            sender.sendMessage("# Phones: " + arena.getObjectManager().getPhoneManager().getNumberOfPhones());
+                            //Spawn locations
+                            if (arena.getLocationManager().getNumberStartingPoints() > 0) {
+                                sender.sendMessage("# Spawn Locations: " + arena.getLocationManager().getNumberStartingPoints());
+                            }
+
+                            //Item chests
+                            if (arena.getObjectManager().getNumChestsItems() > 0) {
+                                sender.sendMessage("# Item Chests: " + arena.getObjectManager().getNumChestsItems());
+                            }
+
+                            //Weapon chests
+                            if (arena.getObjectManager().getNumChestsWeapon() > 0) {
+                                sender.sendMessage("# Weapon Chests: " + arena.getObjectManager().getNumChestsWeapon());
+                            }
+
+                            //Phones
+                            if (arena.getObjectManager().getPhoneManager().getNumberOfPhones() > 0) {
+                                sender.sendMessage("# Phones: " + arena.getObjectManager().getPhoneManager().getNumberOfPhones());
+                            }
+
                             sender.sendMessage("# Minutes per Counselor: " + arena.getMinutesPerCounselor());
                             sender.sendMessage("# Waiting Room Seconds: " + arena.getSecondsWaitingRoom());
                             sender.sendMessage("# Lifetime Games: " + arena.getNumLifetimeGames());

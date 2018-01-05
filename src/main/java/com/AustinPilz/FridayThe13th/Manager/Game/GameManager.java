@@ -35,6 +35,8 @@ GameManager {
     private int gameStatusCheckTask = -1;
     private int gameCountdownTask = -1;
     private int waitingCountdownTask = -1;
+    private int policeArriveCountdownTask = -1;
+    private int waitingPlayerUpdateTask = -1;
 
     //Tommy Jarvis
     private boolean tommyCalled;
@@ -45,7 +47,7 @@ GameManager {
     private boolean policeArrived;
     private int timeUntilPoliceArrive;
     private int maxTimeUntilPoliceArrive;
-    private int policeArriveCountdownTask = -1;
+
 
     //Managers
     private PlayerManager playerManager;
@@ -79,7 +81,6 @@ GameManager {
 
         //Start Tasks
         gameStatusCheckTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new GameStatusCheck(arena), 60, 20);
-        gameStatusCheckTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new PlayerWaitingDisplayUpdate(arena), 60, 60);
     }
 
     /**
@@ -349,14 +350,19 @@ GameManager {
     private void changeGameStatus(GameStatus status) {
         //Changing to empty
         if (status.equals(GameStatus.Empty)) {
-            //Cancel tasks
+            //Tasks
             Bukkit.getScheduler().cancelTask(waitingCountdownTask);
             Bukkit.getScheduler().cancelTask(gameCountdownTask);
             Bukkit.getScheduler().cancelTask(policeArriveCountdownTask);
+            waitingPlayerUpdateTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new PlayerWaitingDisplayUpdate(arena), 60, 60);
 
             if (isGameWaiting() && getPlayerManager().getNumPlayers() == 0) {
                 getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
-                getPlayerManager().resetPlayerStorage(); //Resets all data structures with players since there are none left
+                //Resets all data structures with players since there are none left
+            }
+
+            if (isGameInProgress()) {
+                getPlayerManager().resetPlayerStorage();
             }
 
             gameStatus = GameStatus.Empty; //Change mode
@@ -377,8 +383,11 @@ GameManager {
             getPlayerManager().displayWaitingCountdown();
         } else if (status.equals(GameStatus.InProgress)) //Changing to in progress (can only go from waiting -> in progress)
         {
+
+
             if (isGameWaiting()) {
-                Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel task
+                Bukkit.getScheduler().cancelTask(waitingCountdownTask); //Cancel waiting countdown
+                Bukkit.getScheduler().cancelTask(waitingPlayerUpdateTask); //Cancel waiting sidebar display for players
                 getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
             }
 
@@ -444,7 +453,6 @@ GameManager {
             for (Hologram hologram : HologramsAPI.getHolograms(FridayThe13th.instance)) {
                 if (arena.isLocationWithinArenaBoundaries(hologram.getLocation())) {
                     hologram.delete();
-
                 }
             }
 

@@ -537,7 +537,7 @@ public class PlayerListener implements Listener {
                             }
                         }
                     } else {
-                        //You can't get damaged while wait2ing
+                        //You can't get damaged while waiting
                         event.setCancelled(true);
                     }
                 } else {

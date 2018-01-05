@@ -56,8 +56,5 @@ public class WaitingCountdownDisplayManager
     {
         float value = ((((float) arena.getGameManager().getWaitingTimeLeft() - 0) * (1 - 0)) / (arena.getSecondsWaitingRoom() - 0)) + 0;
         waitingBar.setProgress(value);
-
-        int rem = arena.getGameManager().getWaitingTimeLeft() % 3600;
-        int sec = rem % 60;
     }
 }

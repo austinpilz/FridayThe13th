@@ -394,7 +394,6 @@ public class PlayerManager {
                         //Add to lists
                         FridayThe13th.arenaController.addPlayer(player.getUniqueId().toString(), arena);
                         addPlayer(player);
-                        alivePlayers.put(player.getUniqueId().toString(), player);
 
                         //Waiting actions
                         performWaitingActions(player);
@@ -534,7 +533,7 @@ public class PlayerManager {
                 arena.getGameManager().getPlayerManager().fireFirework(player, Color.RED);
 
                 //They're a normal player, see if there are still others alive
-                if (getNumPlayersAlive() > 1) //since jason is still presumably alive
+                if (getNumPlayersAlive() >= 1) //since jason is still presumably alive
                 {
                     //Spawn their corpse
                     arena.getObjectManager().spawnCorpse(player);
@@ -571,7 +570,7 @@ public class PlayerManager {
                 //Let everyone know
                 sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerEscapeBroadcast", "{0} escaped.", player.getName()));
 
-                if (getNumPlayersAlive() > 1) {
+                if (getNumPlayersAlive() >= 1) {
                     //They're are others still alive, enter spectating mode
                     getCounselor(player).transitionToSpectatingMode();
                     becomeSpectator(player);
@@ -643,7 +642,6 @@ public class PlayerManager {
         teleportPlayerToWaitingPoint(player);
 
         //Show the countdown timer
-        //FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().displayStatsScoreboard();
         arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player);
 
         //Change game mode & clear inventory
@@ -681,16 +679,16 @@ public class PlayerManager {
             FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
         }
 
-        //Jason stuff
+        //Prepare Jason
         jason.prepareforGameplay();
 
-        //Prepare everyone for gameplay
-        int prepareDelay = 20;
+        //Prepare Counselors
         Iterator it = getCounselors().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
             counselor.prepareForGameplay();
+            alivePlayers.put(counselor.getPlayer().getUniqueId().toString(), counselor.getPlayer());
         }
 
         //Tell everyone who Jason is
@@ -1062,7 +1060,7 @@ public class PlayerManager {
         fm.addEffect(FireworkEffect.builder()
                 .flicker(true)
                 .trail(true)
-                .with(FireworkEffect.Type.BALL)
+                .with(FireworkEffect.Type.BALL_LARGE)
                 .withColor(color)
                 .build());
         fm.setPower(1);
