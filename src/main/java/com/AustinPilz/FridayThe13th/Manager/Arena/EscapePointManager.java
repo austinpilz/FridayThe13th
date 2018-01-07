@@ -43,6 +43,8 @@ public class EscapePointManager {
                 found = true;
                 escapePoints[i].setPoliceLocation(true);
             }
+
+            i++;
         }
     }
 

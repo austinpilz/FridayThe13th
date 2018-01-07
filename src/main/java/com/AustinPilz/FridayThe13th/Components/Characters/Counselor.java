@@ -502,7 +502,8 @@ public class Counselor extends F13Character
      */
     private boolean canBeSensedByJason()
     {
-        return (getFearLevelPercentage() > .25 || isTommyJarvis) && !arena.getGameManager().getPlayerManager().isSpectator(getF13Player());
+        return (getFearLevelPercentage() - getF13Player().getCounselorProfile().getComposure().getTraitLevel() >= .35 || isTommyJarvis) && !arena.getGameManager().getPlayerManager().isSpectator(getF13Player());
+
     }
 
     /**

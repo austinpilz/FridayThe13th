@@ -156,7 +156,7 @@ public class F13EventsListener implements Listener {
 
                 if (action.equals("JasonTrap") || action.equals("CounselorTrap")) {
                     //Make sure they're not stacking traps
-                    if (!event.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.CARPET) && !event.getBlock().getRelative(BlockFace.UP).getType().equals(Material.CARPET)) {
+                    if (!event.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.CARPET) && !event.getBlock().getRelative(BlockFace.DOWN).getType().equals(Material.RAILS) && !event.getBlock().getRelative(BlockFace.UP).getType().equals(Material.CARPET)) {
                         if (action.equals("JasonTrap")) {
                             event.getArena().getObjectManager().placeJasonTrap(event.getBlock(), event.getOriginalMaterial());
                         } else if (action.equals("CounselorTrap")) {
