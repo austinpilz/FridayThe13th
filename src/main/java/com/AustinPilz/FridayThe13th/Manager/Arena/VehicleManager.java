@@ -36,15 +36,6 @@ public class VehicleManager {
     }
 
     /**
-     * Adds new boat to arena
-     *
-     * @param boat
-     */
-    public void addBoat(F13Boat boat) {
-        boats.add(boat);
-    }
-
-    /**
      * Register a spawned car
      *
      * @param car
@@ -55,7 +46,6 @@ public class VehicleManager {
 
     /**
      * Deregisters spawned car
-     *
      * @param car
      */
     public void removeSpawnedCar(F13Car car) {
@@ -88,6 +78,43 @@ public class VehicleManager {
     }
 
     /**
+     * Adds new boat to arena
+     *
+     * @param boat
+     */
+    public void addBoat(F13Boat boat) {
+        boats.add(boat);
+    }
+
+    /**
+     * Register a spawned car
+     *
+     * @param boat F13Boat
+     */
+    public void registerSpawnedBoat(F13Boat boat) {
+        spawnedBoats.put(boat.getBoat(), boat);
+    }
+
+    /**
+     * Deregisters spawned boat
+     *
+     * @param boat
+     */
+    public void removeSpawnedBoat(F13Boat boat) {
+        spawnedBoats.remove(boat.getBoat());
+    }
+
+    /**
+     * Returns registered car from Minecart
+     *
+     * @param boat
+     * @return F13Boat
+     */
+    public F13Boat getRegisteredBoat(Boat boat) {
+        return spawnedBoats.get(boat);
+    }
+
+    /**
      * @return Number of boats
      */
     public int getNumBoats() {
@@ -98,9 +125,19 @@ public class VehicleManager {
      * Prepares vehicles for a game
      */
     public void prepareVehicles() {
-        if (arena.getObjectManager().getNumChestsItems() >= getMinRequiredChests()) {
-            for (F13Car car : cars) {
-                car.prepare();
+        if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() >= getNumCars()) {
+            if (arena.getObjectManager().getNumChestsItems() >= getMinRequiredChests()) {
+                for (F13Car car : cars) {
+                    car.prepare();
+                }
+            }
+        }
+
+        if (arena.getLocationManager().getEscapePointManager().getNumberOfWaterEscapePoints() >= getNumBoats()) {
+            if (arena.getObjectManager().getNumChestsItems() >= getMinRequiredChests()) {
+                for (F13Boat boat : boats) {
+                    boat.prepare();
+                }
             }
         }
     }
@@ -112,13 +149,17 @@ public class VehicleManager {
         for (F13Car car : cars) {
             car.reset();
         }
+
+        for (F13Boat boat : boats) {
+            boat.reset();
+        }
     }
 
     /**
      * Deletes all vehicles from memory and the database
      */
     public void deleteVehicles() {
-        //TODO
+        //TODO - Remove them from the DB
     }
 
     /**
