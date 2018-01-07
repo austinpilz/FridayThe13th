@@ -1,10 +1,10 @@
-package com.AustinPilz.FridayThe13th.Manager;
+package com.AustinPilz.FridayThe13th.Factory;
 
 
 import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 
-public class F13ProfileManager {
+public class F13ProfileFactory {
 
     /**
      * Returns Jason profile from internal identifier

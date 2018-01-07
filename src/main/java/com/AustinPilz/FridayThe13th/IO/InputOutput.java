@@ -15,8 +15,8 @@ import com.AustinPilz.FridayThe13th.Components.Vehicle.F13Vehicle;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
+import com.AustinPilz.FridayThe13th.Factory.F13ProfileFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Manager.F13ProfileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -920,13 +920,12 @@ public class InputOutput
                 }
                 else if (result.getString("Item").equalsIgnoreCase("Profile"))
                 {
-                    if (F13ProfileManager.getCounselorProfileByInternalIdentifier(result.getString("Name")) != null)
+                    if (F13ProfileFactory.getCounselorProfileByInternalIdentifier(result.getString("Name")) != null)
                     {
-                        player.addPurchasedCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(result.getString("Name")), false);
-                    }
-                    else if (F13ProfileManager.getJasonProfileByInternalIdentifier(result.getString("Name")) != null)
+                        player.addPurchasedCounselorProfile(F13ProfileFactory.getCounselorProfileByInternalIdentifier(result.getString("Name")), false);
+                    } else if (F13ProfileFactory.getJasonProfileByInternalIdentifier(result.getString("Name")) != null)
                     {
-                        player.addPurchasedJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(result.getString("Name")), false);
+                        player.addPurchasedJasonProfile(F13ProfileFactory.getJasonProfileByInternalIdentifier(result.getString("Name")), false);
                     }
                 }
             }

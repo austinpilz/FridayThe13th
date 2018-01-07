@@ -11,7 +11,7 @@ public class PlayerWaitingDisplayUpdate implements Runnable {
 
     @Override
     public void run() {
-        if ((arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) && arena.getGameManager().getPlayerManager().getNumPlayers() > 0) {
+        if ((arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) && arena.getGameManager().getPlayerManager().getNumberOfPlayers() > 0) {
             arena.getGameManager().getPlayerManager().updateWaitingStatsScoreboards();
         }
     }

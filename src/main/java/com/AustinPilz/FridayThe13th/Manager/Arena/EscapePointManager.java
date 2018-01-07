@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Manager.Game;
+package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.EscapePoint;
@@ -15,7 +15,7 @@ public class EscapePointManager {
     private HashSet<EscapePoint> escapePoints;
 
 
-    public EscapePointManager(Arena arena) {
+    EscapePointManager(Arena arena) {
         this.arena = arena;
         this.escapePoints = new HashSet<>();
     }

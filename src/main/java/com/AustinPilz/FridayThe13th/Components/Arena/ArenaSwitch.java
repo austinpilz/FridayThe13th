@@ -1,5 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaSwitchPowerAction;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
@@ -9,7 +11,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
 import org.bukkit.material.Lever;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,9 +39,9 @@ public class ArenaSwitch
     /**
      * Attempt to repair the switch
      */
-    public void repairSwitchAttempt(Player player)
+    public void repairSwitchAttempt(F13Player player)
     {
-        repairAttempts += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
+        repairAttempts += player.getCounselorProfile().getIntelligence().getRegenerationRate();
 
         if (getRepairProgressPercent() >= 1)
         {
@@ -50,16 +51,16 @@ public class ArenaSwitch
             hologram.delete();
 
             //Remove redstone from players inventory
-            InventoryActions.remove(player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
+            InventoryActions.remove(player.getBukkitPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
 
             //Fire firework
             arena.getGameManager().getPlayerManager().fireFirework(player, Color.ORANGE);
 
             //Play Sound for Jason
-            arena.getGameManager().getPlayerManager().getJason().getPlayer().playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 1F, 2F);
+            arena.getGameManager().getPlayerManager().getJason().getPlayer().playSound(player.getBukkitPlayer().getLocation(), Sound.BLOCK_LEVER_CLICK, 1F, 2F);
 
             //Register switch fix for XP
-            arena.getGameManager().getPlayerManager().getCounselor(player).getXPManager().addSwitchFix();
+            arena.getGameManager().getPlayerManager().getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_SwitchRepaired);
         }
         else
         {

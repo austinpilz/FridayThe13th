@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Game;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.GameStatus;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameCountdownManager;
 import com.AustinPilz.FridayThe13th.Manager.Display.GameScoreboardManager;
@@ -14,11 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
 
 public class
 GameManager {
@@ -286,30 +285,30 @@ GameManager {
      */
     public void checkGameStatus() {
         if (isGameEmpty()) {
-            if (getPlayerManager().getNumPlayers() >= 2) {
+            if (getPlayerManager().getNumberOfPlayers() >= 2) {
                 //There are people waiting and we've reached the min, change to waiting
                 changeGameStatus(GameStatus.Waiting);
             } else {
                 //Need more players before waiting countdown will begin
-                Iterator it = getPlayerManager().getPlayers().entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry) it.next();
-                    Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, ChatColor.RED + FridayThe13th.language.get(player, "actionBar.waitingForMorePlayers", "Waiting for 1 more player before waiting countdown begins..."));
+
+                for (F13Player player : getPlayerManager().getPlayers()) {
+                    ActionBarAPI.sendActionBar(player.getBukkitPlayer(), ChatColor.RED + FridayThe13th.language.get(player.getBukkitPlayer(), "actionBar.waitingForMorePlayers", "Waiting for 1 more player before waiting countdown begins..."));
                 }
             }
         } else if (isGameWaiting()) {
-            if (getPlayerManager().getNumPlayers() >= 2) {
+            if (getPlayerManager().getNumberOfPlayers() >= 2) {
                 if (waitingTimeLeftInSeconds <= 0) {
                     //BEGIN THE GAME
                     changeGameStatus(GameStatus.InProgress);
+                } else {
+                    getPlayerManager().displayWaitingCountdown();
                 }
             } else {
                 //Minimum player requirement no longer met - Cancel waiting countdown task and go back to empty status
                 changeGameStatus(GameStatus.Empty);
             }
         } else if (isGameInProgress()) {
-            if (getPlayerManager().getNumPlayers() < 2) {
+            if (getPlayerManager().getNumberOfPlayers() < 2) {
                 endGame(); //End the game since there aren't enough players
             }
         }
@@ -356,7 +355,7 @@ GameManager {
             Bukkit.getScheduler().cancelTask(policeArriveCountdownTask);
             waitingPlayerUpdateTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(FridayThe13th.instance, new PlayerWaitingDisplayUpdate(arena), 60, 60);
 
-            if (isGameWaiting() && getPlayerManager().getNumPlayers() == 0) {
+            if (isGameWaiting() && getPlayerManager().getNumberOfPlayers() == 0) {
                 getPlayerManager().hideWaitingCountdown(); //Hide countdown from players
                 //Resets all data structures with players since there are none left
             }
@@ -412,7 +411,7 @@ GameManager {
         arena.getLocationManager().getEscapePointManager().resetEscapePoints();
 
         //Assign all players roles
-        getPlayerManager().performInProgressActions();
+        getPlayerManager().beginGame();
 
         //Calculate the game time
         calculateGameTime();
@@ -428,6 +427,8 @@ GameManager {
 
         //Start the weather service
         weatherManager.beginWeatherService();
+
+        FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Game in " + arena.getName() + " beginning...");
     }
 
     /**
@@ -436,7 +437,7 @@ GameManager {
     protected void endGame() {
         if (isGameInProgress()) {
             //Remove all players
-            getPlayerManager().performEndGameActions();
+            getPlayerManager().endGame();
 
             //Make countdown bar for any counselors disappear
             getGameCountdownManager().hideCountdownBar();
@@ -486,7 +487,7 @@ GameManager {
      */
     private void calculateGameTime() {
         double minutesPer = Math.max(arena.getMinutesPerCounselor(), 1.8); //1.8 is the min TPC allowed
-        gameTimeLeftInSeconds = (int) Math.ceil(((minutesPer * arena.getGameManager().getPlayerManager().getNumCounselors())) * 60);
+        gameTimeLeftInSeconds = (int) Math.ceil(((minutesPer * arena.getGameManager().getPlayerManager().getNumberOfCounselors())) * 60);
         gameTimeMax = gameTimeLeftInSeconds;
     }
 
@@ -503,10 +504,7 @@ GameManager {
      */
     public void clearArena() {
         if (isGameEmpty() || isGameWaiting()) {
-            Iterator it = getPlayerManager().getPlayers().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                Player player = (Player) entry.getValue();
+            for (F13Player player : getPlayerManager().getPlayers()) {
                 getPlayerManager().onplayerQuit(player);
             }
         } else if (isGameInProgress()) {

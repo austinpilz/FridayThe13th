@@ -5,9 +5,9 @@ import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Profiles.CounselorProfile;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 import com.AustinPilz.FridayThe13th.Exceptions.SaveToDatabaseException;
+import com.AustinPilz.FridayThe13th.Factory.F13ProfileFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.WaitingPlayerStatsDisplayManager;
-import com.AustinPilz.FridayThe13th.Manager.F13ProfileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -161,7 +161,7 @@ public class F13Player {
      *
      * @return
      */
-    public Player getPlayer() {
+    public Player getBukkitPlayer() {
         return Bukkit.getPlayer(UUID.fromString(getPlayerUUID()));
     }
 
@@ -189,7 +189,7 @@ public class F13Player {
         if (getLevel() != prevLevel)
         {
             //They leveled up
-            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "chat.xp.LevelUp", "Congratulations! You've leveled up to level {0}", getLevel().getLevelNumber()));
+            getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getBukkitPlayer(), "chat.xp.LevelUp", "Congratulations! You've leveled up to level {0}", getLevel().getLevelNumber()));
         }
     }
 
@@ -219,9 +219,9 @@ public class F13Player {
      * @param profileName
      */
     private void determineJasonProfile(String profileName) {
-        if (F13ProfileManager.getJasonProfileByInternalIdentifier(profileName) != null)
+        if (F13ProfileFactory.getJasonProfileByInternalIdentifier(profileName) != null)
         {
-            jasonProfile = F13ProfileManager.getJasonProfileByInternalIdentifier(profileName);
+            jasonProfile = F13ProfileFactory.getJasonProfileByInternalIdentifier(profileName);
         }
 
         //Check to see if they still have no skin, set them to the default one
@@ -236,9 +236,9 @@ public class F13Player {
      * @param profileName
      */
     private void determineCounselorProfile(String profileName) {
-        if (F13ProfileManager.getCounselorProfileByInternalIdentifier(profileName) != null)
+        if (F13ProfileFactory.getCounselorProfileByInternalIdentifier(profileName) != null)
         {
-            counselorProfile = F13ProfileManager.getCounselorProfileByInternalIdentifier(profileName);
+            counselorProfile = F13ProfileFactory.getCounselorProfileByInternalIdentifier(profileName);
         }
 
         //Check to see if they still have no skin, set them to the default one
@@ -514,5 +514,12 @@ public class F13Player {
             //Remove from DB
             FridayThe13th.inputOutput.removePurchasedPlayerProfile(this, profile.getInternalIdentifier());
         }
+    }
+
+    /**
+     * @return If the Bukkit player is online
+     */
+    public boolean isOnline() {
+        return Bukkit.getOnlinePlayers().contains(getBukkitPlayer());
     }
 }

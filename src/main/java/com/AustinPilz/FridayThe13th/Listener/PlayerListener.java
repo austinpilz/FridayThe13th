@@ -6,6 +6,8 @@ import com.AustinPilz.FridayThe13th.Components.Arena.EscapePoint;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
 import com.AustinPilz.FridayThe13th.Components.Enum.TrapType;
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Visuals.ThrowableItem;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
@@ -70,7 +72,7 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         try
         {
-            FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()).getGameManager().getPlayerManager().onPlayerLogout(event.getPlayer().getUniqueId().toString());
+            FridayThe13th.arenaController.getPlayerArena(event.getPlayer()).getGameManager().getPlayerManager().onPlayerLogout(FridayThe13th.playerController.getPlayer(event.getPlayer()));
         } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
         }
@@ -83,7 +85,7 @@ public class PlayerListener implements Listener {
             {
                 //This should NEVER happen, it should always look for damage
                 Player player = event.getEntity();
-                FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()).getGameManager().getPlayerManager().onPlayerDeath(player); //See if they're playing
+                FridayThe13th.arenaController.getPlayerArena(player).getGameManager().getPlayerManager().onPlayerDeath(FridayThe13th.playerController.getPlayer(player)); //See if they're playing
             }
         } catch (PlayerNotPlayingException exception) {
             //Do nothing since in this case, we couldn't care
@@ -93,16 +95,16 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer());
 
-            if (arena.getGameManager().isGameWaiting()) {
-                //In waiting, only teleporting can be to the waiting location
-                if (!event.getTo().equals(arena.getWaitingLocation())) {
+            if (!arena.getGameManager().isGameInProgress()) {
+                //In waiting, only teleporting can be to the waiting or return location
+                if (!event.getTo().equals(arena.getWaitingLocation()) && !event.getTo().equals(arena.getReturnLocation())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.teleportWaiting", "You cannot be teleported while waiting."));
                 }
             } else if (arena.getGameManager().isGameInProgress()) {
-                if (!arena.isLocationWithinArenaBoundaries(event.getTo())) {
+                if (!arena.isLocationWithinArenaBoundaries(event.getTo()) && !arena.getReturnLocation().equals(event.getTo())) {
                     event.setCancelled(true);
                     event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.teleportPlaying", "You cannot be teleported outside of the arena boundary while playing."));
                 }
@@ -115,7 +117,8 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
         try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer());
+            F13Player player = FridayThe13th.playerController.getPlayer(event.getPlayer());
 
             if (event.hasItem() && event.getItem().hasItemMeta() && event.getItem().getItemMeta().hasLore() && event.getItem().getItemMeta().getLore().size() > 0 && HiddenStringsUtil.hasHiddenString(event.getItem().getItemMeta().getLore().get(0))) {
                 F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(event.getPlayer(), arena, HiddenStringsUtil.extractHiddenString(event.getItem().getItemMeta().getLore().get(0)), event.getMaterial());
@@ -125,8 +128,7 @@ public class PlayerListener implements Listener {
                 //Check to see if they're trampling anything
                 if (event.getAction() == Action.PHYSICAL && event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.SOIL || event.getClickedBlock().getType() == Material.FIRE)) {
                     event.setCancelled(true);
-                }
-                else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                } else if (arena.getGameManager().getPlayerManager().isCounselor(player) && !arena.getGameManager().getPlayerManager().isSpectator(player)) {
                     //They're in regular play mode
 
                     if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Door)
@@ -150,7 +152,7 @@ public class PlayerListener implements Listener {
                             //Door isn't broken
                             if (door.isOpen()) {
                                 //They're closing a door - register for XP
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addDoorClosed();
+                                arena.getGameManager().getPlayerManager().getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_DoorClosed);
                             } else {
                                 //They're opening a door, random chance for jump scare noise
                                 double scareChance = Math.random() * 100;
@@ -169,7 +171,7 @@ public class PlayerListener implements Listener {
 
                             if (event.hasItem() && event.getItem().getType().equals(Material.REDSTONE)) {
                                 //Register the repair attempt
-                                arena.getObjectManager().getBrokenSwitches().get(event.getClickedBlock()).repairSwitchAttempt(event.getPlayer());
+                                arena.getObjectManager().getBrokenSwitches().get(event.getClickedBlock()).repairSwitchAttempt(player);
                             } else {
                                 event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.needRepairWire", "You need repair wire to fix broken switches."));
                             }
@@ -179,7 +181,7 @@ public class PlayerListener implements Listener {
                             Lever lever = (Lever)state.getData();
 
                             if (lever.isPowered()) {
-                                if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getF13Player().hasPerk(F13Perk.Counselor_AhDarkness)) {
+                                if (!arena.getGameManager().getPlayerManager().getCounselor(player).getF13Player().hasPerk(F13Perk.Counselor_AhDarkness)) {
                                     //They don't have the "ah, darkness" perk, so they can't turn off levers that are powered on.
                                     event.setCancelled(true);
                                 }
@@ -192,7 +194,7 @@ public class PlayerListener implements Listener {
                                 ArenaPhone phone = arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock());
                                 if ((!phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.END_ROD)) || (phone.isFusePresent() && event.getPlayer().getInventory().contains(Material.REDSTONE))) {
                                     //Register the repair attempt
-                                    arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
+                                    arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(player);
                                 } else {
                                     if (!phone.isFusePresent()) {
                                         event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.needPhoneFuse", "You need a phone fuse to fix broken phones."));
@@ -201,7 +203,7 @@ public class PlayerListener implements Listener {
                                     }
                                 }
                             } else {
-                                arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
+                                arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(player);
                             }
                         }
                     } else if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Chest) {
@@ -218,7 +220,7 @@ public class PlayerListener implements Listener {
                     } else if (event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.TRIPWIRE_HOOK)) {
                         //Touching a phone
                         if (arena.getObjectManager().getPhoneManager().isBlockARegisteredPhone(event.getClickedBlock())) {
-                            arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(event.getPlayer());
+                            arena.getObjectManager().getPhoneManager().getPhone(event.getClickedBlock()).callAttempt(player);
                         } else {
                             event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.phoneNotManaged", "This phone has not been added to the arena. Ask your admin to add it."));
                         }
@@ -226,27 +228,26 @@ public class PlayerListener implements Listener {
                         //Window jumping
                         if (event.getPlayer().isSprinting()) {
                             if (arena.getObjectManager().getWindowManager().canPlayerJumpThroughWindow(event.getClickedBlock(), event.getPlayer())) {
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).teleportThroughWindow(event.getClickedBlock(), true, true);
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getXPManager().addWindowSprint(); //Register event for XP
+                                arena.getGameManager().getPlayerManager().getCounselor(player).teleportThroughWindow(event.getClickedBlock(), true, true);
+                                arena.getGameManager().getPlayerManager().getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_WindowSprint); //Register event for XP
                             } else {
                                 ActionBarAPI.sendActionBar(event.getPlayer(), FridayThe13th.language.get(event.getPlayer(), "actionBar.counselor.windowJumpFail2", "Can't jump! No free space on the other side of the window."), 40);
                             }
 
                         } else {
-                            if (!arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).isAwaitingWindowJump()) {
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setAwaitingWindowJump(true); //So that they don't spam window jumps
+                            if (!arena.getGameManager().getPlayerManager().getCounselor(player).isAwaitingWindowJump()) {
+                                arena.getGameManager().getPlayerManager().getCounselor(player).setAwaitingWindowJump(true); //So that they don't spam window jumps
                                 ActionBarAPI.sendActionBar(event.getPlayer(), FridayThe13th.language.get(event.getPlayer(), "actionBar.counselor.windowJumpWait", "Don't move! You'll jump in {0} seconds...", "2"), 40);
-                                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new CounselorWindowJump(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()), event.getPlayer().getLocation(), event.getClickedBlock()), 40);
+                                Bukkit.getScheduler().runTaskLater(FridayThe13th.instance, new CounselorWindowJump(arena.getGameManager().getPlayerManager().getCounselor(player), event.getPlayer().getLocation(), event.getClickedBlock()), 40);
                             }
                         }
                     } else if (event.hasBlock() && event.getClickedBlock().getType().equals(Material.CARPET)) {
                         if (arena.getObjectManager().isATrap(event.getClickedBlock()) && arena.getObjectManager().getTrap(event.getClickedBlock()).getTrapType().equals(TrapType.Counselor) && !arena.getObjectManager().getTrap(event.getClickedBlock()).isActivated()) {
                             //They're clicking a counselor trap
-                            arena.getObjectManager().getTrap(event.getClickedBlock()).activationAttempt(arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()));
+                            arena.getObjectManager().getTrap(event.getClickedBlock()).activationAttempt(arena.getGameManager().getPlayerManager().getCounselor(player));
                         }
                     }
-                }
-                else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
+                } else if (arena.getGameManager().getPlayerManager().isJason(player))
                 {
                     Jason jason = arena.getGameManager().getPlayerManager().getJason();
 
@@ -308,12 +309,12 @@ public class PlayerListener implements Listener {
                     if (arena.getSignManager().isJoinSign(sign))
                     {
                         try {
-                            arena.getGameManager().getPlayerManager().playerJoinGame(event.getPlayer());
+                            arena.getGameManager().getPlayerManager().playerJoinGame(FridayThe13th.playerController.getPlayer(event.getPlayer()));
                         } catch (GameFullException e) {
                             event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.gameFull", "The game in {0} is currently full.", ChatColor.RED + arena.getName() + ChatColor.WHITE));
                         } catch (GameInProgressException e) {
                             //Enter as a spectator
-                            arena.getGameManager().getPlayerManager().becomeSpectator(event.getPlayer());
+                            arena.getGameManager().getPlayerManager().becomeSpectator(FridayThe13th.playerController.getPlayer(event.getPlayer()));
                         }
                     }
                 }
@@ -324,12 +325,13 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer());
+            F13Player player = FridayThe13th.playerController.getPlayer(event.getPlayer());
 
             if (arena.getGameManager().isGameInProgress())
             {
                 if (arena.getLocationManager().getEscapePointManager().isLocationWithinEscapePoint(event.getTo())) {
-                    if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                    if (arena.getGameManager().getPlayerManager().isCounselor(player) && !arena.getGameManager().getPlayerManager().isSpectator(player)) {
                         EscapePoint escapePoint = arena.getLocationManager().getEscapePointManager().getEscapePointFromLocation(event.getTo());
                         //Counselor is trying to move into
                         if ((escapePoint.isWaterPoint() && event.getPlayer().getVehicle() instanceof Boat) || (escapePoint.isLandPoint() && event.getPlayer().getVehicle() instanceof Minecart)) {
@@ -339,7 +341,7 @@ public class PlayerListener implements Listener {
                             //Counselor escaping via foot - can only do when police are there
                             if (escapePoint.isLandPoint() && escapePoint.isPoliceLocation()) {
                                 //They can escape
-                                arena.getGameManager().getPlayerManager().onPlayerEscape(event.getPlayer());
+                                arena.getGameManager().getPlayerManager().onPlayerEscape(player);
                             } else {
                                 //Cannot escape on foot if the police aren't there.
                                 event.setCancelled(true);
@@ -353,40 +355,39 @@ public class PlayerListener implements Listener {
                     event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.arenaBoundary", "You can't leave the arena boundary while playing."));
                 }
 
-                if (arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                if (arena.getGameManager().getPlayerManager().isSpectator(player)) {
                     //
-                } else if (arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer())) {
+                } else if (arena.getGameManager().getPlayerManager().isCounselor(player)) {
 
                     //Check their movement for their stats
                     if (event.getFrom().distance(event.getTo()) > 0) {
                         if (event.getPlayer().isSprinting()) {
-                            if (arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).getStaminaPercentage() == 0) {
+                            if (arena.getGameManager().getPlayerManager().getCounselor(player).getStaminaPercentage() == 0) {
                                 event.getPlayer().setSprinting(false);
                                 event.setCancelled(true);
                             } else {
                                 //Sprinting
-                                arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSprinting(true);
+                                arena.getGameManager().getPlayerManager().getCounselor(player).setSprinting(true);
                             }
                         } else if (event.getPlayer().isSneaking()) {
                             //Sneaking
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setSneaking(true);
+                            arena.getGameManager().getPlayerManager().getCounselor(player).setSneaking(true);
                         } else if (event.getPlayer().isFlying()) {
-                            if (!arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                            if (!arena.getGameManager().getPlayerManager().isSpectator(player)) {
                                 event.getPlayer().setFlying(false); //Prevent cheating
                             }
                         } else {
                             //Must just be walking
-                            arena.getGameManager().getPlayerManager().getCounselor(event.getPlayer()).setWalking(true);
+                            arena.getGameManager().getPlayerManager().getCounselor(player).setWalking(true);
                         }
                     }
 
                     //Check to see if they're on a trap
                     if (arena.getObjectManager().isATrap(event.getPlayer().getLocation().getBlock()) && arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).getTrapType().equals(TrapType.Jason)) {
-                        arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).steppedOn(event.getPlayer());
+                        arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).steppedOn(player);
                     }
 
-                }
-                else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
+                } else if (arena.getGameManager().getPlayerManager().isJason(player))
                 {
                     if (event.getPlayer().isSneaking()) {
                         if (arena.getGameManager().getPlayerManager().getJason().canStalk()) {
@@ -412,7 +413,7 @@ public class PlayerListener implements Listener {
 
                     //Check to see if they're on a trap
                     if (arena.getObjectManager().isATrap(event.getPlayer().getLocation().getBlock()) && arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).getTrapType().equals(TrapType.Counselor)) {
-                        arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).steppedOn(event.getPlayer());
+                        arena.getObjectManager().getTrap(event.getPlayer().getLocation().getBlock()).steppedOn(player);
                     }
                 }
             }
@@ -426,7 +427,7 @@ public class PlayerListener implements Listener {
         try {
             if (event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
-                Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
+                Arena arena = FridayThe13th.arenaController.getPlayerArena(player); //See if they're playing
                 event.setCancelled(true);
             }
         } catch (PlayerNotPlayingException exception) {
@@ -436,7 +437,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer().getUniqueId().toString())) {
+        if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer())) {
             if (!event.getMessage().toLowerCase().startsWith("/f13")) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.commandsDisabled", "Only Friday the 13th commands are available during gameplay. If you'd like to leave, execute {0} /f13 leave", ChatColor.AQUA));
@@ -454,8 +455,8 @@ public class PlayerListener implements Listener {
 
                 //Make sure they're an actual player and not an NPC
                 if (Bukkit.getPlayer(temp.getUniqueId()) != null) {
-                    Player playerDamaged = Bukkit.getPlayer(temp.getUniqueId());
-                    Arena arena = FridayThe13th.arenaController.getPlayerArena(playerDamaged.getUniqueId().toString()); //See if they're playing
+                    F13Player playerDamaged = FridayThe13th.playerController.getPlayer((Player) event.getEntity());
+                    Arena arena = FridayThe13th.arenaController.getPlayerArena(playerDamaged); //See if they're playing
 
                     if (arena.getGameManager().isGameInProgress()) {
                         if (arena.getGameManager().getPlayerManager().isSpectator(playerDamaged)) {
@@ -465,7 +466,7 @@ public class PlayerListener implements Listener {
                                 EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent) event;
                                 if (edbeEvent.getDamager() instanceof Player) {
                                     //The person doing the damage is a player, too.
-                                    Player playerDamager = (Player) edbeEvent.getDamager();
+                                    F13Player playerDamager = FridayThe13th.playerController.getPlayer((Player) edbeEvent.getDamager());
 
                                     if (FridayThe13th.arenaController.isPlayerPlaying(playerDamager)) {
                                         //The person doing the damage is playing
@@ -475,24 +476,24 @@ public class PlayerListener implements Listener {
                                         } else if (arena.getGameManager().getPlayerManager().isCounselor(playerDamager)) {
                                             //Counselor is damaging
                                             if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
-                                                if (playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE)) {
+                                                if (playerDamager.getBukkitPlayer().getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD) || playerDamager.getBukkitPlayer().getInventory().getItemInMainHand().getType().equals(Material.IRON_AXE) || playerDamager.getBukkitPlayer().getInventory().getItemInMainHand().getType().equals(Material.WOOD_AXE)) {
                                                     //They're using a weapon
-                                                    if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getHealth() <= event.getDamage()) {
+                                                    if (arena.getGameManager().getPlayerManager().isCounselor(playerDamaged) && playerDamaged.getBukkitPlayer().getHealth() <= event.getDamage()) {
                                                         //Friendly kill
-                                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addFriendlyHit();
+                                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXpManager().registerXPAward(XPAward.Counselor_FriendlyHit);
                                                     } else if (arena.getGameManager().getPlayerManager().isJason(playerDamaged)) {
                                                         //Jason Hit
                                                         arena.getGameManager().getPlayerManager().getJason().stun();
 
                                                         //Register counselor XP
-                                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonStuns();
+                                                        arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXpManager().registerXPAward(XPAward.Counselor_JasonStuns);
 
                                                         //Alter damage based on their strength level
-                                                        event.setDamage(event.getDamage() * FridayThe13th.playerController.getPlayer(playerDamager).getCounselorProfile().getStrength().getDepletionRate());
+                                                        event.setDamage(event.getDamage() * playerDamager.getCounselorProfile().getStrength().getDepletionRate());
 
-                                                        if (playerDamaged.getHealth() <= event.getDamage()) {
+                                                        if (playerDamaged.getBukkitPlayer().getHealth() <= event.getDamage()) {
                                                             //Counselor killed jason
-                                                            arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXPManager().addJasonKill();
+                                                            arena.getGameManager().getPlayerManager().getCounselor(playerDamager).getXpManager().registerXPAward(XPAward.Counselor_JasonKilled);
                                                         }
                                                     }
                                                 } else {
@@ -503,18 +504,18 @@ public class PlayerListener implements Listener {
                                             //Jason hitting a counselor
 
                                             //Play sound effect
-                                            SoundManager.playSoundForNearbyPlayers(F13SoundEffect.Stab, arena, playerDamaged.getLocation(), 4, false, true);
+                                            SoundManager.playSoundForNearbyPlayers(F13SoundEffect.Stab, arena, playerDamaged.getBukkitPlayer().getLocation(), 4, false, true);
 
-                                            if (playerDamaged.getHealth() <= event.getDamage())
+                                            if (playerDamaged.getBukkitPlayer().getHealth() <= event.getDamage())
                                             {
                                                 //Jason kills a counselor
-                                                arena.getGameManager().getPlayerManager().getJason().getXPManager().addCounselorKill();
+                                                arena.getGameManager().getPlayerManager().getJason().getXpManager().registerXPAward(XPAward.Jason_CounselorKill);
 
                                                 //
                                                 if (arena.getGameManager().getPlayerManager().getJason().getF13Player().hasPerk(F13Perk.Jason_AxeThrow))
                                                 {
                                                     //Has axe throw perk
-                                                    ThrowableItem item = new ThrowableItem(playerDamager);
+                                                    ThrowableItem item = new ThrowableItem(playerDamager.getBukkitPlayer());
                                                     item.display();
                                                 }
                                             }
@@ -522,17 +523,17 @@ public class PlayerListener implements Listener {
                                     } else {
                                         //The person doing the damage isn't even playing
                                         event.setCancelled(true);
-                                        playerDamager.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(playerDamager, "game.error.hitWhileNotPlaying", "You can't hit F13 players while you're not playing."));
+                                        playerDamager.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(playerDamager.getBukkitPlayer(), "game.error.hitWhileNotPlaying", "You can't hit F13 players while you're not playing."));
                                     }
                                 }
                             }
                         }
 
                         if (!event.isCancelled()) {
-                            if (playerDamaged.getHealth() <= event.getDamage()) {
+                            if (playerDamaged.getBukkitPlayer().getHealth() <= event.getDamage()) {
                                 //This blow would kill them
                                 event.setCancelled(true);
-                                playerDamaged.setHealth(20);
+                                playerDamaged.getBukkitPlayer().setHealth(20);
                                 arena.getGameManager().getPlayerManager().onPlayerDeath(playerDamaged);
                             }
                         }
@@ -569,7 +570,7 @@ public class PlayerListener implements Listener {
             try
             {
                 Player player = (Player) event.getEntity();
-                Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString()); //See if they're playing
+                Arena arena = FridayThe13th.arenaController.getPlayerArena(player); //See if they're playing
                 event.setCancelled(true);
 
             } catch (PlayerNotPlayingException exception) {
@@ -582,9 +583,10 @@ public class PlayerListener implements Listener {
     public void onItemDrop(PlayerDropItemEvent event) {
         try
         {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()); //See if they're playing
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer()); //See if they're playing
+            F13Player player = FridayThe13th.playerController.getPlayer(event.getPlayer());
 
-            if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) && !arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer()))
+            if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isCounselor(player) && !arena.getGameManager().getPlayerManager().isSpectator(player))
             {
                 event.setCancelled(false); //Regular counselors can drop items
             } else {
@@ -602,7 +604,7 @@ public class PlayerListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         try
         {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getWhoClicked().getUniqueId().toString()); //See if they're playing
+            Arena arena = FridayThe13th.arenaController.getPlayerArena((Player) event.getWhoClicked()); //See if they're playing
             Player player = (Player)event.getWhoClicked();
 
             if (event.getCurrentItem() != null) {
@@ -636,8 +638,8 @@ public class PlayerListener implements Listener {
 
             try
             {
-                Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString()); //See if they're playing
-                FridayThe13th.chatController.routeInternalMessage(event.getPlayer(), event.getMessage(), arena);
+                Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer()); //See if they're playing
+                FridayThe13th.chatController.routeInternalMessage(FridayThe13th.playerController.getPlayer(event.getPlayer()), event.getMessage(), arena);
             }
             catch (PlayerNotPlayingException exception)
             {
@@ -648,19 +650,19 @@ public class PlayerListener implements Listener {
         else
         {
             //They're not playing F13 - so remove all F13 players as recipients
-            event.getRecipients().removeAll(FridayThe13th.chatController.getF13Players());
+            event.getRecipients().removeAll(FridayThe13th.chatController.getAllF13Players());
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPickup(PlayerPickupItemEvent event) {
         try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer());
 
             if (arena.getGameManager().isGameInProgress()) {
-                if (arena.getGameManager().getPlayerManager().isSpectator(event.getPlayer())) {
+                if (arena.getGameManager().getPlayerManager().isSpectator(FridayThe13th.playerController.getPlayer(event.getPlayer()))) {
                     event.setCancelled(true); //Spectators can't pick things up
-                } else if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer())) {
+                } else if (arena.getGameManager().getPlayerManager().isJason(FridayThe13th.playerController.getPlayer(event.getPlayer()))) {
                     if (!event.getItem().getType().equals(Material.ARROW)) {
                         //Jason can only pickup arrows
                         event.setCancelled(true);
@@ -685,15 +687,14 @@ public class PlayerListener implements Listener {
     public void onCorpseClick(CorpseClickEvent event)
     {
         try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getClicker().getUniqueId().toString());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getClicker());
 
             if (arena.getGameManager().isGameInProgress())
             {
-                if (arena.getGameManager().getPlayerManager().isSpectator(event.getClicker()))
+                if (arena.getGameManager().getPlayerManager().isSpectator(FridayThe13th.playerController.getPlayer(event.getClicker())))
                 {
                     event.setCancelled(true); //Spectators can't interact with corpses
-                }
-                else if (arena.getGameManager().getPlayerManager().isJason(event.getClicker()))
+                } else if (arena.getGameManager().getPlayerManager().isJason(FridayThe13th.playerController.getPlayer(event.getClicker())))
                 {
                     event.setCancelled(true); //Jason can't interact with corpses
                 }

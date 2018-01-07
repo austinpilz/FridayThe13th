@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Manager.Game;
+package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import org.bukkit.Location;
@@ -15,7 +15,7 @@ public class WindowManager {
     private HashSet<BlockFace> windowBlockFaces;
     private HashSet<Block> brokenWindows;
 
-    public WindowManager(Arena arena) {
+    WindowManager(Arena arena) {
         this.arena = arena;
         windowBlockFaces = new HashSet<>();
         brokenWindows = new HashSet<>();

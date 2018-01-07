@@ -25,8 +25,8 @@ public class VehicleListener implements Listener {
                 Player player = (Player) event.getEntity();
 
                 try {
-                    Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString());
-                    if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isCounselor(player)) {
+                    Arena arena = FridayThe13th.arenaController.getPlayerArena(player);
+                    if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isCounselor(FridayThe13th.playerController.getPlayer(player))) {
                         ((Minecart) event.getMount()).setMaxSpeed(.9D);
                         ((Minecart) event.getMount()).setSlowWhenEmpty(false);
                     } else {
@@ -58,11 +58,11 @@ public class VehicleListener implements Listener {
                 Player player = (Player) event.getEntity();
 
                 try {
-                    Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString());
-                    if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isJason(player)) {
+                    Arena arena = FridayThe13th.arenaController.getPlayerArena(player);
+                    if (arena.getGameManager().isGameInProgress() && arena.getGameManager().getPlayerManager().isJason(FridayThe13th.playerController.getPlayer(player))) {
                         //Jason collided with the vehicle
                         event.getVehicle().eject();
-                    } else if (arena.getGameManager().getPlayerManager().isCounselor(player)) {
+                    } else if (arena.getGameManager().getPlayerManager().isCounselor(FridayThe13th.playerController.getPlayer(player))) {
                         //player.damage(5);
                     }
                 } catch (PlayerNotPlayingException exception) {
@@ -97,13 +97,13 @@ public class VehicleListener implements Listener {
                         player = (Player) entity;
 
                         try {
-                            Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getUniqueId().toString());
+                            Arena arena = FridayThe13th.arenaController.getPlayerArena(player);
 
                             if (arena.getGameManager().isGameInProgress() && arena.getLocationManager().getEscapePointManager().isLocationWithinEscapePoint(player.getLocation())) {
                                 if (arena.getLocationManager().getEscapePointManager().getEscapePointFromLocation(player.getLocation()).isLandPoint() && event.getVehicle() instanceof Minecart) {
                                     //Escaping via Minecart via land
                                     arena.getObjectManager().getVehicleManager().getRegisteredCar(minecart).escaped();
-                                    arena.getGameManager().getPlayerManager().onPlayerEscape(player);
+                                    arena.getGameManager().getPlayerManager().onPlayerEscape(FridayThe13th.playerController.getPlayer(player));
                                 } else {
                                     event.getVehicle().teleport(event.getFrom());
                                 }
@@ -130,8 +130,8 @@ public class VehicleListener implements Listener {
         if (FridayThe13th.arenaController.isPlayerPlaying(event.getPlayer())) {
             if (event.getRightClicked() instanceof Minecart) {
                 try {
-                    Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
-                    if (!arena.getGameManager().getPlayerManager().isCounselor(event.getPlayer()) || !arena.getGameManager().isGameInProgress()) {
+                    Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer());
+                    if (!arena.getGameManager().getPlayerManager().isCounselor(FridayThe13th.playerController.getPlayer(event.getPlayer())) || !arena.getGameManager().isGameInProgress()) {
                         event.setCancelled(true); //Only counselors can interact with the minecarts while game is in progress
                     }
                 } catch (PlayerNotPlayingException exception) {

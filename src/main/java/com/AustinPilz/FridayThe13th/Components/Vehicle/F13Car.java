@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Vehicle;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
@@ -105,46 +106,50 @@ public class F13Car extends F13Vehicle {
         return keyRepairProgress >= repairRequiredMax;
     }
 
-    public void repairAttempt(Player player) {
-        if (!isFullyRepaired()) {
-            if (!hasBattery() && player.getInventory().contains(Material.REDSTONE_BLOCK)) {
-                batteryRepairProgress += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
+    public void repairAttempt(Player p) {
 
-                if (hasBattery()) {
-                    InventoryActions.remove(player.getInventory(), Material.REDSTONE_BLOCK, 1, (short) -1);
+        F13Player player = FridayThe13th.playerController.getPlayer(p);
+        if (getArena().getGameManager().getPlayerManager().isCounselor(player)) {
+            if (!isFullyRepaired()) {
+                if (!hasBattery() && player.getBukkitPlayer().getInventory().contains(Material.REDSTONE_BLOCK)) {
+                    batteryRepairProgress += FridayThe13th.playerController.getPlayer(player.getBukkitPlayer()).getCounselorProfile().getIntelligence().getRegenerationRate();
+
+                    if (hasBattery()) {
+                        InventoryActions.remove(player.getBukkitPlayer().getInventory(), Material.REDSTONE_BLOCK, 1, (short) -1);
+                    }
+                } else if (!hasGas() && player.getBukkitPlayer().getInventory().contains(Material.BLAZE_POWDER)) {
+                    gasRepairProgress += FridayThe13th.playerController.getPlayer(player.getBukkitPlayer()).getCounselorProfile().getIntelligence().getRegenerationRate();
+
+                    if (hasGas()) {
+                        InventoryActions.remove(player.getBukkitPlayer().getInventory(), Material.BLAZE_POWDER, 1, (short) -1);
+                    }
+                } else if (!hasKeys() && player.getBukkitPlayer().getInventory().contains(Material.STONE_BUTTON)) {
+                    keyRepairProgress += FridayThe13th.playerController.getPlayer(player.getBukkitPlayer()).getCounselorProfile().getIntelligence().getRegenerationRate();
+
+                    if (hasKeys()) {
+                        InventoryActions.remove(player.getBukkitPlayer().getInventory(), Material.STONE_BUTTON, 1, (short) -1);
+                    }
                 }
-            } else if (!hasGas() && player.getInventory().contains(Material.BLAZE_POWDER)) {
-                gasRepairProgress += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
 
-                if (hasGas()) {
-                    InventoryActions.remove(player.getInventory(), Material.BLAZE_POWDER, 1, (short) -1);
-                }
-            } else if (!hasKeys() && player.getInventory().contains(Material.STONE_BUTTON)) {
-                keyRepairProgress += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
+                //Check to see if fully repaired
+                if (isFullyRepaired()) {
+                    Firework f = getSpawnLocation().getWorld().spawn(getSpawnLocation().getWorld().getHighestBlockAt(getSpawnLocation()).getLocation(), Firework.class);
+                    FireworkMeta fm = f.getFireworkMeta();
+                    fm.addEffect(FireworkEffect.builder()
+                            .flicker(true)
+                            .trail(true)
+                            .with(FireworkEffect.Type.BALL_LARGE)
+                            .withColor(Color.ORANGE)
+                            .build());
+                    fm.setPower(1);
+                    f.setFireworkMeta(fm);
 
-                if (hasKeys()) {
-                    InventoryActions.remove(player.getInventory(), Material.STONE_BUTTON, 1, (short) -1);
+                    spawn(); //Spawn the minecart
                 }
             }
 
-            //Check to see if fully repaired
-            if (isFullyRepaired()) {
-                Firework f = getSpawnLocation().getWorld().spawn(getSpawnLocation().getWorld().getHighestBlockAt(getSpawnLocation()).getLocation(), Firework.class);
-                FireworkMeta fm = f.getFireworkMeta();
-                fm.addEffect(FireworkEffect.builder()
-                        .flicker(true)
-                        .trail(true)
-                        .with(FireworkEffect.Type.BALL_LARGE)
-                        .withColor(Color.ORANGE)
-                        .build());
-                fm.setPower(1);
-                f.setFireworkMeta(fm);
-
-                spawn(); //Spawn the minecart
-            }
+            updateHologram();
         }
-
-        updateHologram();
     }
 
     /**
@@ -193,9 +198,7 @@ public class F13Car extends F13Vehicle {
 
                 @Override
                 public void onTouch(Player player) {
-
                     repairAttempt(player);
-
                 }
             });
         } else {

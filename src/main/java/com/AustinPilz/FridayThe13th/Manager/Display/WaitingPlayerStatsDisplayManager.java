@@ -19,7 +19,7 @@ public class WaitingPlayerStatsDisplayManager {
 
     public WaitingPlayerStatsDisplayManager(F13Player p) {
         player = p;
-        statsScoreboard = new Sidebar(ChatColor.RED + "" + ChatColor.BOLD + FridayThe13th.language.get(player.getPlayer(), "game.scoreboard.title", "Friday The 13th"), FridayThe13th.instance, 999);
+        statsScoreboard = new Sidebar(ChatColor.RED + "" + ChatColor.BOLD + FridayThe13th.language.get(player.getBukkitPlayer(), "game.scoreboard.title", "Friday The 13th"), FridayThe13th.instance, 999);
     }
 
     /**
@@ -28,7 +28,7 @@ public class WaitingPlayerStatsDisplayManager {
     public void updateStatsScoreboard() {
         try {
 
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(player.getPlayerUUID());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(player);
 
             List<SidebarString> newList = new ArrayList<>(statsScoreboard.getEntries());
             for (SidebarString string : newList) {
@@ -47,7 +47,7 @@ public class WaitingPlayerStatsDisplayManager {
             SidebarString waitingPlayersTitle = new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "waiting.sidebar.WaitingPlayers", "Waiting Players"));
             statsScoreboard.addEntry(waitingPlayersTitle);
 
-            SidebarString waitingPlayersValue = new SidebarString(arena.getGameManager().getPlayerManager().getNumPlayers() + " ");
+            SidebarString waitingPlayersValue = new SidebarString(arena.getGameManager().getPlayerManager().getNumberOfPlayers() + " ");
             statsScoreboard.addEntry(waitingPlayersValue);
 
             statsScoreboard.addEntry(new SidebarString("    "));
@@ -90,13 +90,13 @@ public class WaitingPlayerStatsDisplayManager {
      * Displays stats scoreboard
      */
     public void displayStatsScoreboard() {
-        statsScoreboard.showTo(player.getPlayer());
+        statsScoreboard.showTo(player.getBukkitPlayer());
     }
 
     /**
      * Hides stats scoreboard
      */
     public void removeStatsScoreboard() {
-        statsScoreboard.hideFrom(player.getPlayer());
+        statsScoreboard.hideFrom(player.getBukkitPlayer());
     }
 }

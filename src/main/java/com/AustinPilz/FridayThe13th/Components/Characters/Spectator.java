@@ -1,19 +1,15 @@
 package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Menu.SpectateMenu;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-
-import java.util.Iterator;
-import java.util.Map;
 
 public class Spectator extends F13Character {
-    public Spectator(Player player, Arena arena)
+    public Spectator(F13Player player, Arena arena)
     {
         super(player, arena);
     }
@@ -24,67 +20,33 @@ public class Spectator extends F13Character {
     public void enterSpectatingMode()
     {
         //Show countdown bar & scoreboard
-        arena.getGameManager().getGameCountdownManager().showForPlayer(getPlayer());
-        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
+        arena.getGameManager().getGameCountdownManager().showForPlayer(getF13Player().getBukkitPlayer());
+        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getF13Player().getBukkitPlayer());
 
         //Enter flight
-        getPlayer().setGameMode(GameMode.SURVIVAL);
-        getPlayer().setAllowFlight(true);
-        getPlayer().setFlying(true);
-        getPlayer().setHealth(20);
-        getPlayer().setWalkSpeed(0.2f);
+        makePlayerVisibleToEveryone(false);
+        getF13Player().getBukkitPlayer().setGameMode(GameMode.SURVIVAL);
+        getF13Player().getBukkitPlayer().setAllowFlight(true);
+        getF13Player().getBukkitPlayer().setFlying(true);
+        getF13Player().getBukkitPlayer().setHealth(20);
+        getF13Player().getBukkitPlayer().setWalkSpeed(0.2f);
 
         //Location
-        getPlayer().teleport(arena.getLocationManager().getAvailableStartingPoints().iterator().next());
-        getPlayer().getInventory().clear();
+        getF13Player().getBukkitPlayer().teleport(arena.getLocationManager().getRandomSpawnLocations()[0]);
+        getF13Player().getBukkitPlayer().getInventory().clear();
 
         //Give them the selector
-        SpectateMenu.addMenuOpenItem(getPlayer());
+        SpectateMenu.addMenuOpenItem(getF13Player().getBukkitPlayer());
 
         //Let them know
-        ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.becomeSpectator", "You are now in spectating mode.", ChatColor.WHITE), 300);
+        ActionBarAPI.sendActionBar(getF13Player().getBukkitPlayer(), ChatColor.RED + FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "actionBar.counselor.becomeSpectator", "You are now in spectating mode.", ChatColor.WHITE), 300);
 
-        //Hide this player from everyone else
-        for (Object o : arena.getGameManager().getPlayerManager().getPlayers().entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            Player hideFrom = (Player) entry.getValue();
-            hideFrom.hidePlayer(getPlayer());
-        }
-
-        //Hide existing spectators from this person
-        Iterator spectatorIterator = arena.getGameManager().getPlayerManager().getSpectators().entrySet().iterator();
-        while (spectatorIterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) spectatorIterator.next();
-            Spectator toHide = (Spectator) entry.getValue();
-            if (!getPlayer().equals(toHide)) {
-                getPlayer().hidePlayer(toHide.getPlayer());
-            }
-        }
-
-    }
-
-    /**
-     * Removes the player from spectating mode
-     */
-    public void leaveSpectatingMode()
-    {
-        //Restore their defaults
-        getPlayer().setAllowFlight(false);
-        getPlayer().getInventory().clear();
-        restoreOriginalSpeeds();
-
-        //Clear the action bar and hide spectator displays
-        ActionBarAPI.sendActionBar(getPlayer(), "");
-        arena.getGameManager().getGameCountdownManager().hideFromPlayer(getPlayer());
-        arena.getGameManager().getGameScoreboardManager().hideFromPlayer(getPlayer());
-
-        //Make them visible to everyone again
-        if (getPlayer().isOnline())
+        //Hide other spectators from this person
+        for (Spectator existingSpectator : arena.getGameManager().getPlayerManager().getSpectators().values())
         {
-            //Make visible to all players
-            for (Player player : Bukkit.getOnlinePlayers())
+            if (!getF13Player().getBukkitPlayer().equals(existingSpectator.getF13Player().getBukkitPlayer()))
             {
-                player.showPlayer(getPlayer());
+                getF13Player().getBukkitPlayer().hidePlayer(existingSpectator.getF13Player().getBukkitPlayer());
             }
         }
     }

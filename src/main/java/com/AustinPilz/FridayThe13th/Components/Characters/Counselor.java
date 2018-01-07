@@ -2,12 +2,12 @@ package com.AustinPilz.FridayThe13th.Components.Characters;
 
 import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Skin.F13Skin;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.CounselorStatsDisplayManager;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
-import com.AustinPilz.FridayThe13th.Manager.Statistics.CounselorXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorStatsUpdate;
 import com.AustinPilz.FridayThe13th.Structures.LightLevelList;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -46,7 +45,6 @@ public class Counselor extends F13Character
 
     //Managers
     private CounselorStatsDisplayManager counselorStatsDisplayManager;
-    private CounselorXPManager counselorXPManager;
 
     //Tasks
     int statsUpdateTask = -1;
@@ -69,7 +67,7 @@ public class Counselor extends F13Character
      * Creates new counselor object
      * @param player Minecraft player object
      */
-    public Counselor(Player player, Arena arena)
+    public Counselor(F13Player player, Arena arena)
     {
         super(player, arena);
 
@@ -86,7 +84,6 @@ public class Counselor extends F13Character
 
         //Initialize Manager
         counselorStatsDisplayManager = new CounselorStatsDisplayManager(this);
-        counselorXPManager = new CounselorXPManager(this, arena);
 
         //Fear
         Double lightHistorySize = getF13Player().getCounselorProfile().getComposure().getDepletionRate();
@@ -110,14 +107,6 @@ public class Counselor extends F13Character
         return counselorStatsDisplayManager;
     }
 
-    /**
-     * Returns counselor's XP manager
-     *
-     * @return
-     */
-    public CounselorXPManager getXPManager() {
-        return counselorXPManager;
-    }
 
     /**
      * Performs all necessary tasks when the game begins
@@ -125,25 +114,28 @@ public class Counselor extends F13Character
     public void prepareForGameplay()
     {
         //Clear their inventory of any waiting room goodies
-        getPlayer().getInventory().clear();
+        getF13Player().getBukkitPlayer().getInventory().clear();
 
-        ///Display Status
+        //Display Status
         getCounselorStatsDisplayManager().displayStats();
 
         //Display game-wide scoreboard
-        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
+        getF13Player().getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
+        arena.getGameManager().getGameCountdownManager().hideFromPlayer(getF13Player().getBukkitPlayer()); //Incase they're coming from spectators
+        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getF13Player().getBukkitPlayer());
 
         //Start All Counselor Tasks
         scheduleTasks();
 
         //Skin
         skin.apply(getF13Player().getCounselorProfile().getSkin());
+        makePlayerVisibleToEveryone(true);
 
         //Perks
         addGameStartPerks();
 
         //Stop all previous sounds and play game start music
-        PlayerSoundAPI.getPlayerSoundManager(getPlayer()).stopAllSounds();
+        PlayerSoundAPI.getPlayerSoundManager(getF13Player().getBukkitPlayer()).stopAllSounds();
     }
 
     /**
@@ -157,9 +149,9 @@ public class Counselor extends F13Character
             ItemStack healthPotion = new ItemStack(Material.POTION, 1);
             PotionMeta meta = (PotionMeta) healthPotion.getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.INSTANT_HEAL));
-            meta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(getPlayer(), "game.item.Antiseptic", "Antiseptic Spray"));
+            meta.setDisplayName(ChatColor.GREEN + FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "game.item.Antiseptic", "Antiseptic Spray"));
             healthPotion.setItemMeta(meta);
-            getPlayer().getInventory().addItem(healthPotion);
+            getF13Player().getBukkitPlayer().getInventory().addItem(healthPotion);
         }
 
         if (getF13Player().hasPerk(F13Perk.Counselor_Radio))
@@ -168,7 +160,7 @@ public class Counselor extends F13Character
             ItemMeta metaData = item.getItemMeta();
             metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
             item.setItemMeta(metaData);
-            getPlayer().getInventory().addItem(item);
+            getF13Player().getBukkitPlayer().getInventory().addItem(item);
         }
     }
 
@@ -318,19 +310,19 @@ public class Counselor extends F13Character
             if (!getF13Player().hasPerk(F13Perk.Counselor_Dramamine))
             {
                 //No perk, apply potion
-                getPlayer().addPotionEffect(potionOutOfBreath);
+                getF13Player().getBukkitPlayer().addPotionEffect(potionOutOfBreath);
             }
         }
 
         if (getStamina() < (getMaxStamina()*.05))
         {
             //Stamina is very low
-            getPlayer().setWalkSpeed(0.15f); //Make them walk slow
+            getF13Player().getBukkitPlayer().setWalkSpeed(0.15f); //Make them walk slow
 
             //Give them a warning
             if (!shownStaminaWarning)
             {
-                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.staminaLow", "Warning: {0}Stamina low. You're almost out of energy.", ChatColor.WHITE), 300);
+                ActionBarAPI.sendActionBar(getF13Player().getBukkitPlayer(), ChatColor.RED + FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "actionBar.counselor.staminaLow", "Warning: {0}Stamina low. You're almost out of energy.", ChatColor.WHITE), 300);
                 shownStaminaWarning = true;
             }
         }
@@ -338,18 +330,18 @@ public class Counselor extends F13Character
         {
             //Stamina is within acceptable limits
 
-            if (getPlayer().getHealth() / getPlayer().getHealthScale() <= .25)
+            if (getF13Player().getBukkitPlayer().getHealth() / getF13Player().getBukkitPlayer().getHealthScale() <= .25)
             {
                 //They're injured, so change walk speed
-                getPlayer().setWalkSpeed(0.13f);
+                getF13Player().getBukkitPlayer().setWalkSpeed(0.13f);
             }
             else
             {
                 //Their health is fine, so make walk speed normal
-                getPlayer().setWalkSpeed((float)getF13Player().getCounselorProfile().getSpeed().getDataValue());
+                getF13Player().getBukkitPlayer().setWalkSpeed((float) getF13Player().getCounselorProfile().getSpeed().getDataValue());
             }
 
-            getPlayer().removePotionEffect(PotionEffectType.CONFUSION);
+            getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.CONFUSION);
         }
     }
 
@@ -386,7 +378,7 @@ public class Counselor extends F13Character
     public void updateFearLevel()
     {
         //Add new light history
-        Block block = player.getLocation().getBlock().getRelative(0, 1, 0);
+        Block block = getF13Player().getBukkitPlayer().getLocation().getBlock().getRelative(0, 1, 0);
         Double lightLevel = (Double)(double)block.getLightLevel();
         lightHistory.addLevel(lightLevel);
 
@@ -394,9 +386,9 @@ public class Counselor extends F13Character
         Double fearLevel = ((((15-lightHistory.getAverage()) - 0) * (getMaxFearLevel() - 0)) / (15 - 0)) + 0;
 
         //See how far they are from jason
-        double distanceFromJason = getPlayer().getLocation().distance(arena.getGameManager().getPlayerManager().getJason().getPlayer().getLocation());
+        double distanceFromJason = getF13Player().getBukkitPlayer().getLocation().distance(arena.getGameManager().getPlayerManager().getJason().getF13Player().getBukkitPlayer().getLocation());
 
-        if (distanceFromJason <= getF13Player().getCounselorProfile().getComposure().getDataValue() && !arena.getGameManager().getPlayerManager().getJason().getPlayer().isSneaking())
+        if (distanceFromJason <= getF13Player().getCounselorProfile().getComposure().getDataValue() && !arena.getGameManager().getPlayerManager().getJason().getF13Player().getBukkitPlayer().isSneaking())
         {
             //Increase if within certain distance
             double increase = getMaxFearLevel() * (distanceFromJason / 10);
@@ -411,15 +403,15 @@ public class Counselor extends F13Character
             }
 
             //Jason is nearby, add chase music if not playing already
-            if (!SoundManager.isSoundAlreadyPlayingForPlayer(getPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic()))
+            if (!SoundManager.isSoundAlreadyPlayingForPlayer(getF13Player().getBukkitPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic()))
             {
                 //Chase music isn't already playing it, so we should play it for the player and for Jason
-                SoundManager.playSoundForPlayer(player, arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic(), true, false, 1);
+                SoundManager.playSoundForPlayer(getF13Player().getBukkitPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic(), true, false, 1);
             }
-            if (!SoundManager.isSoundAlreadyPlayingForPlayer(arena.getGameManager().getPlayerManager().getJason().getPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic()))
+            if (!SoundManager.isSoundAlreadyPlayingForPlayer(arena.getGameManager().getPlayerManager().getJason().getF13Player().getBukkitPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic()))
             {
                 //Chase music isn't already playing it, so we should play it for the player and for Jason
-                SoundManager.playSoundForPlayer(arena.getGameManager().getPlayerManager().getJason().getPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic(), true, false, 1);
+                SoundManager.playSoundForPlayer(arena.getGameManager().getPlayerManager().getJason().getF13Player().getBukkitPlayer(), arena.getGameManager().getPlayerManager().getJason().getF13Player().getJasonProfile().getChaseMusic(), true, false, 1);
             }
         }
 
@@ -447,21 +439,21 @@ public class Counselor extends F13Character
         if ((fearLevel/getMaxFearLevel()) >= .9)
         {
             //They're scared, add some blindness
-            getPlayer().addPotionEffect(potionFearBlind);
+            getF13Player().getBukkitPlayer().addPotionEffect(potionFearBlind);
 
             //Reduce stamina since scared
             setSprinting(false);
 
             if (!shownFearWarning)
             {
-                ActionBarAPI.sendActionBar(getPlayer(), ChatColor.RED + FridayThe13th.language.get(player, "actionBar.counselor.fearLevelHigh", "You are scared. {0}Find a well lit area.", ChatColor.WHITE), 300);
+                ActionBarAPI.sendActionBar(getF13Player().getBukkitPlayer(), ChatColor.RED + FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "actionBar.counselor.fearLevelHigh", "You are scared. {0}Find a well lit area.", ChatColor.WHITE), 300);
                 shownFearWarning = true;
             }
         }
         else
         {
             //They're not very scared, remove blindness
-            getPlayer().removePotionEffect(PotionEffectType.BLINDNESS);
+            getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }
 
@@ -496,10 +488,10 @@ public class Counselor extends F13Character
      */
     public void removePotionEffects()
     {
-        getPlayer().removePotionEffect(PotionEffectType.BLINDNESS); //Scared
-        getPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
-        getPlayer().removePotionEffect(PotionEffectType.GLOWING);
-        getPlayer().closeInventory(); //Close the spectate inventory if they happen to have it open
+        getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.BLINDNESS); //Scared
+        getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.CONFUSION); //Out of breath
+        getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.GLOWING);
+        getF13Player().getBukkitPlayer().closeInventory(); //Close the spectate inventory if they happen to have it open
     }
 
     /* SENSE BY JASON */
@@ -510,7 +502,7 @@ public class Counselor extends F13Character
      */
     private boolean canBeSensedByJason()
     {
-        return (getFearLevelPercentage() > .25 || isTommyJarvis) && !arena.getGameManager().getPlayerManager().isSpectator(getPlayer().getUniqueId().toString());
+        return (getFearLevelPercentage() > .25 || isTommyJarvis) && !arena.getGameManager().getPlayerManager().isSpectator(getF13Player());
     }
 
     /**
@@ -521,11 +513,11 @@ public class Counselor extends F13Character
     {
         if (value && canBeSensedByJason())
         {
-            getPlayer().addPotionEffect(potionSenseByJason);
+            getF13Player().getBukkitPlayer().addPotionEffect(potionSenseByJason);
         }
         else
         {
-            getPlayer().removePotionEffect(PotionEffectType.GLOWING);
+            getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.GLOWING);
         }
     }
 
@@ -537,17 +529,17 @@ public class Counselor extends F13Character
         setFearLevel(0.0);
         setStamina(getMaxStamina());
         isTommyJarvis = true;
-        getPlayer().getInventory().clear();
+        getF13Player().getBukkitPlayer().getInventory().clear();
 
-        getPlayer().getInventory().addItem(new ItemStack(Material.BOW, 1));
-        getPlayer().getInventory().addItem(new ItemStack(Material.SPECTRAL_ARROW, 1));
+        getF13Player().getBukkitPlayer().getInventory().addItem(new ItemStack(Material.BOW, 1));
+        getF13Player().getBukkitPlayer().getInventory().addItem(new ItemStack(Material.SPECTRAL_ARROW, 1));
 
         //Give them radio
         ItemStack item = new ItemStack(Material.NETHER_STAR, 1);
         ItemMeta metaData = item.getItemMeta();
         metaData.setDisplayName(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.item.Radio", "Radio"));
         item.setItemMeta(metaData);
-        getPlayer().getInventory().addItem(item);
+        getF13Player().getBukkitPlayer().getInventory().addItem(item);
 
         //Update their skin to be Tommy
         skin.apply(F13Skin.Tommy_Jarvis);
@@ -560,20 +552,20 @@ public class Counselor extends F13Character
     {
         //Teleport them
         int direction = 1; //front
-        float newZ = (float)(block.getLocation().getZ() + (2 * Math.sin(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
-        float newX = (float)(block.getLocation().getX() + (2 * Math.cos(Math.toRadians(player.getLocation().getYaw() + 90 * direction))));
+        float newZ = (float) (block.getLocation().getZ() + (2 * Math.sin(Math.toRadians(getF13Player().getBukkitPlayer().getLocation().getYaw() + 90 * direction))));
+        float newX = (float) (block.getLocation().getX() + (2 * Math.cos(Math.toRadians(getF13Player().getBukkitPlayer().getLocation().getYaw() + 90 * direction))));
 
-        Location locationTo = new Location(player.getLocation().getWorld(), (double)newX, player.getLocation().getY(), newZ);
+        Location locationTo = new Location(getF13Player().getBukkitPlayer().getLocation().getWorld(), (double) newX, getF13Player().getBukkitPlayer().getLocation().getY(), newZ);
 
         //Verify that they won't be jumping into a block to suffocate
         if (locationTo.getBlock().getType().equals(Material.AIR))
         {
-            getPlayer().teleport(locationTo);
+            getF13Player().getBukkitPlayer().teleport(locationTo);
 
             //Damage the player
             if (damage)
             {
-                getPlayer().damage(6);
+                getF13Player().getBukkitPlayer().damage(6);
             }
 
             if (breakWindow) {
@@ -583,7 +575,7 @@ public class Counselor extends F13Character
         else
         {
             //Not a free space
-            ActionBarAPI.sendActionBar(getPlayer(),FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "ingame.WindowJumpNoFreeLoc", "Window jump failed - could not find free location"), 60);
+            ActionBarAPI.sendActionBar(getF13Player().getBukkitPlayer(), FridayThe13th.pluginPrefix + FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "ingame.WindowJumpNoFreeLoc", "Window jump failed - could not find free location"), 60);
         }
     }
 
@@ -606,78 +598,10 @@ public class Counselor extends F13Character
     }
 
     /**
-     * Updates skin based on health level
-     */
-    public void updateSkin() {
-
-        /*
-        double percentage = getHealthPercentage();
-
-        if (percentage == 1) {
-            //Full Health
-            skin.apply(F13Skin.COUNSELOR_BASE);
-        } else if (percentage < 1 && percentage > 0.5) {
-            //Minor Damage
-            skin.apply(F13Skin.COUSENLOR_BLOOD_1);
-        } else if (percentage <= 0.5 && percentage > 0.3) {
-            //Some damage
-            skin.apply(F13Skin.COUSENLOR_BLOOD_2);
-        } else {
-            //Major damage
-            skin.apply(F13Skin.COUSENLOR_BLOOD_3);
-        }
-        */
-    }
-
-
-    /**
      * Reverts counselor skin back to the players default skin
      */
     public void removeSkin() {
         skin.revert();
-    }
-
-    /**
-     * Returns player health percentage
-     *
-     * @return
-     */
-    private double getHealthPercentage() {
-        return getPlayer().getHealth() / getPlayer().getMaxHealth();
-    }
-
-
-    /**
-     * Awards the counselor their XP
-     */
-    public void awardXP() {
-        int gameXP = getXPManager().calculateXP();
-        int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
-        int newXP = Math.max(currentXP, currentXP + gameXP);
-
-
-        //Check for XP multipliers
-        if (FridayThe13th.isItFridayThe13th())
-        {
-            //It's Friday the 13th, so give them double XP
-            newXP *= 2;
-            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXPF13", "Happy double XP Friday the 13th! You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
-        }
-        else
-        {
-            //It's a normal, boring day.
-            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
-        }
-
-        FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
-    }
-
-    /**
-     * Awards Jason their CP
-     */
-    public void awardCP()
-    {
-        getF13Player().addCP(500);
     }
 
     /**
@@ -698,7 +622,7 @@ public class Counselor extends F13Character
             }
 
             //Play gasp sound effect
-            SoundManager.playSoundForPlayer(getPlayer(), getF13Player().getCounselorProfile().getGaspSoundEffect(), false, true, 0);
+            SoundManager.playSoundForPlayer(getF13Player().getBukkitPlayer(), getF13Player().getCounselorProfile().getGaspSoundEffect(), false, true, 0);
         }
     }
 
@@ -708,6 +632,6 @@ public class Counselor extends F13Character
      * @return
      */
     public boolean canSee(Location loc2) {
-        return (player.getLocation().distance(loc2) <= 4);
+        return (getF13Player().getBukkitPlayer().getLocation().distance(loc2) <= 4);
     }
 }

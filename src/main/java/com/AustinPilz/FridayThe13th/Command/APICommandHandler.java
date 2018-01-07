@@ -1,8 +1,8 @@
 package com.AustinPilz.FridayThe13th.Command;
 
 import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
+import com.AustinPilz.FridayThe13th.Factory.F13ProfileFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Manager.F13ProfileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,7 +19,7 @@ public class APICommandHandler implements CommandExecutor {
 
         if (sender.hasPermission("FridayThe13th.API"))
         {
-            if (args.length > 0)
+            if (args.length >= 4)
             {
                 if (args[0] != null && args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove"))
                 {
@@ -44,16 +44,15 @@ public class APICommandHandler implements CommandExecutor {
                                 if (itemType.equalsIgnoreCase("profile"))
                                 {
                                     //We're dealing with profiles
-                                    if (F13ProfileManager.getCounselorProfileByInternalIdentifier(itemName) != null || F13ProfileManager.getJasonProfileByInternalIdentifier(itemName) != null)
+                                    if (F13ProfileFactory.getCounselorProfileByInternalIdentifier(itemName) != null || F13ProfileFactory.getJasonProfileByInternalIdentifier(itemName) != null)
                                     {
                                         boolean counselor = false;
                                         boolean jason = false;
 
-                                        if (F13ProfileManager.getCounselorProfileByInternalIdentifier(itemName) != null)
+                                        if (F13ProfileFactory.getCounselorProfileByInternalIdentifier(itemName) != null)
                                         {
                                             counselor = true;
-                                        }
-                                        else if (F13ProfileManager.getJasonProfileByInternalIdentifier(itemName) != null)
+                                        } else if (F13ProfileFactory.getJasonProfileByInternalIdentifier(itemName) != null)
                                         {
                                             jason = true;
                                         }
@@ -62,12 +61,12 @@ public class APICommandHandler implements CommandExecutor {
                                         {
                                             if (counselor)
                                             {
-                                                FridayThe13th.playerController.getPlayer(playerUUID).addPurchasedCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(itemName), true);
+                                                FridayThe13th.playerController.getPlayer(playerUUID).addPurchasedCounselorProfile(F13ProfileFactory.getCounselorProfileByInternalIdentifier(itemName), true);
                                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.counselorProfileAdded", "Counselor profile added for ") + playerUUID);
                                             }
                                             else if (jason)
                                             {
-                                                FridayThe13th.playerController.getPlayer(playerUUID).addPurchasedJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(itemName), true);
+                                                FridayThe13th.playerController.getPlayer(playerUUID).addPurchasedJasonProfile(F13ProfileFactory.getJasonProfileByInternalIdentifier(itemName), true);
                                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.jasonProfileAdded", "Jason profile added for ") + playerUUID);
                                             }
                                         }
@@ -75,12 +74,12 @@ public class APICommandHandler implements CommandExecutor {
                                         {
                                             if (counselor)
                                             {
-                                                FridayThe13th.playerController.getPlayer(playerUUID).removePurchasedCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(itemName), true);
+                                                FridayThe13th.playerController.getPlayer(playerUUID).removePurchasedCounselorProfile(F13ProfileFactory.getCounselorProfileByInternalIdentifier(itemName), true);
                                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.counselorProfileRemoved", "Counselor profile removed from ") + playerUUID);
                                             }
                                             else if (jason)
                                             {
-                                                FridayThe13th.playerController.getPlayer(playerUUID).removePurchasedJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(itemName), true);
+                                                FridayThe13th.playerController.getPlayer(playerUUID).removePurchasedJasonProfile(F13ProfileFactory.getJasonProfileByInternalIdentifier(itemName), true);
                                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.jasonProfileRemoved", "Jason profile removed from ") + playerUUID);
                                             }
                                         }
@@ -152,7 +151,7 @@ public class APICommandHandler implements CommandExecutor {
             else
             {
                 //No arguments provided
-                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.noArgumentsProvided", "Syntax error. No arguments were provided."));
+                sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.API.noArgumentsProvided", "Syntax error. No arguments were provided or invalid number were provided."));
             }
         }
         else

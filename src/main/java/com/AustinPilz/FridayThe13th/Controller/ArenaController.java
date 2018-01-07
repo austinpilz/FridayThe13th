@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Controller;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
@@ -17,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ArenaController
 {
     private HashMap<String, Arena> arenas;
-    private HashMap<String, Arena> players;
+    private HashMap<F13Player, Arena> players;
 
     public ArenaController ()
     {
@@ -100,15 +101,15 @@ public class ArenaController
 
     /**
      * Adds player to global players list
-     * @param playerUUID
-     * @param arena
+     * @param player F13Player
+     * @param arena Arena
      * @throws PlayerAlreadyPlayingException
      */
-    public void addPlayer(String playerUUID, Arena arena) throws PlayerAlreadyPlayingException
+    public void addPlayer(F13Player player, Arena arena) throws PlayerAlreadyPlayingException
     {
-        if (!isPlayerPlaying(playerUUID))
+        if (!isPlayerPlaying(player))
         {
-            players.put(playerUUID, arena);
+            players.put(player, arena);
         }
         else
         {
@@ -118,24 +119,24 @@ public class ArenaController
 
     /**
      * Removes player from player hash map
-     * @param playerUUID
+     * @param player F13Player
      */
-    public void removePlayer(String playerUUID)
+    public void removePlayer(F13Player player)
     {
-        players.remove(playerUUID);
+        players.remove(player);
     }
 
     /**
      * Returns the arena which the player is in
-     * @param playerUUID
-     * @return
+     * @param player F13Player
+     * @return Arena That the player is playing within
      * @throws PlayerNotPlayingException
      */
-    public Arena getPlayerArena(String playerUUID) throws PlayerNotPlayingException
+    public Arena getPlayerArena(F13Player player) throws PlayerNotPlayingException
     {
-        if (isPlayerPlaying(playerUUID))
+        if (isPlayerPlaying(player))
         {
-            return players.get(playerUUID);
+            return players.get(player);
         }
         else
         {
@@ -144,107 +145,107 @@ public class ArenaController
     }
 
     /**
-     * Returns if the player is actively playing within an arena
-     * @param playerUUID
-     * @return
+     * Returns the arena which the player is in
+     *
+     * @param player Bukkit player
+     * @return Arena That the player is playing within
+     * @throws PlayerNotPlayingException
      */
-    public boolean isPlayerPlaying(String playerUUID)
-    {
-        return players.containsKey(playerUUID);
+    public Arena getPlayerArena(Player player) throws PlayerNotPlayingException {
+        return getPlayerArena(FridayThe13th.playerController.getPlayer(player));
     }
 
     /**
      * Returns if the player is actively playing within an arena
-     * @param player
-     * @return
+     * @param player F13Player
+     * @return If the play is actively playing within an arena
      */
-    public boolean isPlayerPlaying(Player player)
-    {
-        return isPlayerPlaying(player.getUniqueId().toString());
+    public boolean isPlayerPlaying(F13Player player) {
+        return players.containsKey(player);
     }
+
+    /**
+     * Returns if the player is actively playing within an arena
+     * @param player Bukkit player
+     * @return If the play is actively playing within an arena
+     */
+    public boolean isPlayerPlaying(Player player) {
+        return isPlayerPlaying(FridayThe13th.playerController.getPlayer(player));
+    }
+
 
     /**
      * Returns hashmap of player UUID string and Game objects
      * @return
      */
-    public HashMap<String, Arena> getPlayers()
+    public HashMap<F13Player, Arena> getPlayers()
     {
         return players;
     }
 
     /**
      * Auto-joins player to an available arena, if any.
-     * @param player
-     * @return
+     * @param player Bukkit player
+     * @return If the player can join an arena
      */
-    public boolean playerAutoJoin(Player player)
-    {
-        if (FridayThe13th.arenaController.getNumberOfArenas() > 0)
-        {
+    public boolean playerAutoJoin(Player player) {
+        return playerAutoJoin(FridayThe13th.playerController.getPlayer(player));
+    }
+
+    /**
+     * Auto-joins player to an available arena, if any.
+     *
+     * @param player F13Player
+     * @return If the player can join an arena
+     */
+    public boolean playerAutoJoin(F13Player player) {
+        if (FridayThe13th.arenaController.getNumberOfArenas() > 0) {
             //Iterate through waiting games to find the one with the most number of players
 
             Arena arenaWithMostPlayers = null;
 
             Iterator it = arenas.entrySet().iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 Map.Entry entry = (Map.Entry) it.next();
                 Arena arena = (Arena) entry.getValue();
 
-                if (arenaWithMostPlayers != null)
-                {
-                    if (arena.getGameManager().isGameWaiting() && arena.getGameManager().getPlayerManager().isRoomForPlayerToJoin() && arena.getGameManager().getPlayerManager().getNumPlayers() > arenaWithMostPlayers.getGameManager().getPlayerManager().getNumPlayers())
-                    {
+                if (arenaWithMostPlayers != null) {
+                    if (arena.getGameManager().isGameWaiting() && arena.getGameManager().getPlayerManager().isRoomForPlayerToJoin() && arena.getGameManager().getPlayerManager().getNumberOfPlayers() > arenaWithMostPlayers.getGameManager().getPlayerManager().getNumberOfPlayers()) {
                         arenaWithMostPlayers = arena;
                     }
-                }
-                else if (arena.getGameManager().isGameWaiting() && arena.getGameManager().getPlayerManager().isRoomForPlayerToJoin())
-                {
-                   arenaWithMostPlayers = arena;
+                } else if (arena.getGameManager().isGameWaiting() && arena.getGameManager().getPlayerManager().isRoomForPlayerToJoin()) {
+                    arenaWithMostPlayers = arena;
                 }
             }
 
-            if (arenaWithMostPlayers != null)
-            {
-                try
-                {
+            if (arenaWithMostPlayers != null) {
+                try {
                     //Add the player to the arena that we found
                     arenaWithMostPlayers.getGameManager().getPlayerManager().playerJoinGame(player);
                     return true;
-                }
-                catch (GameFullException exception)
-                {
+                } catch (GameFullException exception) {
                     //The game is full
                     return false;
-                }
-                catch (GameInProgressException exception)
-                {
+                } catch (GameInProgressException exception) {
                     //The game is in progress
                     return false;
                 }
-            }
-            else
-            {
+            } else {
                 //We didn't find any in progress arenas with room, so lets just stick them in a random arena that's empty (preferring an empty one with a player in)
 
-                if (getEmptyArenas().size() > 0)
-                {
+                if (getEmptyArenas().size() > 0) {
                     Arena[] arenas;
 
-                    if (getEmptyArenasWithOnePlayer().size() > 0)
-                    {
+                    if (getEmptyArenasWithOnePlayer().size() > 0) {
                         arenas = getEmptyArenasWithOnePlayer().toArray(new Arena[getEmptyArenasWithOnePlayer().size()]);
-                    }
-                    else
-                    {
+                    } else {
                         arenas = getEmptyArenas().toArray(new Arena[getEmptyArenas().size()]);
                     }
 
 
                     //Randomize possible arenas
                     Random rnd = ThreadLocalRandom.current();
-                    for (int i = arenas.length - 1; i > 0; i--)
-                    {
+                    for (int i = arenas.length - 1; i > 0; i--) {
                         int index = rnd.nextInt(i + 1);
 
                         // Simple swap
@@ -253,32 +254,23 @@ public class ArenaController
                         arenas[i] = a;
                     }
 
-                    try
-                    {
+                    try {
                         //Add the player to the arena that we found
                         arenas[0].getGameManager().getPlayerManager().playerJoinGame(player);
                         return true;
-                    }
-                    catch (GameFullException exception)
-                    {
+                    } catch (GameFullException exception) {
                         //The game is full
                         return false;
-                    }
-                    catch (GameInProgressException exception)
-                    {
+                    } catch (GameInProgressException exception) {
                         //The game is in progress
                         return false;
                     }
-                }
-                else
-                {
+                } else {
                     //There are no empty arenas to put them in
                     return false;
                 }
             }
-        }
-        else
-        {
+        } else {
             //There are no arenas
             return false;
         }
@@ -316,7 +308,7 @@ public class ArenaController
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry) it.next();
             Arena arena = (Arena) entry.getValue();
-            if (arena.getGameManager().isGameEmpty() && arena.getGameManager().getPlayerManager().getNumPlayers() > 0) {
+            if (arena.getGameManager().isGameEmpty() && arena.getGameManager().getPlayerManager().getNumberOfPlayers() > 0) {
                 emptyArenas.add(arena);
             }
         }

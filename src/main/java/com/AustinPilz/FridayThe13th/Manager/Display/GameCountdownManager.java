@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Manager.Display;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
@@ -11,9 +12,6 @@ import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
-
-import java.util.Iterator;
-import java.util.Map;
 
 public class GameCountdownManager
 {
@@ -47,12 +45,9 @@ public class GameCountdownManager
             if (mn > 1 && sec == 0)
             {
                 //Every whole minute
-                Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-                while (it.hasNext())
+                for (F13Player player : arena.getGameManager().getPlayerManager().getPlayers())
                 {
-                    Map.Entry entry = (Map.Entry) it.next();
-                    Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + mn + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.minutes", "minutes"), 60);
+                    ActionBarAPI.sendActionBar(player.getBukkitPlayer(), FridayThe13th.language.get(player.getBukkitPlayer(), "actionBar.counselor.timeLeft", "Time Left") + ": " + mn + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.minutes", "minutes"), 60);
                 }
 
                 //Spawn tommy
@@ -70,12 +65,9 @@ public class GameCountdownManager
             else if (mn == 0 && (sec == 30 || sec == 20 || sec == 10 || sec == 5))
             {
                 //Special
-                Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-                while (it.hasNext())
+                for (F13Player player : arena.getGameManager().getPlayerManager().getPlayers())
                 {
-                    Map.Entry entry = (Map.Entry) it.next();
-                    Player player = (Player) entry.getValue();
-                    ActionBarAPI.sendActionBar(player, FridayThe13th.language.get(player, "actionBar.counselor.timeLeft", "Time Left") + ": " + sec + " " +  FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.seconds", "seconds"), 60);
+                    ActionBarAPI.sendActionBar(player.getBukkitPlayer(), FridayThe13th.language.get(player.getBukkitPlayer(), "actionBar.counselor.timeLeft", "Time Left") + ": " + sec + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionBar.counselor.seconds", "seconds"), 60);
                 }
             }
         }

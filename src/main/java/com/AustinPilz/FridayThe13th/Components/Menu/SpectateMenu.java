@@ -35,7 +35,7 @@ public class SpectateMenu {
             Map.Entry entry = (Map.Entry) it.next();
             Counselor counselor = (Counselor) entry.getValue();
 
-            if (i <= 9 && arena.getGameManager().getPlayerManager().isAlive(counselor.getPlayer())) {
+            if (i <= 9 && arena.getGameManager().getPlayerManager().isAlive(counselor.getF13Player())) {
                 ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 meta.setOwner(counselor.getPlayer().getName());

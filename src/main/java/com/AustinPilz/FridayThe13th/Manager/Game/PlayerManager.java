@@ -1,60 +1,50 @@
 package com.AustinPilz.FridayThe13th.Manager.Game;
 
-import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Characters.Counselor;
 import com.AustinPilz.FridayThe13th.Components.Characters.Jason;
 import com.AustinPilz.FridayThe13th.Components.Characters.Spectator;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
-import com.AustinPilz.FridayThe13th.Components.Menu.Profiles_MainMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.Shop_MainMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.Shop_PurchasedPerksMenu;
-import com.AustinPilz.FridayThe13th.Components.Menu.SpawnPreferenceMenu;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
 import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerAlreadyPlayingException;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.austinpilz.ResourcePackAPI.Components.ResourcePackRequest;
-import com.austinpilz.ResourcePackAPI.ResourcePackAPI;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
 public class PlayerManager {
     private Arena arena;
 
     //Game Players
-    private HashMap<String, Player> players;
-    private HashMap<String, Counselor> counselors;
-    private int startingNumCounselors;
-    private HashMap<String, Spectator> spectators;
+    private HashSet<F13Player> players;
+    private HashMap<F13Player, Counselor> counselors;
+
     private Jason jason;
 
     //Game Stat
-    private HashMap<String, Player> alivePlayers;
-    private HashSet<Player> deadPlayers;
-    private HashSet<Player> escapedPlayers;
+    private HashSet<F13Player> alivePlayers;
+    private HashSet<F13Player> deadPlayers;
+    private HashSet<F13Player> escapedPlayers;
+    private HashMap<F13Player, Spectator> spectators;
 
     /**
      * @param arena Game
      */
-    public PlayerManager(Arena arena) {
+    PlayerManager(Arena arena) {
         this.arena = arena;
-        this.players = new HashMap<>();
+        this.players = new HashSet<>();
         this.counselors = new HashMap<>();
-        this.startingNumCounselors = 0;
-        this.alivePlayers = new HashMap<>();
+        this.alivePlayers = new HashSet<>();
         this.deadPlayers = new HashSet<>();
-        this.spectators = new HashMap<>();
         this.escapedPlayers = new HashSet<>();
+        this.spectators = new HashMap<>();
     }
 
     /**
@@ -67,534 +57,280 @@ public class PlayerManager {
         deadPlayers.clear();
         spectators.clear();
         escapedPlayers.clear();
-        startingNumCounselors = 0;
     }
 
     /**
-     * Returns the number of players in the game
-     *
-     * @return
+     * @return Current players
      */
-    public int getNumPlayers() {
-        return players.size();
-    }
-
-    /**
-     * Returns hash map of current players
-     *
-     * @return
-     */
-    public HashMap<String, Player> getPlayers() {
+    public HashSet<F13Player> getPlayers() {
         return players;
     }
 
     /**
-     * Returns hash map of current counselors
-     *
-     * @return
+     * Adds player to the current game's player list
+     * @param player F13Player
      */
-    public HashMap<String, Counselor> getCounselors() {
-        return counselors;
+    private void addPlayer(F13Player player) {
+        players.add(player);
+
     }
 
     /**
-     * Returns living players
-     *
-     * @return
+     * Removes player from current game's player list
+     * @param player F13Player
      */
-    public HashMap<String, Player> getAlivePlayers() {
+    private void removePlayer(F13Player player) {
+        players.remove(player);
+        FridayThe13th.arenaController.removePlayer(player);
+    }
+
+    /**
+     * @return Number of players in the current game
+     */
+    public int getNumberOfPlayers() {
+        return players.size();
+    }
+
+    /**
+     * @return Alive players
+     */
+    public HashSet<F13Player> getAlivePlayers() {
         return alivePlayers;
     }
 
     /**
-     * Returns dead players
-     *
-     * @return
+     * Adds player to the alive player list
+     * @param player F13Player
      */
-    public HashSet<Player> getDeadPlayers() {
-        return deadPlayers;
+    private void addAlivePlayer(F13Player player) {
+        alivePlayers.add(player);
     }
 
     /**
-     * Returns spectators
+     * Removes player from the alive player list
      *
-     * @return
+     * @param player F13Player
      */
-    public HashMap<String, Spectator> getSpectators() {
-        return spectators;
+    private void removeAlivePlayer(F13Player player) {
+        alivePlayers.remove(player);
     }
 
     /**
-     * Returns existing spectator object for supplied player UUID
-     *
-     * @param uuid
-     * @return
+     * @return Number of players alive
      */
-    public Spectator getSpectator(String uuid) {
-        return spectators.get(uuid);
-    }
-
-    /**
-     * Returns existing spectator object for supplied player object
-     *
-     * @param player
-     * @return
-     */
-    public Spectator getSpectator(Player player) {
-        return spectators.get(player.getUniqueId().toString());
-    }
-
-    /**
-     * Returns the number of spectators
-     *
-     * @return
-     */
-    public int getNumSpectators() {
-        return spectators.size();
-    }
-
-    /**
-     * @return Number of counselors that started the game
-     */
-    public int getNumStartingCounselors() {
-        return startingNumCounselors;
-    }
-
-    /**
-     * Returns if the player with supplied uuid is a spectator
-     *
-     * @param uuid
-     * @return
-     */
-    public boolean isSpectator(String uuid) {
-        return spectators.containsKey(uuid);
-    }
-
-    /**
-     * Returns if the player object is a spectator
-     *
-     * @param player
-     * @return
-     */
-    public boolean isSpectator(Player player) {
-        return isSpectator(player.getUniqueId().toString());
-    }
-
-    /**
-     * Returns if the player is just a spectator and not counselor/jason
-     *
-     * @param uuid
-     * @return
-     */
-    public boolean isJustSpectator(String uuid) {
-        if (isSpectator(uuid)) {
-            Spectator spectator = getSpectator(uuid);
-            return !(isCounselor(spectator.getPlayer()) || isJason(spectator.getPlayer()));
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Adds a spectator to the HashMap
-     *
-     * @param spectator
-     */
-    private void addSpectator(Spectator spectator) {
-        spectators.put(spectator.getPlayer().getUniqueId().toString(), spectator);
-    }
-
-    /**
-     * Removes a spectator from the HashMap
-     *
-     * @param uuid
-     */
-    private void removeSpectator(String uuid) {
-        spectators.remove(uuid);
-    }
-
-    /**
-     * Returns the number of players that are alive
-     *
-     * @return
-     */
-    public int getNumPlayersAlive() {
+    public int getNumberOfPlayersAlive() {
         return alivePlayers.size();
     }
 
     /**
-     * Returns the number of players that are dead
-     *
-     * @return
+     * @param player F13Player
+     * @return If the player is alive
      */
-    public int getNumPlayersDead() {
+    public boolean isAlive(F13Player player) {
+        return alivePlayers.contains(player);
+    }
+
+    /**
+     * @return Dead players
+     */
+    private HashSet<F13Player> getDeadPlayers() {
+        return deadPlayers;
+    }
+
+    /**
+     * Adds player to the dead player list
+     * @param player F13Player
+     */
+    public void addDeadPlayer(F13Player player) {
+        deadPlayers.add(player);
+    }
+
+    /**
+     * Removes player from the dead player list
+     * @param player F13Player
+     */
+    public void removeDeadPlayer(F13Player player) {
+        deadPlayers.remove(player); }
+
+    /**
+     * @return Number of players dead
+     */
+    public int getNumberOfPlayersDead() {
         return deadPlayers.size();
     }
 
     /**
-     * @return Number of counselors that escaped
+     * @return Current game's counselor HashMap
      */
-    public int getNumPlayersEscaped() {
-        return escapedPlayers.size();
+    public HashMap<F13Player, Counselor> getCounselors() {
+        return counselors;
     }
 
     /**
-     * Returns the number of counselors
+     * Adds new counselor
      *
-     * @return
+     * @param counselor Counselor object
      */
-    public int getNumCounselors() {
+    private void addCounselor(Counselor counselor) {
+        counselors.put(counselor.getF13Player(), counselor);
+    }
+
+    /**
+     * Assigns the provided player as a counselor
+     *
+     * @param player F13Player
+     */
+    private void assignCounselor(F13Player player) {
+        addCounselor(new Counselor(player, arena));
+    }
+
+    /**
+     * Removes the counselor
+     *
+     * @param player F13Player
+     */
+    private void removeCounselor(F13Player player) {
+        counselors.remove(player);
+    }
+
+    /**
+     * @param player F13Player
+     * @return Counselor
+     */
+    public Counselor getCounselor(F13Player player) {
+        return counselors.get(player);
+    }
+
+    /**
+     * @return Number of counselors
+     */
+    public int getNumberOfCounselors() {
         return counselors.size();
     }
 
     /**
-     * Returns if the supplied player is a counselor
-     *
-     * @param player
-     * @return
+     * @param player F13Player
+     * @return If the player is a counselor
      */
-    public boolean isCounselor(Player player) {
-        return counselors.containsKey(player.getUniqueId().toString());
+    public boolean isCounselor(F13Player player) {
+        return counselors.containsKey(player);
     }
 
     /**
-     * Returns if the supplied payer is jason
-     *
-     * @param player
-     * @return
+     * @return Jason
      */
-    public boolean isJason(Player player) {
-        return jason != null && jason.getPlayer().equals(player);
-    }
-
-    /**
-     * Returns if the player is in the alive players hash map
-     *
-     * @param player
-     * @return
-     */
-    public boolean isAlive(Player player) {
-        return alivePlayers.containsKey(player.getUniqueId().toString());
-    }
-
-    /**
-     * Returns the counselor object for the player
-     *
-     * @param player
-     * @return
-     */
-    public Counselor getCounselor(Player player) {
-        return counselors.get(player.getUniqueId().toString());
-    }
-
-    /**
-     * Returns the jason object
-     *
-     * @return
-     */
-
     public Jason getJason() {
         return jason;
     }
 
     /**
-     * Returns the counselor object for the player
+     * @param player F13Player
+     * @return If the player is Jason
+     */
+    public boolean isJason(F13Player player) {
+        return jason != null && jason.getF13Player().equals(player);
+    }
+
+    /**
+     * Assigns the provided player as Jason
      *
-     * @param playerUUID
-     * @return
+     * @param player F13Player
      */
-    public Counselor getCounselor(String playerUUID) {
-        return counselors.get(playerUUID);
+    private void assignJason(F13Player player) {
+        this.jason = new Jason(player, arena);
+        removeCounselor(player);
     }
 
     /**
-     * Adds player to the player hash map
+     * @return Number of counselors that escaped
+     */
+    private int getNumberOfPlayersEscaped() {
+        return escapedPlayers.size();
+    }
+
+    /**
+     * Adds player to escaped player list
      *
-     * @param p
+     * @param player F13Player
      */
-    private void addPlayer(Player p) {
-        players.put(p.getUniqueId().toString(), p);
+    public void addEscapedPlayer(F13Player player) {
+        escapedPlayers.add(player);
     }
 
     /**
-     * Removes player from the player hash map
+     * @param player F13Player
+     * @return If the player escaped
+     */
+    public boolean didPlayerEscape(F13Player player) {
+        return escapedPlayers.contains(player);
+    }
+
+    /**
+     * @return Spectators
+     */
+    public HashMap<F13Player, Spectator> getSpectators() {
+        return spectators;
+    }
+
+    /**
+     * Adds a spectator to the HashMap
      *
-     * @param playerUUID
+     * @param spectator Spectator
      */
-    private void removePlayer(String playerUUID) {
-        players.remove(playerUUID);
+    private void addSpectator(Spectator spectator) {
+        spectators.put(spectator.getF13Player(), spectator);
     }
 
     /**
-     * Calculates if there is room for the player to join the game
+     * Removes a spectator from the HashMap
      *
-     * @return
+     * @param player F13Player
      */
-    public boolean isRoomForPlayerToJoin() {
-        //Determine if we have enough spawn points for the game's 8 counselors
-        if (arena.getLocationManager().getNumberStartingPoints() >= 8) {
-            //We don't have to worry about spawn points
-            //Games capped at 8 counselors + Jason.
-            return getNumPlayers() < 9;
-        } else {
-            //They're are less than 8 spawn points for counselors
-            return arena.getLocationManager().getNumberStartingPoints() - getNumPlayers() + 1 > 0;
-        }
-    }
-
-    /* Display */
-
-    /**
-     * Resets the action bars of all players to nothing
-     */
-    public void resetPlayerActionBars() {
-        Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-            ActionBarAPI.sendActionBar(player, "");
-        }
+    private void removeSpectator(F13Player player) {
+        spectators.remove(player);
     }
 
     /**
-     * Displays the waiting countdown for all players
+     * @param player F13Player
+     * @return Spectator
      */
-    public void displayWaitingCountdown() {
-        Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-            arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player);
-        }
+    private Spectator getSpectator(F13Player player) {
+        return spectators.get(player);
     }
 
     /**
-     * Hides the waiting countdown from all players
+     * @return Number of spectators
      */
-    public void hideWaitingCountdown() {
-        arena.getGameManager().getWaitingCountdownDisplayManager().hideFromAllPlayers();
-    }
-
-
-    /* Player Events */
-
-    /**
-     * Adds player to the game, if room is available
-     *
-     * @param player
-     * @throws GameFullException
-     */
-    public synchronized void playerJoinGame(Player player) throws GameFullException, GameInProgressException {
-        if (true) {
-            //All is well with the resource pack, they can join
-            if (arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) {
-                //Determine if there's room for this user
-                if (isRoomForPlayerToJoin()) {
-                    try {
-                        //Add to lists
-                        FridayThe13th.arenaController.addPlayer(player.getUniqueId().toString(), arena);
-                        addPlayer(player);
-
-                        //Waiting actions
-                        performWaitingActions(player);
-
-                        //Announce arrival
-                        int playerNumber = players.size();
-                        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getName()) + " (" + playerNumber + "/" + arena.getMaxNumberOfPlayers() + ")");
-
-                        if (players.size() == 1) {
-                            arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
-                        }
-
-                    } catch (PlayerAlreadyPlayingException exception) {
-                        //They're already in the controller global player list
-                        player.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinFailAR", "Failed to add you to game because you're already registered as playing a game."));
-                    }
-                } else {
-                    throw new GameFullException();
-                }
-            } else {
-                throw new GameInProgressException();
-            }
-        } else {
-            //They don't have the resource pack, so let's request it
-            ResourcePackRequest request = new ResourcePackRequest("f13", player, "https://s3.amazonaws.com/fridaythe13th/F13.zip", FridayThe13th.pluginPrefix + "Resource pack success! Please join the game again", FridayThe13th.pluginPrefix + "Error! You MUST have the resource pack in order to play. You'll need to re-enable server resource packs on this server by returning to your server selection screen, hitting edit and enabling them. Then completely quit and restart your Minecraft client.", false);
-            ResourcePackAPI.playerController.getPlayer(player).newResourcePackRequest(request);
-            request.sendRequest();
-        }
+    public int getNumberOfSpectators() {
+        return spectators.size();
     }
 
     /**
-     * Performs actions when a player logs off of server
-     *
-     * @param playerUUID
+     * @param player F13Player
+     * @return If the player is a spectator
      */
-    public void onPlayerLogout(String playerUUID) {
-        //Hurry and see if we can teleport them out and clear inventory
-        Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
-        player.teleport(arena.getReturnLocation());
-        player.getInventory().clear();
-
-        if (!isJustSpectator(playerUUID)) {
-            //Cleanup
-            performPlayerCleanupActions(playerUUID);
-
-            if (arena.getGameManager().isGameInProgress()) {
-
-                if (isJason(player)) {
-                    //Jason logged off, so end the game
-                    sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getName()));
-                    arena.getGameManager().endGame();
-                } else {
-                    //They're a counselor
-                    if (getNumPlayersAlive() <= 1) {
-                        //They were the last one
-                        arena.getGameManager().endGame();
-                    }
-                }
-            } else {
-                if (players.size() == 0) {
-                    arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
-                }
-            }
-
-
-            //Message everyone in game
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
-            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutBroadcast", "{0} has logged out and left the game.", player.getName()));
-        } else {
-            //Just a spectator who logged out
-            leaveSpectator(player);
-        }
+    public boolean isSpectator(F13Player player) {
+        return spectators.containsKey(player);
     }
 
     /**
-     * Performs actions when a player quits the game via command
-     *
-     * @param player
+     * @param player F13Player
+     * @return If the player if just a spectator, not an active or previous player
      */
-    public void onplayerQuit(Player player) {
-        if (!isJustSpectator(player.getUniqueId().toString())) {
-
-            if (isCounselor(player) && !isAlive(player)) {
-                getCounselor(player).awardCP();
-                getCounselor(player).awardXP();
-            }
-
-
-            //Clean up
-            performPlayerCleanupActions(player.getUniqueId().toString());
-
-            if (arena.getGameManager().isGameInProgress()) {
-
-                if (isJason(player)) {
-                    //Jason quit off, so end the game
-                    sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getName()));
-                    arena.getGameManager().endGame();
-                } else if (isCounselor(player)) {
-
-                    if (getNumPlayersAlive() <= 1) {
-                        //They were the last one
-                        arena.getGameManager().endGame();
-                    }
-                }
-            } else {
-                if (players.size() == 0) {
-                    arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
-                }
-            }
-
-            //Message everyone in game
-            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitBroadcast", "{0} has left the game.", player.getName()));
-        } else {
-            //They're just a spectator leaving spectate mode
-            leaveSpectator(player);
-        }
+    public boolean isJustSpectator(F13Player player) {
+        return (isSpectator(player) && !isCounselor(player) && !isJason(player));
     }
-
-    /**
-     * Performs actions when a player dies in game
-     *
-     * @param player
-     */
-    public void onPlayerDeath(Player player) {
-        if (arena.getGameManager().isGameInProgress()) {
-            //Transition from alive to dead hash set
-            alivePlayers.remove(player.getUniqueId().toString());
-            deadPlayers.add(player);
-
-            //Check to see if they're jason, which would end the game
-            if (isJason(player)) {
-                //Counselors win
-                counselorsWin();
-                arena.getGameManager().endGame(); //Game over kiddos
-            } else {
-                //Firework
-                arena.getGameManager().getPlayerManager().fireFirework(player, Color.RED);
-
-                //They're a normal player, see if there are still others alive
-                if (getNumPlayersAlive() >= 1) //since jason is still presumably alive
-                {
-                    //Spawn their corpse
-                    arena.getObjectManager().spawnCorpse(player);
-
-                    //They're are others still alive, enter spectating mode
-                    getCounselor(player).transitionToSpectatingMode();
-                    becomeSpectator(player);
-                } else {
-                    //They were the last to die, so end the game
-                    arena.getGameManager().endGame();
-                }
-            }
-
-            //Let everyone know
-            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerKilledBroadcast", "{0} was killed.", player.getName()));
-        }
-    }
-
-    /**
-     * Performs actions when a player escapes
-     *
-     * @param player
-     */
-    public void onPlayerEscape(Player player) {
-        if (arena.getGameManager().isGameInProgress()) {
-            //Check to see if they're jason, which would end the game
-            if (isCounselor(player)) {
-                alivePlayers.remove(player.getUniqueId().toString());
-                escapedPlayers.add(player);
-
-                //Award them XP
-                getCounselor(player).getXPManager().addEscape();
-
-                //Let everyone know
-                sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerEscapeBroadcast", "{0} escaped.", player.getName()));
-
-                if (getNumPlayersAlive() >= 1) {
-                    //They're are others still alive, enter spectating mode
-                    getCounselor(player).transitionToSpectatingMode();
-                    becomeSpectator(player);
-                } else {
-                    //They were the last to die, so end the game
-                    arena.getGameManager().endGame();
-                }
-            }
-        }
-    }
-
-    /* Spectator Actions */
 
     /**
      * Adds the player as a spectator and performs all actions to put them into the game
-     *
-     * @param player
+     * @param player F13Player
      */
-    public void becomeSpectator(Player player) {
+    public void becomeSpectator(F13Player player) {
         addSpectator(new Spectator(player, arena));
         getSpectator(player).enterSpectatingMode();
 
         try {
-            FridayThe13th.arenaController.addPlayer(player.getUniqueId().toString(), arena);
+            FridayThe13th.arenaController.addPlayer(player, arena);
             addPlayer(player);
         } catch (PlayerAlreadyPlayingException exception) {
             //Don't need to do anything
@@ -604,115 +340,136 @@ public class PlayerManager {
     /**
      * Removes the player as a spectator and performs all actions to remove them from the game
      *
-     * @param player
+     * @param player F13Player
      */
-    public void leaveSpectator(Player player) {
+    public void leaveSpectator(F13Player player) {
         //Need to remove from player lists if they're just a spectator
-        if (isJustSpectator(player.getUniqueId().toString())) {
-            FridayThe13th.arenaController.removePlayer(player.getUniqueId().toString());
-            removePlayer(player.getUniqueId().toString());
+        if (isJustSpectator(player)) {
+            FridayThe13th.arenaController.removePlayer(player);
+            removePlayer(player);
         }
 
-        getSpectator(player).leaveSpectatingMode();
-        removeSpectator(player.getUniqueId().toString());
-
-        //Teleport them out if they're not a counselor
-        if (!isCounselor(player)) {
-            if (Bukkit.getOfflinePlayer(player.getUniqueId()).isOnline()) {
-                player.teleport(arena.getReturnLocation());
-            }
-        }
-
+        removeSpectator(player);
     }
-
-    public void leaveSpectator(String uuid) {
-        leaveSpectator(getSpectator(uuid).getPlayer());
-    }
-
-
-    /* Player Preparation Actions */
 
     /**
-     * Performs waiting actions for specific player
+     * @return If there is enough room for the player to join
+     */
+    public synchronized boolean isRoomForPlayerToJoin() {
+        //Determine if we have enough spawn points for the game's 8 counselors
+        if (arena.getLocationManager().getNumberStartingPoints() >= 8) {
+            //We don't have to worry about spawn points - Games capped at 8 counselors + Jason.
+            return getNumberOfPlayers() < 9;
+        } else {
+            //They're are less than 8 spawn points for counselors
+            return arena.getLocationManager().getNumberStartingPoints() - getNumberOfPlayers() + 1 > 0;
+        }
+    }
+
+    /**
+     * Adds player to the game, if room is available
      *
-     * @param player
+     * @param player F13Player
+     * @throws GameFullException The game is full and cannot accept any more players
      */
-    private void performWaitingActions(Player player) {
-        //Teleport player to waiting location
-        teleportPlayerToWaitingPoint(player);
+    public synchronized void playerJoinGame(F13Player player) throws GameFullException, GameInProgressException {
+        if (arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) {
+            //Determine if there's room for this user
+            if (isRoomForPlayerToJoin()) {
+                try {
+                    //Add to lists
+                    FridayThe13th.arenaController.addPlayer(player, arena);
+                    addPlayer(player);
 
-        //Show the countdown timer
-        arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player);
+                    //Prepare them for the game
+                    assignCounselor(player);
+                    getCounselor(player).enterWaitingRoom();
 
-        //Change game mode & clear inventory
-        player.setGameMode(GameMode.SURVIVAL);
-        player.setHealth(20);
-        player.setFoodLevel(10);
-        player.getInventory().clear();
+                    //Announce arrival
+                    int playerNumber = players.size();
+                    sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinBroadcast", "{0} has joined the game.", player.getBukkitPlayer().getName()) + " (" + playerNumber + "/" + arena.getMaxNumberOfPlayers() + ")");
 
-        //Give them waiting room items
-        SpawnPreferenceMenu.addMenuOpenItem(player);
-        Profiles_MainMenu.addMenuOpenItem(player);
-        Shop_MainMenu.addMenuOpenItem(player);
-        Shop_PurchasedPerksMenu.addMenuOpenItem(player);
+                    if (players.size() == 1) {
+                        arena.getSignManager().updateJoinSigns(); //If it's just them, update signs
+                    }
 
-        //Begin waiting room music
-        PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), F13SoundEffect.LobbyMusic.getResourcePackValue(), F13SoundEffect.LobbyMusic.getLengthInSeconds(), 10, true, true);
-
+                } catch (PlayerAlreadyPlayingException exception) {
+                    //They're already in the controller global player list
+                    player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerJoinFailAR", "Failed to add you to game because you're already registered as playing a game."));
+                }
+            } else {
+                throw new GameFullException();
+            }
+        } else {
+            throw new GameInProgressException();
+        }
     }
 
     /**
-     * Transitions and prepares all players to play the game
+     * Performs actions for players when the game begins
      */
-    protected void performInProgressActions() {
-        FridayThe13th.log.log(Level.INFO, FridayThe13th.consolePrefix + "Game in " + arena.getName() + " beginning...");
-
-        //Assign roles and teleport players there
+    protected void beginGame() {
         assignGameRoles();
         assignSpawnLocations();
 
-        //Record starting number of counselors
-        startingNumCounselors = getNumCounselors();
+        //Prepare everyone for gameplay
+        getJason().prepareforGameplay();
 
-        //Hide waiting scoreboard from everyone
-        for (Player player : players.values()) {
-            FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
-        }
-
-        //Prepare Jason
-        jason.prepareforGameplay();
-
-        //Prepare Counselors
-        Iterator it = getCounselors().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Counselor counselor = (Counselor) entry.getValue();
+        for (Counselor counselor : counselors.values()) {
             counselor.prepareForGameplay();
-            alivePlayers.put(counselor.getPlayer().getUniqueId().toString(), counselor.getPlayer());
+            addAlivePlayer(counselor.getF13Player());
         }
 
         //Tell everyone who Jason is
-        sendMessageToAllPlayers(ChatColor.AQUA + jason.getPlayer().getName() + ChatColor.WHITE + " is Jason.");
+        sendMessageToAllPlayers(ChatColor.AQUA + jason.getF13Player().getBukkitPlayer().getName() + ChatColor.WHITE + " is Jason.");
 
         //Play game start music
         SoundManager.playSoundForAllPlayers(F13SoundEffect.Music_GameStart, arena, true, true, 0);
     }
 
     /**
+     * Performs actions for players when the game ends
+     */
+    protected void endGame() {
+        sendEndOfGameStatisticMessage();
+
+        //Jason - Award XP
+        if (getNumberOfPlayersAlive() == 0) {
+            getJason().getXpManager().registerXPAward(XPAward.Jason_NoEscapes);
+        }
+
+        getJason().getXpManager().awardXPToPlayer(); //TODO - We have to make sure Jason doesn't get XP if he quits
+        getJason().leaveGame();
+        removePlayer(getJason().getF13Player());
+
+        //Counselors - Award XP & Leave Game
+        for (Counselor counselor : counselors.values()) {
+            counselor.getXpManager().awardXPToPlayer();
+            counselor.leaveGame();
+            removePlayer(counselor.getF13Player());
+        }
+
+        for (Spectator spectator : spectators.values()) {
+            spectator.leaveGame();
+            removePlayer(spectator.getF13Player());
+        }
+
+        resetPlayerStorage();
+    }
+
+    /**
      * Assigns all players a role (counselor or jason)
      */
     private void assignGameRoles() {
-
         //Populate role preference data
-        List<Player> preferJason = new ArrayList<>();
-        List<Player> preferCounselor = new ArrayList<>();
-        List<Player> noPreference = new ArrayList<>();
+        List<F13Player> preferJason = new ArrayList<>();
+        List<F13Player> preferCounselor = new ArrayList<>();
+        List<F13Player> noPreference = new ArrayList<>();
 
-        for (Player player : players.values()) {
-            F13Player f13p = FridayThe13th.playerController.getPlayer(player);
-            if (f13p.isSpawnPreferenceJason()) {
+        for (F13Player player : players) {
+            if (player.isSpawnPreferenceJason()) {
                 preferJason.add(player);
-            } else if (f13p.isSpawnPreferenceCounselor()) {
+            } else if (player.isSpawnPreferenceCounselor()) {
                 preferCounselor.add(player);
             } else {
                 //No preference set
@@ -746,316 +503,247 @@ public class PlayerManager {
                 assignJason(pickRandomPlayer(preferCounselor));
             }
         }
-
-        //Set everyone who is not Jason as a counselor
-        for (Player player : players.values()) {
-            if (!isJason(player)) {
-                assignCounselor(player);
-            }
-        }
     }
-
-    /**
-     * Assigns the provided player as Jason
-     *
-     * @param player
-     */
-    private void assignJason(Player player) {
-        this.jason = new Jason(player, arena);
-    }
-
-    /**
-     * Assigns the provided player as a counselor
-     *
-     * @param player
-     */
-    private void assignCounselor(Player player) {
-        this.counselors.put(player.getUniqueId().toString(), new Counselor(player, arena));
-    }
-
-    /**
-     * Picks a random player from supplied player list
-     *
-     * @param players
-     * @return
-     */
-    public Player pickRandomPlayer(List<Player> players) {
-        int randomNum = ThreadLocalRandom.current().nextInt(0, players.size() - 1);
-        return players.get(randomNum);
-    }
-
 
     /**
      * Assigns and teleports players and jason to their spawn locations
      */
     private void assignSpawnLocations() {
-        //Teleport jason to jason start point
-        jason.getPlayer().teleport(arena.getJasonStartLocation());
-
         //Teleport counselors to starting points
-        Location[] counselorLocations = arena.getLocationManager().getAvailableStartingPoints().toArray(new Location[arena.getLocationManager().getAvailableStartingPoints().size()]);
+        Location[] counselorLocations = arena.getLocationManager().getRandomSpawnLocations();
 
-        //Randomize starting points
-        Random rnd = ThreadLocalRandom.current();
-        for (int i = counselorLocations.length - 1; i > 0; i--) {
-            int index = rnd.nextInt(i + 1);
-
-            // Simple swap
-            Location a = counselorLocations[index];
-            counselorLocations[index] = counselorLocations[i];
-            counselorLocations[i] = a;
-        }
-
-        //Assign the spots
-        Iterator it = getCounselors().entrySet().iterator();
         int i = 0;
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Counselor counselor = (Counselor) entry.getValue();
-            counselor.getPlayer().teleport(counselorLocations[i++]);
+        for (Counselor counselor : counselors.values()) {
+            counselor.teleport(counselorLocations[i++]);
         }
     }
 
     /**
-     * Transtions players from the game once it ends
-     */
-    protected void performEndGameActions() {
-        //Game ended
-        sendMessageToAllPlayers(ChatColor.RED + "" + ChatColor.BOLD + "Game over!");
-        sendMessageToAllPlayers(getNumPlayersDead() + "/" + getNumStartingCounselors() + " counselors killed.");
-        sendMessageToAllPlayers(getNumPlayersEscaped() + "/" + getNumStartingCounselors() + " counselors escaped.");
-        sendMessageToAllPlayers("Thanks for playing Friday the 13th.");
-
-        //Award XP to Counselors and Jason
-        Iterator counselorIterator = getCounselors().entrySet().iterator();
-        while (counselorIterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) counselorIterator.next();
-            Counselor counselor = (Counselor) entry.getValue();
-            counselor.awardXP();
-            counselor.awardCP();
-        }
-
-        //If Jason killed all of the players, he gets a time bonus
-        if (getNumPlayersAlive() == 0) {
-            getJason().getXPManager().setTimeLeftMinutes(arena.getGameManager().getGameTimeLeft() / 60);
-        }
-
-        //Award Jason XP if there was a current game
-        if (getJason() != null) {
-            getJason().awardXP();
-            getJason().awardCP();
-        }
-
-        //Clean everyone up
-        Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-            it.remove();
-            performPlayerCleanupActions(player.getUniqueId().toString());
-        }
-    }
-
-    /**
-     * Cleans up a player and restores them to pre-game status
+     * Picks a random player from supplied player list
      *
-     * @param playerUUID
+     * @param players F13 Player list
+     * @return Random F13Player
      */
-    private void performPlayerCleanupActions(String playerUUID) {
-        //Get offline player to be able to account for both online and offline players
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerUUID));
+    private F13Player pickRandomPlayer(List<F13Player> players) {
+        int randomNum = ThreadLocalRandom.current().nextInt(0, players.size() - 1);
+        return players.get(randomNum);
+    }
 
-        //Remove player from hash maps (have to remove these first since listeners check to see if player has an arena)
-        FridayThe13th.arenaController.removePlayer(playerUUID);
-        removePlayer(playerUUID);
-        alivePlayers.remove(playerUUID);
+    /**
+     * Sends in game message to all players
+     *
+     * @param message Message to be sent in chat
+     */
+    public void sendMessageToAllPlayers(String message) {
+        for (F13Player player : players) {
+            player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + message);
+        }
+    }
 
-        if (arena.getGameManager().isGameWaiting() || arena.getGameManager().isGameEmpty()) {
-            //Waiting mode, so just teleport them out
-            if (offlinePlayer.isOnline()) {
-                //Teleport them to the return point
-                Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
+    /**
+     * Sends in game message to all players
+     * @param message Message to be sent in the Action Bar
+     */
+    public void sendActionBarMessageToAllPlayers(String message, int ticksDuration) {
+        for (F13Player player : players) {
+            ActionBarAPI.sendActionBar(player.getBukkitPlayer(), message, ticksDuration);
+        }
+    }
 
-                FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
-                teleportPlayerToReturnPoint(player);
-                arena.getGameManager().getWaitingCountdownDisplayManager().hideForPlayer(player);
-                player.getInventory().clear();
+    /**
+     * Resets the action bars of all players to nothing
+     */
+    public void resetPlayerActionBars() {
+        for (F13Player player : players) {
+            ActionBarAPI.sendActionBar(player.getBukkitPlayer(), "");
+        }
+    }
 
-                //Stop all music
-                PlayerSoundAPI.getPlayerSoundManager(player).stopAllSounds();
+    /**
+     * Sends end of game message to all players
+     */
+    private void sendEndOfGameStatisticMessage()
+    {
+        sendMessageToAllPlayers(ChatColor.RED + "" + ChatColor.BOLD + "Game over!");
+        sendMessageToAllPlayers(getNumberOfPlayersDead() + "/" + getNumberOfCounselors() + " counselors killed.");
+
+        if (getNumberOfPlayersEscaped() > 0) {
+            sendMessageToAllPlayers(getNumberOfPlayersEscaped() + "/" + getNumberOfCounselors() + " counselors escaped.");
+        }
+    }
+
+    /**
+     * Performs actions when a player quits the game via command
+     *
+     * @param player F13Player
+     */
+    public void onplayerQuit(F13Player player) {
+        //Message everyone in game
+        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitBroadcast", "{0} has left the game.", player.getBukkitPlayer().getName()));
+
+        if (arena.getGameManager().isGameInProgress()) {
+            if (isJason(player)) {
+                //Jason quit off, so end the game
+                sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getBukkitPlayer().getName()));
+                arena.getGameManager().endGame();
+            } else if (isCounselor(player)) {
+                if (isAlive(player) && getNumberOfPlayersAlive() <= 1) {
+                    //They were the last one
+                    arena.getGameManager().endGame();
+                } else {
+                    if (!isAlive(player) || didPlayerEscape(player)) {
+                        arena.getGameManager().getPlayerManager().getCounselor(player).getXpManager().awardXPToPlayer();
+                    }
+
+                    arena.getGameManager().getPlayerManager().getCounselor(player).leaveGame();
+                }
+            } else if (isSpectator(player)) {
+                arena.getGameManager().getPlayerManager().getSpectator(player).leaveGame();
             }
         } else {
-            if (isSpectator(playerUUID)) {
-                leaveSpectator(playerUUID);
-            }
+            //Before the game, everyone is considered a counselor
+            getCounselor(player).leaveGame();
+        }
 
-            if (isCounselor((Player) offlinePlayer)) {
-                Counselor counselor = getCounselor(playerUUID);
+        removePlayerFromDataStructures(player);
+    }
 
-                //Cancel scheduled tasks
-                counselor.cancelTasks();
+    /**
+     * Performs actions when a player logs off of server
+     * @param player F13Player
+     */
+    public void onPlayerLogout(F13Player player) {
+        //Hurry and see if we can teleport them out and clear inventory
+        player.getBukkitPlayer().teleport(arena.getReturnLocation());
+        player.getBukkitPlayer().getInventory().clear();
 
-                //Remove any potions
-                counselor.removePotionEffects();
-                counselor.restoreOriginalSpeeds();
+        //Message everyone in game
+        sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutBroadcast", "{0} has logged out and left the game.", Bukkit.getOfflinePlayer(UUID.fromString(player.getPlayerUUID())).getName()));
 
-                //Hide the stats bars
-                counselor.getCounselorStatsDisplayManager().hideStats();
+        if (!isJustSpectator(player)) {
+            if (arena.getGameManager().isGameInProgress()) {
+                if (isJason(player)) {
+                    //Jason logged off, so end the game
+                    sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutJasonBroadcast", "GAME OVER! Jason left the game."));
+                    arena.getGameManager().endGame();
+                } else if (isCounselor(player)) {
+                    //They're a counselor
+                    if (isAlive(player) && getNumberOfPlayersAlive() <= 1) {
+                        //They were the last one
+                        arena.getGameManager().endGame();
+                    }
 
-                //Remove skin
-                counselor.removeSkin();
-
-                //Remove from counselors
-                counselors.remove(playerUUID);
-            } else if (isJason((Player) offlinePlayer)) {
-                //Stop tasks
-                jason.cancelTasks();
-
-                //Remove skin
-                jason.removeSkin();
-
-                //Stop Potions
-                jason.removePotionEffects();
-                jason.restoreOriginalSpeeds();
-
-                //Remove his ability display
-                jason.getAbilityDisplayManager().hideAbilities();
-            }
-
-            //Actions done only if they're online
-            if (offlinePlayer.isOnline()) {
-                Player player = Bukkit.getPlayer(UUID.fromString(playerUUID));
-                deadPlayers.remove(playerUUID);
-
-                //Hide game-wide scoreboard
-                arena.getGameManager().getGameScoreboardManager().hideFromPlayer(player);
-
-                //Teleport them to the return point
-                teleportPlayerToReturnPoint(player);
-
-                //Restore health and hunger
-                player.setHealth(20);
-                player.setFoodLevel(20);
-
-                //Clear inventory
-                player.getInventory().clear();
-
-                //Remove all potion effects
-                for (PotionEffect effect : player.getActivePotionEffects()) {
-                    player.removePotionEffect(effect.getType());
+                    getCounselor(player).leaveGame();
                 }
+            } else {
+                //Before the game, everyone is considered a counselor
+                getCounselor(player).leaveGame();
+            }
+        } else {
+            //Just a spectator who logged out
+            getSpectator(player).leaveGame();
+        }
 
-                //Stop all music
-                PlayerSoundAPI.getPlayerSoundManager(player).stopAllSounds();
+        removePlayerFromDataStructures(player);
+    }
+
+    /**
+     * Performs actions when a player escapes
+     *
+     * @param player F13Player
+     */
+    public void onPlayerEscape(F13Player player) {
+        if (arena.getGameManager().isGameInProgress()) {
+            //Check to see if they're jason, which would end the game
+            if (isCounselor(player)) {
+                removeAlivePlayer(player);
+                addEscapedPlayer(player);
+
+                //Award them XP
+                getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_Escaped);
+
+                //Let everyone know
+                sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerEscapeBroadcast", "{0} escaped.", player.getBukkitPlayer().getName()));
+
+                if (getNumberOfPlayersAlive() >= 1) {
+                    //They're are others still alive, enter spectating mode
+                    getCounselor(player).transitionToSpectatingMode();
+                    becomeSpectator(player);
+                } else {
+                    //They were the last to die, so end the game
+                    arena.getGameManager().endGame();
+                }
             }
         }
     }
 
-
-    /* Teleports */
-
     /**
-     * Teleports the player to the arena's return point
+     * Performs actions when a player dies in game
      *
-     * @param player
+     * @param player F13Player
      */
-    private void teleportPlayerToReturnPoint(Player player) {
-        player.teleport(arena.getReturnLocation());
-    }
+    public void onPlayerDeath(F13Player player) {
+        if (arena.getGameManager().isGameInProgress()) {
+            //Transition from alive to dead hash set
+            removeAlivePlayer(player);
+            addDeadPlayer(player);
 
-    /**
-     * Teleports the player to the arena's waiting point
-     *
-     * @param player
-     */
-    private void teleportPlayerToWaitingPoint(Player player) {
-        player.teleport(arena.getWaitingLocation());
-    }
+            //Let everyone know
+            sendMessageToAllPlayers(ChatColor.GRAY + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerKilledBroadcast", "{0} was killed.", player.getBukkitPlayer().getName()));
 
+            //Check to see if they're jason, which would end the game
+            if (isJason(player)) {
+                //Counselors win
+                counselorsWin();
+                arena.getGameManager().endGame(); //Game over kiddos
+            } else {
+                //Firework
+                arena.getGameManager().getPlayerManager().fireFirework(player, Color.RED);
 
-    /* JASONS ABILITIES */
+                //They're a normal player, see if there are still others alive
+                if (getNumberOfPlayersAlive() >= 1) //since jason is still presumably alive
+                {
+                    //Spawn their corpse
+                    arena.getObjectManager().spawnCorpse(player);
 
-    /**
-     * Performs jason sense ability actions to applicable counselors
-     *
-     * @param value
-     */
-    public void jasonSensing(boolean value) {
-        Iterator it = getCounselors().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Counselor counselor = (Counselor) entry.getValue();
-            counselor.setSenseMode(value);
-        }
-    }
-
-    /**
-     * Selects a random spectating counselor to be Tommy Jarvis
-     */
-    public void spawnTommyJarvis() {
-        //set players stamina higher and max fear higher
-        if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned()) {
-
-            HashSet<Player> players = new HashSet<>();
-            players.addAll(escapedPlayers);
-            players.addAll(deadPlayers);
-
-            if (players.size() > 0) {
-                //Select a random player
-                Player[] pl = getDeadPlayers().toArray(new Player[getDeadPlayers().size()]);
-
-                //Randomize starting points
-                Random rnd = ThreadLocalRandom.current();
-                for (int i = pl.length - 1; i > 0; i--) {
-                    int index = rnd.nextInt(i + 1);
-
-                    // Simple swap
-                    Player a = pl[index];
-                    pl[index] = pl[i];
-                    pl[i] = a;
+                    //Enter spectating mode
+                    getCounselor(player).transitionToSpectatingMode();
+                    becomeSpectator(player);
+                } else {
+                    //They were the last to die, so end the game
+                    arena.getGameManager().endGame();
                 }
-
-                //Randomize starting points
-                Location[] counselorLocations = arena.getLocationManager().getAvailableStartingPoints().toArray(new Location[arena.getLocationManager().getAvailableStartingPoints().size()]);
-                Random rnd2 = ThreadLocalRandom.current();
-                for (int i = counselorLocations.length - 1; i > 0; i--) {
-                    int index = rnd.nextInt(i + 1);
-
-                    // Simple swap
-                    Location a = counselorLocations[index];
-                    counselorLocations[index] = counselorLocations[i];
-                    counselorLocations[i] = a;
-                }
-
-                //Do the things
-                Counselor counselor = getCounselor(pl[0]);
-
-                if (isSpectator(counselor.getPlayer().getUniqueId().toString())) {
-                    //Leave spectating mode
-                    getSpectator(getCounselor(pl[0]).getPlayer().getUniqueId().toString()).leaveSpectatingMode();
-                    removeSpectator(getCounselor(pl[0]).getPlayer().getUniqueId().toString());
-                }
-
-                counselor.prepareForGameplay();
-                counselor.getPlayer().teleport(counselorLocations[0]);
-                counselor.setTommyJarvis();
-                arena.getGameManager().setTommySpawned();
-
-                //Move from dead->alive hashmap
-                alivePlayers.put(counselor.getPlayer().getUniqueId().toString(), getCounselor(pl[0]).getPlayer());
-                deadPlayers.remove(counselor.getPlayer());
-
-                //Message everyone
-                sendMessageToAllPlayers(ChatColor.AQUA + counselor.getPlayer().getName() + ChatColor.WHITE + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.chat.TommyRisen", "has risen from the dead as Tommy Jarvis."));
             }
         }
     }
 
+    /**
+     * Removes player from all game data structures
+     *
+     * @param player F13Player
+     */
+    private void removePlayerFromDataStructures(F13Player player) {
+        removePlayer(player);
+        removeAlivePlayer(player);
+        removeDeadPlayer(player);
+        removeCounselor(player);
+        removeSpectator(player);
+    }
 
-    /* SPECIALS */
+    /**
+     * Performs actions when counselors win
+     */
+    private void counselorsWin() {
+        sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.counselorsWin", "Counselors win! Jason was slain."));
+    }
 
-    public void fireFirework(Player player, Color color) {
-        Firework f = player.getWorld().spawn(player.getWorld().getHighestBlockAt(player.getLocation()).getLocation(), Firework.class);
+    /**
+     * Fires a firework
+     * @param player F13Player whos location to fire the firework at
+     * @param color Firework color
+     */
+    public void fireFirework(F13Player player, Color color) {
+        Firework f = player.getBukkitPlayer().getWorld().spawn(player.getBukkitPlayer().getLocation().getWorld().getHighestBlockAt(player.getBukkitPlayer().getLocation()).getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder()
                 .flicker(true)
@@ -1067,51 +755,89 @@ public class PlayerManager {
         f.setFireworkMeta(fm);
     }
 
-    /* Messaging */
-
-    /**
-     * Sends in game message to all players
-     *
-     * @param message
-     */
-    public void sendMessageToAllPlayers(String message) {
-        Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-            player.sendMessage(FridayThe13th.pluginPrefix + message);
-        }
-    }
-
-    /**
-     * Sends in game message to all players
-     *
-     * @param message
-     */
-    public void sendActionBarMessageToAllPlayers(String message, int ticksDuration) {
-        Iterator it = getPlayers().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-            ActionBarAPI.sendActionBar(player, message, ticksDuration);
-        }
-    }
-
-    /**
-     * Performs actions when counselors win
-     */
-    private void counselorsWin() {
-        sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.counselorsWin", "Counselors win! Jason was slain."));
-    }
-
     /**
      * Updates waiting scoreboards
      */
     public void updateWaitingStatsScoreboards() {
         if (arena.getGameManager().isGameEmpty() || arena.getGameManager().isGameWaiting()) {
-            for (Player player : players.values()) {
-                FridayThe13th.playerController.getPlayer(player).getWaitingPlayerStatsDisplayManager().updateStatsScoreboard();
+            for (F13Player player : players) {
+                player.getWaitingPlayerStatsDisplayManager().updateStatsScoreboard();
             }
         }
     }
+
+    /**
+     * Displays the waiting countdown for all players
+     */
+    public void displayWaitingCountdown() {
+        for (F13Player player : players) {
+            arena.getGameManager().getWaitingCountdownDisplayManager().displayForPlayer(player.getBukkitPlayer());
+        }
+    }
+
+    /**
+     * Hides the waiting countdown from all players
+     */
+    public void hideWaitingCountdown() {
+        arena.getGameManager().getWaitingCountdownDisplayManager().hideFromAllPlayers();
+    }
+
+    /**
+     * Selects a random spectating counselor to be Tommy Jarvis
+     */
+    public void spawnTommyJarvis() {
+        //set players stamina higher and max fear higher
+        if (arena.getGameManager().hasTommyBeenCalled() && !arena.getGameManager().hasTommyBeenSpawned() && (escapedPlayers.size() + deadPlayers.size() > 0)) {
+            HashSet<F13Player> playersToSelectFrom = new HashSet<>();
+            playersToSelectFrom.addAll(escapedPlayers);
+            playersToSelectFrom.addAll(deadPlayers);
+
+            if (players.size() > 0) {
+                //Select a random player
+                F13Player[] tommyOptions = playersToSelectFrom.toArray(new F13Player[playersToSelectFrom.size()]);
+
+                Random rnd = ThreadLocalRandom.current();
+                for (int i = tommyOptions.length - 1; i > 0; i--) {
+                    int index = rnd.nextInt(i + 1);
+
+                    // Simple swap
+                    F13Player a = tommyOptions[index];
+                    tommyOptions[index] = tommyOptions[i];
+                    tommyOptions[i] = a;
+                }
+
+                Location tommySpawnLocation = arena.getLocationManager().getRandomSpawnLocations()[0];
+                Counselor counselorToBeTommy = getCounselor(tommyOptions[0]);
+
+                removeSpectator(counselorToBeTommy.getF13Player());
+
+                counselorToBeTommy.prepareForGameplay();
+                counselorToBeTommy.setTommyJarvis();
+                counselorToBeTommy.teleport(tommySpawnLocation);
+                arena.getGameManager().setTommySpawned();
+
+                //Move from dead->alive hashmap
+                addAlivePlayer(counselorToBeTommy.getF13Player());
+                removeDeadPlayer(counselorToBeTommy.getF13Player());
+
+                //Message everyone
+                sendMessageToAllPlayers(ChatColor.AQUA + counselorToBeTommy.getF13Player().getBukkitPlayer().getName() + ChatColor.WHITE + " " + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.chat.TommyRisen", "has risen from the dead as Tommy Jarvis."));
+            }
+        }
+    }
+
+    /**
+     * Performs jason sense ability actions to applicable counselors
+     * @param value If Jason is currently sensing
+     */
+    public void jasonSensing(boolean value) {
+        Iterator it = getCounselors().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            Counselor counselor = (Counselor) entry.getValue();
+            counselor.setSenseMode(value);
+        }
+    }
+
+
 }

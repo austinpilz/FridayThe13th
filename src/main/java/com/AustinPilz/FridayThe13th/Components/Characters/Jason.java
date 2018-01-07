@@ -3,12 +3,12 @@ package com.AustinPilz.FridayThe13th.Components.Characters;
 import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Profiles.JasonProfile;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Display.JasonAbilityDisplayManager;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
-import com.AustinPilz.FridayThe13th.Manager.Statistics.JasonXPManager;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesDisplayUpdate;
 import com.AustinPilz.FridayThe13th.Runnable.JasonAbilitiesRegeneration;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
@@ -17,7 +17,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -34,7 +33,6 @@ public class Jason extends F13Character
 
     //Display
     private JasonAbilityDisplayManager abilityDisplayManager;
-    private JasonXPManager xpManager;
 
     //Tasks
     private int taskAbilityDisplay = -1;
@@ -71,27 +69,26 @@ public class Jason extends F13Character
     private PotionEffect stun3;
     private PotionEffect stun4;
 
-    public Jason(Player player, Arena arena)
+    public Jason(F13Player player, Arena arena)
     {
         super(player, arena);
 
         //Display
         abilityDisplayManager = new JasonAbilityDisplayManager(this);
-        xpManager = new JasonXPManager(this, arena);
 
         //Stalk Values
         stalkLevel = 0;
         stalkLevelMax = 30;
-        stalkLevelDepletionRate = f13Player.getJasonProfile().getStalkLevel().getDepletionRate();
-        stalkLevelRegenerationRate = f13Player.getJasonProfile().getStalkLevel().getRegenerationRate();
+        stalkLevelDepletionRate = getF13Player().getJasonProfile().getStalkLevel().getDepletionRate();
+        stalkLevelRegenerationRate = getF13Player().getJasonProfile().getStalkLevel().getRegenerationRate();
         stalkInitialGenerationCompleted = false;
         stalkPotion = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
 
         //Sense Values
         senseLevel = 0;
         senseLevelMax = 30;
-        senseLevelDepletionRate = f13Player.getJasonProfile().getSenseLevel().getDepletionRate();
-        senseLevelRegenerationRate = f13Player.getJasonProfile().getSenseLevel().getRegenerationRate();
+        senseLevelDepletionRate = getF13Player().getJasonProfile().getSenseLevel().getDepletionRate();
+        senseLevelRegenerationRate = getF13Player().getJasonProfile().getSenseLevel().getRegenerationRate();
         senseInitialGenerationComplete = false;
         senseActive = false;
         sensePotion = new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1);
@@ -99,8 +96,8 @@ public class Jason extends F13Character
         //Warp Values
         warpLevel = 0;
         warpLevelMax = 30;
-        warpLevelDepletionRate = f13Player.getJasonProfile().getWarpLevel().getDepletionRate();
-        warpLevelRegenerationRate = f13Player.getJasonProfile().getWarpLevel().getRegenerationRate();
+        warpLevelDepletionRate = getF13Player().getJasonProfile().getWarpLevel().getDepletionRate();
+        warpLevelRegenerationRate = getF13Player().getJasonProfile().getWarpLevel().getRegenerationRate();
         warpInitialGenerationComplete = false;
         warpActive = false;
 
@@ -120,13 +117,6 @@ public class Jason extends F13Character
         return abilityDisplayManager;
     }
 
-    /**
-     * Returns the XP manager for Jason
-     * @return Jason's XP Manager
-     */
-    public JasonXPManager getXPManager() {
-        return xpManager;
-    }
 
     /**
      * Schedules all Jason runnable tasks
@@ -152,6 +142,9 @@ public class Jason extends F13Character
      */
     public void prepareforGameplay()
     {
+        teleportToJasonStartingPoint();
+
+
         //Give jason his sword
         Material weaponMaterial;
 
@@ -194,30 +187,31 @@ public class Jason extends F13Character
         jasonTraps.setItemMeta(jasonTrapsMeta);
 
         //Put them in inventory
-        getPlayer().getInventory().clear(); //clear inventory before hand
-        getPlayer().getInventory().addItem(sword);
-        getPlayer().getInventory().addItem(bow);
-        getPlayer().getInventory().addItem(new ItemStack(Material.ARROW, getF13Player().getJasonProfile().getNumStartingKnives()));
-        getPlayer().getInventory().addItem(sensePotion);
-        getPlayer().getInventory().addItem(jasonTraps);
+        getF13Player().getBukkitPlayer().getInventory().clear(); //clear inventory before hand
+        getF13Player().getBukkitPlayer().getInventory().addItem(sword);
+        getF13Player().getBukkitPlayer().getInventory().addItem(bow);
+        getF13Player().getBukkitPlayer().getInventory().addItem(new ItemStack(Material.ARROW, getF13Player().getJasonProfile().getNumStartingKnives()));
+        getF13Player().getBukkitPlayer().getInventory().addItem(sensePotion);
+        getF13Player().getBukkitPlayer().getInventory().addItem(jasonTraps);
 
         //He walks a little slower
-        getPlayer().setWalkSpeed(0.12f);
-        getPlayer().setFlySpeed(0.1f);
+        getF13Player().getBukkitPlayer().setWalkSpeed(0.12f);
+        getF13Player().getBukkitPlayer().setFlySpeed(0.1f);
 
-        getPlayer().setAllowFlight(true);
+        getF13Player().getBukkitPlayer().setAllowFlight(true);
 
         //Show his abilities
         getAbilityDisplayManager().showAbilities();
 
         //Display game-wide scoreboard
-        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getPlayer());
+        getF13Player().getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
+        arena.getGameManager().getGameScoreboardManager().displayForPlayer(getF13Player().getBukkitPlayer());
 
         //Skin
-        skin.apply(f13Player.getJasonProfile().getSkin());
+        skin.apply(getF13Player().getJasonProfile().getSkin());
 
         //Stop all previous sounds
-        PlayerSoundAPI.getPlayerSoundManager(getPlayer()).stopAllSounds();
+        PlayerSoundAPI.getPlayerSoundManager(getF13Player().getBukkitPlayer()).stopAllSounds();
 
         //Schedule tasks
         scheduleTasks();
@@ -233,7 +227,7 @@ public class Jason extends F13Character
         if (value)
         {
             setStalkLevel(Math.max(0, getStalkLevel() - (getStalkLevelMax() * stalkLevelDepletionRate)));
-            getPlayer().addPotionEffect(stalkPotion);
+            getF13Player().getBukkitPlayer().addPotionEffect(stalkPotion);
 
             setWalking(false);
             setSprinting(false);
@@ -242,7 +236,7 @@ public class Jason extends F13Character
         else
         {
             //Remove invisibility potion
-            getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+            getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
 
         }
     }
@@ -371,7 +365,7 @@ public class Jason extends F13Character
         if (value)
         {
             //When it becomes available, send message
-            ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.stalkAvailable", "Stalk ability is now available"), 60);
+            ActionBarAPI.sendActionBar(getF13Player().getBukkitPlayer(), FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "actionBar.jason.stalkAvailable", "Stalk ability is now available"), 60);
         }
 
         //Play sound effect for all players
@@ -454,7 +448,7 @@ public class Jason extends F13Character
         if (value)
         {
             //Apply potion to jason
-            getPlayer().addPotionEffect(sensePotion);
+            getF13Player().getBukkitPlayer().addPotionEffect(sensePotion);
 
             //Apply potion effect to players
             arena.getGameManager().getPlayerManager().jasonSensing(true);
@@ -462,7 +456,7 @@ public class Jason extends F13Character
         else
         {
             //Remove potion from jason
-            getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+            getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
 
             //Remove potion effect from players
             arena.getGameManager().getPlayerManager().jasonSensing(false);
@@ -489,7 +483,7 @@ public class Jason extends F13Character
         if (value)
         {
             //When it becomes available, send message
-            ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.senseAvailable", "Sense ability is now available"), 60);
+            ActionBarAPI.sendActionBar(getF13Player().getBukkitPlayer(), FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "actionBar.jason.senseAvailable", "Sense ability is now available"), 60);
         }
 
         //Play sound effect for all players
@@ -567,7 +561,7 @@ public class Jason extends F13Character
         if (value)
         {
             //When it becomes available, send message
-            ActionBarAPI.sendActionBar(getPlayer(), FridayThe13th.language.get(player, "actionBar.jason.warpAvailable", "Warp ability is now available"), 60);
+            ActionBarAPI.sendActionBar(getF13Player().getBukkitPlayer(), FridayThe13th.language.get(getF13Player().getBukkitPlayer(), "actionBar.jason.warpAvailable", "Warp ability is now available"), 60);
         }
 
         //Play sound effect for all players
@@ -590,7 +584,7 @@ public class Jason extends F13Character
 
         if (!value)
         {
-            getPlayer().setFlying(false);
+            getF13Player().getBukkitPlayer().setFlying(false);
         }
     }
 
@@ -608,9 +602,9 @@ public class Jason extends F13Character
      */
     public void removePotionEffects()
     {
-        getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
-        getPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
-        getPlayer().removePotionEffect(PotionEffectType.SLOW);
+        getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+        getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.NIGHT_VISION);
+        getF13Player().getBukkitPlayer().removePotionEffect(PotionEffectType.SLOW);
     }
 
     /**
@@ -625,41 +619,9 @@ public class Jason extends F13Character
      * Stuns Jason
      */
     public void stun() {
-        player.addPotionEffect(stun1);
-        player.addPotionEffect(stun2);
-        player.addPotionEffect(stun3);
-        player.addPotionEffect(stun4);
-    }
-
-    /**
-     * Awards Jason their XP
-     */
-    public void awardXP() {
-        int gameXP = getXPManager().calculateXP();
-        int currentXP = FridayThe13th.playerController.getPlayer(getPlayer()).getXP();
-        int newXP = Math.max(currentXP, currentXP + gameXP);
-
-        //Check for XP multipliers
-        if (FridayThe13th.isItFridayThe13th())
-        {
-            //It's Friday the 13th, so give them double XP
-            newXP *= 2;
-            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXPF13", "Happy double XP Friday the 13th! You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
-        }
-        else
-        {
-            //It's a normal, boring day.
-            getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + gameXP + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + newXP + ChatColor.RESET));
-        }
-
-        FridayThe13th.playerController.getPlayer(getPlayer()).addXP(Math.max(0, gameXP));
-    }
-
-    /**
-     * Awards Jason their CP
-     */
-    public void awardCP()
-    {
-        getF13Player().addCP(500);
+        getF13Player().getBukkitPlayer().addPotionEffect(stun1);
+        getF13Player().getBukkitPlayer().addPotionEffect(stun2);
+        getF13Player().getBukkitPlayer().addPotionEffect(stun3);
+        getF13Player().getBukkitPlayer().addPotionEffect(stun4);
     }
 }

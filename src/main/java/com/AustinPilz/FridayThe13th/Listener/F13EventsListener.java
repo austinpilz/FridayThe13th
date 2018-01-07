@@ -5,8 +5,8 @@ import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
+import com.AustinPilz.FridayThe13th.Factory.F13ProfileFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
-import com.AustinPilz.FridayThe13th.Manager.F13ProfileManager;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -79,7 +79,7 @@ public class F13EventsListener implements Listener {
                 String playerName = (String) json.get("TrapTeleport");
 
                 //Ensure that the trapped player we're going to teleport to is still online, still paying & is alive
-                if (Bukkit.getOfflinePlayer(playerName).isOnline() && event.getArena().getGameManager().getPlayerManager().isAlive(Bukkit.getPlayer(playerName))) {
+                if (Bukkit.getOfflinePlayer(playerName).isOnline() && event.getArena().getGameManager().getPlayerManager().isAlive(FridayThe13th.playerController.getPlayer(Bukkit.getPlayer(playerName)))) {
                     event.getPlayer().teleport(Bukkit.getPlayer(playerName).getLocation());
                     InventoryActions.remove(event.getPlayer().getInventory(), event.getItem(), 1, (short) -1);
                 }
@@ -93,9 +93,9 @@ public class F13EventsListener implements Listener {
                 String profileName = (String) json.get("JasonProfileSelect");
 
                 if (!profileName.equalsIgnoreCase("Locked")) {
-                    if (F13ProfileManager.getJasonProfileByInternalIdentifier(profileName) != null)
+                    if (F13ProfileFactory.getJasonProfileByInternalIdentifier(profileName) != null)
                     {
-                        if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setJasonProfile(F13ProfileManager.getJasonProfileByInternalIdentifier(profileName))) {
+                        if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setJasonProfile(F13ProfileFactory.getJasonProfileByInternalIdentifier(profileName))) {
                             //Profile set successfully
                             Profiles_JasonMenu.openMenu(event.getPlayer());
                         }
@@ -107,9 +107,9 @@ public class F13EventsListener implements Listener {
 
                 if (!profileName.equalsIgnoreCase("Locked")) {
 
-                    if (F13ProfileManager.getCounselorProfileByInternalIdentifier(profileName) != null)
+                    if (F13ProfileFactory.getCounselorProfileByInternalIdentifier(profileName) != null)
                     {
-                        if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setCounselorProfile(F13ProfileManager.getCounselorProfileByInternalIdentifier(profileName))) {
+                        if (FridayThe13th.playerController.getPlayer(event.getPlayer()).setCounselorProfile(F13ProfileFactory.getCounselorProfileByInternalIdentifier(profileName))) {
                             //Profile set successfully
                             Profiles_CounselorMenu.openMenu(event.getPlayer());
                         }

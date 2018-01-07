@@ -62,7 +62,7 @@ public class GameScoreboardManager
         SidebarString jasonTitle = new SidebarString(ChatColor.GOLD + "Jason");
         gameScoreboard.addEntry(jasonTitle);
 
-        jasonValue = new SidebarString(arena.getGameManager().getPlayerManager().getJason().getPlayer().getName());
+        jasonValue = new SidebarString(arena.getGameManager().getPlayerManager().getJason().getF13Player().getBukkitPlayer().getName());
         gameScoreboard.addEntry(jasonValue);
 
         //Space
@@ -70,7 +70,7 @@ public class GameScoreboardManager
 
         //ALIVE
         gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.AliveDead", "Alive / Dead")));
-        gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + "" + arena.getGameManager().getPlayerManager().getNumPlayersAlive() + ChatColor.WHITE + " / " + ChatColor.RED + "" + arena.getGameManager().getPlayerManager().getNumPlayersDead()));
+        gameScoreboard.addEntry(new SidebarString(ChatColor.GREEN + "" + arena.getGameManager().getPlayerManager().getNumberOfPlayersAlive() + ChatColor.WHITE + " / " + ChatColor.RED + "" + arena.getGameManager().getPlayerManager().getNumberOfPlayersDead()));
 
         if (arena.getGameManager().havePoliceBeenCalled()) {
             gameScoreboard.addEntry(new SidebarString("    "));
@@ -86,11 +86,11 @@ public class GameScoreboardManager
                 gameScoreboard.addEntry(new SidebarString(mn2 + "m " + sec2 + "s"));
             }
 
-        } else if (arena.getGameManager().getPlayerManager().getNumSpectators() > 0)
+        } else if (arena.getGameManager().getPlayerManager().getNumberOfSpectators() > 0)
         {
             gameScoreboard.addEntry(new SidebarString("    "));
             gameScoreboard.addEntry(new SidebarString(ChatColor.GOLD + FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.sidebar.Spectators", "Spectators")));
-            gameScoreboard.addEntry(new SidebarString(ChatColor.WHITE + "" + arena.getGameManager().getPlayerManager().getNumSpectators()));
+            gameScoreboard.addEntry(new SidebarString(ChatColor.WHITE + "" + arena.getGameManager().getPlayerManager().getNumberOfSpectators()));
         }
 
         gameScoreboard.update();

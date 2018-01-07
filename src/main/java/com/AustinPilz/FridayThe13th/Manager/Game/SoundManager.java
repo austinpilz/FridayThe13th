@@ -3,12 +3,11 @@ package com.AustinPilz.FridayThe13th.Manager.Game;
 import com.AustinPilz.CustomSoundManagerAPI.API.PlayerSoundAPI;
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 
 public class SoundManager {
 
@@ -19,12 +18,9 @@ public class SoundManager {
      */
     public static void playSoundForAllPlayers(F13SoundEffect soundEffect, Arena arena, boolean interrupt, boolean overlay, int transitionSeconds)
     {
-        Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-        while (it.hasNext())
+        for (F13Player player : arena.getGameManager().getPlayerManager().getPlayers())
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-            PlayerSoundAPI.getPlayerSoundManager(player).playCustomSound(player.getLocation(), soundEffect.getResourcePackValue(), soundEffect.getLengthInSeconds(), soundEffect.getVolume(), interrupt, overlay, transitionSeconds);
+            PlayerSoundAPI.getPlayerSoundManager(player.getBukkitPlayer()).playCustomSound(player.getBukkitPlayer().getLocation(), soundEffect.getResourcePackValue(), soundEffect.getLengthInSeconds(), soundEffect.getVolume(), interrupt, overlay, transitionSeconds);
         }
     }
 
@@ -40,14 +36,11 @@ public class SoundManager {
         HashSet<Player> nearbyPlayers = new HashSet<>();
 
         //Determine which players are within the radius
-        Iterator it = arena.getGameManager().getPlayerManager().getPlayers().entrySet().iterator();
-        while (it.hasNext())
+        for (F13Player player : arena.getGameManager().getPlayerManager().getPlayers())
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            Player player = (Player) entry.getValue();
-            if (location.distance(player.getLocation()) <= radius)
+            if (location.distance(player.getBukkitPlayer().getLocation()) <= radius)
             {
-                nearbyPlayers.add(player);
+                nearbyPlayers.add(player.getBukkitPlayer());
             }
         }
 

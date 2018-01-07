@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Manager.Game;
+package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
@@ -17,15 +17,14 @@ public class PhoneManager {
     private Arena arena;
     private HashMap<Block, ArenaPhone> phones;
 
-    public PhoneManager(Arena arena) {
+    PhoneManager(Arena arena) {
         this.arena = arena;
         this.phones = new HashMap<>();
     }
 
     /**
      * Adds phone to the arena
-     *
-     * @param phone
+     * @param phone ArenaPhone object
      */
     public void addPhone(ArenaPhone phone) {
         phones.put(phone.getLocation().getBlock(), phone);
@@ -33,15 +32,14 @@ public class PhoneManager {
 
     /**
      * Removes phone from the arena
-     *
-     * @param phone
+     * @param phone ArenaPhone object
      */
     public void removePhone(ArenaPhone phone) {
         phones.remove(phone.getLocation().getBlock());
     }
 
     /**
-     * @param block
+     * @param block The phone's block
      * @return ArenaPhone object
      */
     public ArenaPhone getPhone(Block block) {
@@ -82,14 +80,16 @@ public class PhoneManager {
         if (phones.size() >= 2) {
             ArenaPhone[] randomizedPhones = getRandomizedPhoneArray();
 
-            //Tommy Jarvis phone
-            randomizedPhones[0].setPhoneType(PhoneType.TommyJarvis);
-            randomizedPhones[0].showPhone();
+            if (randomizedPhones.length >= 2) {
+                //Tommy Jarvis phone
+                randomizedPhones[0].setPhoneType(PhoneType.TommyJarvis);
+                randomizedPhones[0].showPhone();
 
-            //Only assign police phone if there's at least one land escape point
-            if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0) {
-                randomizedPhones[1].setPhoneType(PhoneType.Police);
-                randomizedPhones[1].showPhone();
+                //Only assign police phone if there's at least one land escape point
+                if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0) {
+                    randomizedPhones[1].setPhoneType(PhoneType.Police);
+                    randomizedPhones[1].showPhone();
+                }
             }
         }
     }

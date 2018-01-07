@@ -10,7 +10,6 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.EulerAngle;
@@ -84,7 +83,7 @@ public class ThrowableItem {
 
         try
         {
-            if (FridayThe13th.arenaController.getPlayerArena(player.toString()).getGameManager().isGameInProgress())
+            if (FridayThe13th.arenaController.getPlayerArena(thrower).getGameManager().isGameInProgress())
             {
                 thrower.getInventory().addItem(this.hand);
             }

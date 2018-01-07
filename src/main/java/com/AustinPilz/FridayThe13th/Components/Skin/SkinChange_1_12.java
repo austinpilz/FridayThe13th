@@ -82,9 +82,12 @@ public class SkinChange_1_12 implements SkinChange {
             return;
         }
         F13Skin original = F13Skin.ORIGINAL;
-        original.setValue(this.originalTextures[0]);
-        original.setSignature(this.originalTextures[1]);
-        apply(original);
-        reverted = true;
+
+        if (this.originalTextures.length >= 2) {
+            original.setValue(this.originalTextures[0]);
+            original.setSignature(this.originalTextures[1]);
+            apply(original);
+            reverted = true;
+        }
     }
 }

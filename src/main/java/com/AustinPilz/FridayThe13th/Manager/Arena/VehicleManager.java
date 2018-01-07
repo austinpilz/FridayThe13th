@@ -1,4 +1,4 @@
-package com.AustinPilz.FridayThe13th.Manager.Game;
+package com.AustinPilz.FridayThe13th.Manager.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Vehicle.F13Boat;
@@ -18,7 +18,7 @@ public class VehicleManager {
     private HashMap<Boat, F13Boat> spawnedBoats;
 
 
-    public VehicleManager(Arena arena) {
+    VehicleManager(Arena arena) {
         this.arena = arena;
         this.cars = new HashSet<>();
         this.spawnedCars = new HashMap<>();

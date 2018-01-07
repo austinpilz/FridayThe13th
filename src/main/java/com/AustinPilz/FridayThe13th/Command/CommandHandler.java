@@ -336,7 +336,7 @@ public class CommandHandler implements CommandExecutor {
 
                             //All is good, begin the play process handled by the ArenaCreation manager
                             try {
-                                FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().playerJoinGame(((Player) sender));
+                                FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().playerJoinGame(FridayThe13th.playerController.getPlayer((Player) sender));
                             } catch (ArenaDoesNotExistException exception) {
                                 sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.arenaDoesNotExist", "Game {0} does not exist.", ChatColor.RED + arenaName + ChatColor.WHITE));
                             } catch (GameFullException exception) {
@@ -375,7 +375,7 @@ public class CommandHandler implements CommandExecutor {
                                 Arena arena = FridayThe13th.arenaController.getArena(arenaName);
 
                                 if (arena.getGameManager().isGameInProgress()) {
-                                    arena.getGameManager().getPlayerManager().becomeSpectator((Player) sender);
+                                    arena.getGameManager().getPlayerManager().becomeSpectator(FridayThe13th.playerController.getPlayer((Player) sender));
                                 } else {
                                     //You can't spectate if the game isn't in progress
                                     sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.spectateNotInProgress", "The game in {0} is not in progress. You can't spectate until the game has begun.", ChatColor.RED + arenaName + ChatColor.WHITE));
@@ -416,10 +416,10 @@ public class CommandHandler implements CommandExecutor {
                                 int mn = rem / 60;
                                 int sec = rem % 60;
                                 sender.sendMessage("Time Left: " + mn + "m " + sec + "sec");
-                                sender.sendMessage("# Players: " + arena.getGameManager().getPlayerManager().getNumPlayers());
+                                sender.sendMessage("# Players: " + arena.getGameManager().getPlayerManager().getNumberOfPlayers());
 
-                                if (arena.getGameManager().getPlayerManager().getNumSpectators() > 0) {
-                                    sender.sendMessage("# Spectators: " + arena.getGameManager().getPlayerManager().getNumSpectators());
+                                if (arena.getGameManager().getPlayerManager().getNumberOfSpectators() > 0) {
+                                    sender.sendMessage("# Spectators: " + arena.getGameManager().getPlayerManager().getNumberOfSpectators());
                                 }
 
                                 sender.sendMessage(ChatColor.STRIKETHROUGH + "--------------");
@@ -515,7 +515,7 @@ public class CommandHandler implements CommandExecutor {
                             try {
                                 Player player = (Player) Bukkit.getOfflinePlayer(playerName);
 
-                                FridayThe13th.arenaController.getPlayerArena(Bukkit.getOfflinePlayer(playerName).getUniqueId().toString()).getGameManager().getPlayerManager().onplayerQuit(player);
+                                FridayThe13th.arenaController.getPlayerArena(FridayThe13th.playerController.getPlayer(player)).getGameManager().getPlayerManager().onplayerQuit(FridayThe13th.playerController.getPlayer(player));
 
                                 //Let the kicker know we kicked them, let the kickee know they were kicked
                                 player.sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(player, "command.playerWasKicked", "You were kicked from your game."));
@@ -602,13 +602,8 @@ public class CommandHandler implements CommandExecutor {
                     //Setup commands cannot be executed by the console
                     if (sender instanceof Player) {
                         try {
-                            Arena arena = FridayThe13th.arenaController.getPlayerArena(((Player) sender).getUniqueId().toString());
-                            if (arena.getGameManager().getPlayerManager().isJustSpectator(((Player) sender).getUniqueId().toString())) {
-                                //They're only a spectator - not prev a player
-                                arena.getGameManager().getPlayerManager().leaveSpectator((Player) sender);
-                            } else {
-                                arena.getGameManager().getPlayerManager().onplayerQuit(((Player) sender));
-                            }
+                            Arena arena = FridayThe13th.arenaController.getPlayerArena(FridayThe13th.playerController.getPlayer((Player) sender));
+                            arena.getGameManager().getPlayerManager().onplayerQuit(FridayThe13th.playerController.getPlayer((Player) sender));
                         } catch (PlayerNotPlayingException exception) {
                             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.language.get(sender, "command.error.senderNotPlaying", "You are not currently playing."));
                         }
@@ -646,7 +641,7 @@ public class CommandHandler implements CommandExecutor {
                             }
 
                             try {
-                                Arena arena = FridayThe13th.arenaController.getPlayerArena(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString());
+                                Arena arena = FridayThe13th.arenaController.getPlayerArena(FridayThe13th.playerController.getPlayer(Bukkit.getOfflinePlayer(statsUsername).getUniqueId().toString()));
                                 {
                                     sender.sendMessage("Current arena: " + ChatColor.GREEN + arena.getName());
                                 }

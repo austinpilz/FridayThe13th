@@ -1,10 +1,10 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.FridayThe13th;
+import com.AustinPilz.FridayThe13th.Manager.Arena.LocationManager;
+import com.AustinPilz.FridayThe13th.Manager.Arena.ObjectManager;
+import com.AustinPilz.FridayThe13th.Manager.Arena.SignManager;
 import com.AustinPilz.FridayThe13th.Manager.Game.GameManager;
-import com.AustinPilz.FridayThe13th.Manager.Game.LocationManager;
-import com.AustinPilz.FridayThe13th.Manager.Game.ObjectManager;
-import com.AustinPilz.FridayThe13th.Manager.Game.SignManager;
 import org.bukkit.Location;
 
 import java.util.Arrays;

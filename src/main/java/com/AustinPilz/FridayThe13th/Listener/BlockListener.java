@@ -2,6 +2,7 @@ package com.AustinPilz.FridayThe13th.Listener;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Player.PlayerNotPlayingException;
@@ -89,7 +90,7 @@ public class BlockListener implements Listener
     {
         try
         {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer());
 
             //Check to see if the item has hidden data
             if (event.getPlayer().getInventory().getItemInMainHand() != null && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta()) {
@@ -140,12 +141,12 @@ public class BlockListener implements Listener
     public void onBlockBreak(BlockBreakEvent event)
     {
         try {
-            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer().getUniqueId().toString());
+            Arena arena = FridayThe13th.arenaController.getPlayerArena(event.getPlayer());
             event.setCancelled(true); //Can never break blocks while in-game
 
             if (arena.getGameManager().isGameInProgress())
             {
-                if (arena.getGameManager().getPlayerManager().isJason(event.getPlayer()))
+                if (arena.getGameManager().getPlayerManager().isJason(FridayThe13th.playerController.getPlayer(event.getPlayer())))
                 {
                     //Physical object interactions
                     if (event.getBlock().getState().getData() instanceof Door)
@@ -169,13 +170,13 @@ public class BlockListener implements Listener
                         if (!arena.getObjectManager().getBrokenSwitches().containsKey(event.getBlock()))
                         {
                             arena.getObjectManager().breakSwitch(event.getBlock());
-                            arena.getGameManager().getPlayerManager().getJason().getXPManager().addSwitchBreak();
+                            arena.getGameManager().getPlayerManager().getJason().getXpManager().registerXPAward(XPAward.Jason_SwitchBreak);
                         }
                     }
                     else if (event.getBlock().getType().equals(Material.THIN_GLASS)) {
                         //Window
                         arena.getObjectManager().getWindowManager().breakWindow(event.getBlock()); //Jason breaks window
-                        arena.getGameManager().getPlayerManager().getJason().getXPManager().addWindowBreak();
+                        arena.getGameManager().getPlayerManager().getJason().getXpManager().registerXPAward(XPAward.Jason_WindowBreak);
 
                         //Play sound for everyone
                         SoundManager.playSoundForNearbyPlayers(F13SoundEffect.GlassBreak, arena, event.getBlock().getLocation(), 10, false, true);

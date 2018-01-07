@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Enum.F13SoundEffect;
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Runnable.ArenaDoorAction;
@@ -51,7 +52,7 @@ public class ArenaDoor
             }
 
             //Door is broken, add XP to Jason
-            arena.getGameManager().getPlayerManager().getJason().getXPManager().addDoorBreak();
+            arena.getGameManager().getPlayerManager().getJason().getXpManager().registerXPAward(XPAward.Jason_DoorBreak);
 
             //Play broken sound
             SoundManager.playSoundForNearbyPlayers(F13SoundEffect.DoorBreak, arena, doorBlock.getLocation(), 5, false, true);

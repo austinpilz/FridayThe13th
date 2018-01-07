@@ -1,14 +1,14 @@
 package com.AustinPilz.FridayThe13th.Components.Arena;
 
 import com.AustinPilz.FridayThe13th.Components.Enum.PhoneType;
+import com.AustinPilz.FridayThe13th.Components.Enum.XPAward;
+import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
-import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 
 /**
  * Created by austinpilz on 7/14/17.
@@ -45,8 +45,6 @@ public class ArenaPhone
         repairAttempts = 0;
         repairAttemptsRequired = 75;
     }
-
-
 
     /**
      * Returns the phone's arena
@@ -147,9 +145,7 @@ public class ArenaPhone
         //Set that this is the visible phone
         isVisible = true;
 
-        if (isPolicePhone()) {
-            isBroken = true; //The police phone starts the match broken and in need of repair
-        }
+        isBroken = isPolicePhone(); //Police phone always starts broken
 
         //Hide from Jason
         createHologram();
@@ -174,53 +170,53 @@ public class ArenaPhone
     /**
      * Attempt to repair the switch
      */
-    public void callAttempt(Player player) {
+    public void callAttempt(F13Player player) {
         if (isVisible) {
             if (isTommyJarvisPhone()) {
                 if (!arena.getGameManager().hasTommyBeenCalled()) {
-                    callAttempts += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
+                    callAttempts += player.getCounselorProfile().getIntelligence().getRegenerationRate();
 
                     if (hasCallBeenCompleted()) {
                         //The Tommy Jarvis phone call has been placed
                         arena.getGameManager().getPlayerManager().fireFirework(player, Color.GREEN);
-                        arena.getGameManager().getPlayerManager().sendMessageToAllPlayers(ChatColor.AQUA + player.getName() + ChatColor.WHITE + " has called Tommy Jarvis.");
+                        arena.getGameManager().getPlayerManager().sendMessageToAllPlayers(ChatColor.AQUA + player.getBukkitPlayer().getName() + ChatColor.WHITE + " has called Tommy Jarvis.");
                         arena.getGameManager().setTommyCalled();
                         callAttempts++;
 
                         //Register Tommy called for XP
-                        arena.getGameManager().getPlayerManager().getCounselor(player).getXPManager().addTommyCalled();
+                        arena.getGameManager().getPlayerManager().getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_TommyCalled);
                     }
                 }
             } else if (isPolicePhone()) {
                 if (isBroken()) {
                     //Repair Attempt
-                    repairAttempts += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
+                    repairAttempts += player.getCounselorProfile().getIntelligence().getRegenerationRate();
 
                     if (hasRepairBeenCompleted()) {
                         isBroken = false;
 
                         if (!isFusePresent) {
                             isFusePresent = true;
-                            InventoryActions.remove(player.getPlayer().getInventory(), Material.END_ROD, 1, (short) -1);
+                            InventoryActions.remove(player.getBukkitPlayer().getInventory(), Material.END_ROD, 1, (short) -1);
                         } else {
-                            InventoryActions.remove(player.getPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
+                            InventoryActions.remove(player.getBukkitPlayer().getInventory(), Material.REDSTONE, 1, (short) -1);
                         }
 
-                        ActionBarAPI.sendActionBar(player, ChatColor.GREEN + FridayThe13th.language.get(player, "actionbar.repair.phone", "Phone repair successful!"), 60);
+                        arena.getGameManager().getPlayerManager().getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_PhoneRepaired);
                     }
                 } else {
                     //Regular call
-                    callAttempts += FridayThe13th.playerController.getPlayer(player).getCounselorProfile().getIntelligence().getRegenerationRate();
+                    callAttempts += player.getCounselorProfile().getIntelligence().getRegenerationRate();
 
                     if (hasCallBeenCompleted()) {
                         //The Tommy Jarvis phone call has been placed
                         arena.getGameManager().getPlayerManager().fireFirework(player, Color.GREEN);
-                        arena.getGameManager().getPlayerManager().sendMessageToAllPlayers(ChatColor.AQUA + player.getName() + ChatColor.WHITE + " has called the police.");
+                        arena.getGameManager().getPlayerManager().sendMessageToAllPlayers(ChatColor.AQUA + player.getBukkitPlayer().getName() + ChatColor.WHITE + " has called the police.");
                         arena.getGameManager().setPoliceCalled(true);
                         callAttempts++;
 
                         //Register xp for police called
-                        arena.getGameManager().getPlayerManager().getCounselor(player).getXPManager().addPoliceCalled();
+                        arena.getGameManager().getPlayerManager().getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_PoliceCalled);
                     }
                 }
             }
