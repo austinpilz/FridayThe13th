@@ -536,7 +536,9 @@ public class PlayerManager {
      */
     public void sendMessageToAllPlayers(String message) {
         for (F13Player player : players) {
-            player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + message);
+            if (player.isOnline()) {
+                player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + message);
+            }
         }
     }
 

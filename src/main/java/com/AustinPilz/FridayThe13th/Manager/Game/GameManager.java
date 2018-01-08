@@ -308,6 +308,7 @@ GameManager {
                 changeGameStatus(GameStatus.Empty);
             }
         } else if (isGameInProgress()) {
+
             if (getPlayerManager().getNumberOfPlayers() < 2) {
                 endGame(); //End the game since there aren't enough players
             }
