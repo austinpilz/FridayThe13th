@@ -125,7 +125,7 @@ public class VehicleManager {
      * Prepares vehicles for a game
      */
     public void prepareVehicles() {
-        if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() >= getNumCars()) {
+        if (arena.getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0) {
             if (arena.getObjectManager().getNumChestsItems() >= getMinRequiredChests()) {
                 for (F13Car car : cars) {
                     car.prepare();
@@ -133,7 +133,7 @@ public class VehicleManager {
             }
         }
 
-        if (arena.getLocationManager().getEscapePointManager().getNumberOfWaterEscapePoints() >= getNumBoats()) {
+        if (arena.getLocationManager().getEscapePointManager().getNumberOfWaterEscapePoints() > 0) {
             if (arena.getObjectManager().getNumChestsItems() >= getMinRequiredChests()) {
                 for (F13Boat boat : boats) {
                     boat.prepare();

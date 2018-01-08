@@ -18,6 +18,7 @@ import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Manager.Game.SoundManager;
 import com.AustinPilz.FridayThe13th.Runnable.CounselorWindowJump;
 import com.AustinPilz.FridayThe13th.Utilities.HiddenStringsUtil;
+import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
 import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -130,6 +131,12 @@ public class PlayerListener implements Listener {
                     event.setCancelled(true);
                 } else if (arena.getGameManager().getPlayerManager().isCounselor(player) && !arena.getGameManager().getPlayerManager().isSpectator(player)) {
                     //They're in regular play mode
+
+                    //Insta-health regen
+                    if (event.hasItem() && event.getItem().getType().equals(Material.POTION) && player.getBukkitPlayer().getHealth() < 20) {
+                        event.getPlayer().setHealth(20);
+                        InventoryActions.remove(event.getPlayer().getInventory(), Material.POTION, 1, (short) 0);
+                    }
 
                     if (event.getClickedBlock() != null && event.getClickedBlock().getState().getData() instanceof Door)
                     {

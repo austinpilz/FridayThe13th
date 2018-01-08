@@ -132,6 +132,6 @@ public class ChatController
             players.add(player.getBukkitPlayer());
         }
 
-        return new ArrayList<>();
+        return players;
     }
 }
