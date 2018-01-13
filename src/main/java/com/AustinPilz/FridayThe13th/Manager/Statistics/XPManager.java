@@ -35,7 +35,7 @@ public class XPManager {
             xpAwards.add(toAward);
 
             //Send the message
-            if (!toAward.getMessageOnAward().isEmpty()) {
+            if (!toAward.getMessageOnAward().isEmpty() && player.isOnline()) {
                 ActionBarAPI.sendActionBar(player.getBukkitPlayer(), toAward.getMessageOnAward(), 60);
             }
         }
@@ -91,7 +91,9 @@ public class XPManager {
         player.addXP(xpToAward);
 
         //Send confirmation message to the player
-        player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(player.getBukkitPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + xpToAward + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + player.getXP() + ChatColor.RESET));
+        if (player.isOnline()) {
+            player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(player.getBukkitPlayer(), "message.gameEarnedXP", "You earned {0} xp from this round and now have a total of {1} xp.", ChatColor.GREEN + "" + xpToAward + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + player.getXP() + ChatColor.RESET));
+        }
 
         //Award successful match completion CP as well
         awardCPToPlayer();
@@ -102,6 +104,9 @@ public class XPManager {
      */
     public void awardCPToPlayer() {
         player.addCP(500);
-        player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(player.getBukkitPlayer(), "message.gameEarnedCP", "You earned {0} cp from this round and now have a total of {1} cp.", ChatColor.GREEN + "" + "500" + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + player.getCP() + ChatColor.RESET));
+
+        if (player.isOnline()) {
+            player.getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(player.getBukkitPlayer(), "message.gameEarnedCP", "You earned {0} cp from this round and now have a total of {1} cp.", ChatColor.GREEN + "" + "500" + ChatColor.WHITE, ChatColor.GREEN + "" + ChatColor.BOLD + "" + player.getCP() + ChatColor.RESET));
+        }
     }
 }
