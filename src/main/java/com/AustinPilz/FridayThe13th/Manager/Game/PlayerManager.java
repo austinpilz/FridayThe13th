@@ -586,11 +586,12 @@ public class PlayerManager {
         if (arena.getGameManager().isGameInProgress()) {
             if (isJason(player)) {
                 //Jason quit off, so end the game
-                sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerQuitJasonBroadcast", "GAME OVER! {0} (Jason) has left the game.", player.getBukkitPlayer().getName()));
+                getJason().getXpManager().registerXPAward(XPAward.Jason_Quitter);
                 arena.getGameManager().endGame();
             } else if (isCounselor(player)) {
                 if (isAlive(player) && getNumberOfPlayersAlive() <= 1) {
                     //They were the last one
+                    getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_Quitter);
                     arena.getGameManager().endGame();
                 } else {
                     if (!isAlive(player) || didPlayerEscape(player)) {
@@ -626,12 +627,13 @@ public class PlayerManager {
             if (arena.getGameManager().isGameInProgress()) {
                 if (isJason(player)) {
                     //Jason logged off, so end the game
-                    sendMessageToAllPlayers(FridayThe13th.language.get(Bukkit.getConsoleSender(), "game.playerLogoutJasonBroadcast", "GAME OVER! Jason left the game."));
+                    getJason().getXpManager().registerXPAward(XPAward.Jason_Quitter);
                     arena.getGameManager().endGame();
                 } else if (isCounselor(player)) {
                     //They're a counselor
                     if (isAlive(player) && getNumberOfPlayersAlive() <= 1) {
                         //They were the last one
+                        getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_Quitter);
                         arena.getGameManager().endGame();
                     }
 

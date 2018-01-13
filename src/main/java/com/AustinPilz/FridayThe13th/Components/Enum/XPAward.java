@@ -12,6 +12,7 @@ public enum XPAward {
     Jason_SwitchBreak(CharacterType.Jason, -1, 15, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.switchBreak", "Switch Break")),
     Jason_TrapEnsnare(CharacterType.Jason, -1, 75, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.trapEnsnare", "Trap Ensnarement")),
     Jason_NoEscapes(CharacterType.Jason, -1, 500, ""),
+    Jason_Quitter(CharacterType.Jason, -1, -9999999, ""),
 
     Counselor_WindowSprint(CharacterType.Counselor, -1, 50, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.windowSprint", "Window Sprint")),
     Counselor_DoorClosed(CharacterType.Counselor, 1, 25, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.fortification", "Fortification")),
@@ -24,7 +25,8 @@ public enum XPAward {
     Counselor_JasonStuns(CharacterType.Counselor, -1, 75, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.jasonStuns", "Jason Stunned")),
     Counselor_FriendlyHit(CharacterType.Counselor, -1, -1000, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.friendlyHit", "Betrayal:")),
     Counselor_MatchCompleted(CharacterType.Counselor, 1, 100, ""),
-    Counselor_Escaped(CharacterType.Counselor, 1, 250, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.counselorEscape", "Escaped"));
+    Counselor_Escaped(CharacterType.Counselor, 1, 250, FridayThe13th.language.get(Bukkit.getConsoleSender(), "actionbar.xpAward.counselorEscape", "Escaped")),
+    Counselor_Quitter(CharacterType.Counselor, -1, -9999999, ""),;
 
     private CharacterType characterType;
     private int maxUses;

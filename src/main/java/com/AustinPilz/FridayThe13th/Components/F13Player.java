@@ -180,13 +180,13 @@ public class F13Player {
      * @param value
      */
     public void addXP(int value) {
-        experiencePoints += value;
+        experiencePoints += Math.max(value, 0);
         updateDB();
 
         F13PlayerLevel prevLevel = getLevel();
         determineLevel();
 
-        if (getLevel() != prevLevel)
+        if (getLevel() != prevLevel && isOnline())
         {
             //They leveled up
             getBukkitPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(getBukkitPlayer(), "chat.xp.LevelUp", "Congratulations! You've leveled up to level {0}", getLevel().getLevelNumber()));
