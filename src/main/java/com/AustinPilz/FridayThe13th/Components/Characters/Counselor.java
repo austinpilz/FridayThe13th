@@ -116,6 +116,10 @@ public class Counselor extends F13Character
         //Clear their inventory of any waiting room goodies
         getF13Player().getBukkitPlayer().getInventory().clear();
 
+        //Remove flying
+        getF13Player().getBukkitPlayer().setFlying(false);
+        getF13Player().getBukkitPlayer().setAllowFlight(false);
+
         //Display Status
         getCounselorStatsDisplayManager().displayStats();
 

@@ -6,6 +6,7 @@ import com.AustinPilz.FridayThe13th.Components.Enum.ChestType;
 import com.AustinPilz.FridayThe13th.Components.Enum.EscapePointType;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Components.Level.F13PlayerLevel;
+import com.AustinPilz.FridayThe13th.Components.Menu.ArenaSelectionMenu;
 import com.AustinPilz.FridayThe13th.Components.Vehicle.VehicleType;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaSetupSessionAlreadyInProgress;
@@ -32,7 +33,16 @@ public class CommandHandler implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (args.length < 1) {
-            //f13
+
+            if (sender instanceof Player)
+            {
+                Player player = (Player) sender;
+                if (!FridayThe13th.arenaController.isPlayerPlaying(player))
+                {
+                    ArenaSelectionMenu.openMenu(player);
+                }
+            }
+
             sender.sendMessage(FridayThe13th.pluginAdminPrefix + FridayThe13th.pluginName + " version " + ChatColor.GREEN + FridayThe13th.pluginVersion + ChatColor.WHITE + " by austinpilz - " + FridayThe13th.pluginURL);
             sender.sendMessage(FridayThe13th.pluginAdminPrefix + ChatColor.GREEN + "Type " + ChatColor.AQUA + "/F13 help " + ChatColor.GREEN + "for help.");
         } else {

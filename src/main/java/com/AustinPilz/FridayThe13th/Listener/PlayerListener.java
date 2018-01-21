@@ -631,7 +631,22 @@ public class PlayerListener implements Listener {
         }
         catch (PlayerNotPlayingException exception)
         {
-            //Do nothing since in this case, we couldn't care
+            //They're not playing, but we have non-player GUI's
+            if (event.getCurrentItem() != null) {
+                if (event.getCurrentItem().hasItemMeta()) {
+                    //It has meta, so it must be one of the F13 selections
+                    ItemMeta meta = event.getCurrentItem().getItemMeta();
+                    List<String> lore = meta.getLore();
+
+                    if (lore != null && lore.size() > 0 && HiddenStringsUtil.hasHiddenString(lore.get(0))) {
+                        //It's a F13 menu item - call custom event
+                        Player player = (Player)event.getWhoClicked();
+                        F13MenuItemClickedEvent newEvent = new F13MenuItemClickedEvent(player, FridayThe13th.arenaController.getRandomArena(), HiddenStringsUtil.extractHiddenString(lore.get(0)), event.getCurrentItem().getType());
+                        Bukkit.getServer().getPluginManager().callEvent(newEvent);
+                        event.setCancelled(newEvent.isCancelled());
+                    }
+                }
+            }
         }
     }
 

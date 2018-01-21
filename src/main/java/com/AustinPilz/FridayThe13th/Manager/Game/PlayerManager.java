@@ -367,6 +367,26 @@ public class PlayerManager {
     }
 
     /**
+     * Returns the number of spots left in the arena
+     * @return Number of spots left in the arena
+     */
+    public synchronized int getNumberOfSpotsLeft() {
+        if (arena.getGameManager().isGameInProgress())
+        {
+            return 0;
+        }
+        else
+        {
+            if (arena.getLocationManager().getNumberStartingPoints() >= 8) {
+                return 9 - getNumberOfPlayers();
+            } else {
+                //They're are less than 8 spawn points for counselors
+                return arena.getLocationManager().getNumberStartingPoints() - getNumberOfPlayers() + 1;
+            }
+        }
+    }
+
+    /**
      * Adds player to the game, if room is available
      *
      * @param player F13Player

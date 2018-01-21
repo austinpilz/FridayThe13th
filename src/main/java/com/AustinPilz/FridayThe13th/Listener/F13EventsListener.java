@@ -5,6 +5,9 @@ import com.AustinPilz.FridayThe13th.Components.Perk.F13Perk;
 import com.AustinPilz.FridayThe13th.Components.Perk.F13PerkManager;
 import com.AustinPilz.FridayThe13th.Events.F13BlockPlacedEvent;
 import com.AustinPilz.FridayThe13th.Events.F13MenuItemClickedEvent;
+import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
+import com.AustinPilz.FridayThe13th.Exceptions.Game.GameFullException;
+import com.AustinPilz.FridayThe13th.Exceptions.Game.GameInProgressException;
 import com.AustinPilz.FridayThe13th.Factory.F13ProfileFactory;
 import com.AustinPilz.FridayThe13th.FridayThe13th;
 import com.AustinPilz.FridayThe13th.Utilities.InventoryActions;
@@ -133,6 +136,34 @@ public class F13EventsListener implements Listener {
                 event.setCancelled(true);
             } else if (json.containsKey("ActivatePerk"))
             {
+                event.setCancelled(true);
+            } else if (json.containsKey("Play"))
+            {
+                String arenaName = (String) json.get("Play");
+
+                if (FridayThe13th.arenaController.doesArenaExist(arenaName))
+                {
+                    try
+                    {
+                        try
+                    {
+                        FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().playerJoinGame(FridayThe13th.playerController.getPlayer(event.getPlayer()));
+                    }
+                    catch (GameFullException exception)
+                    {
+                        //
+                    }
+                    catch (GameInProgressException exception)
+                    {
+                        FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().becomeSpectator(FridayThe13th.playerController.getPlayer(event.getPlayer()));
+                    }
+                    }
+                    catch (ArenaDoesNotExistException exception)
+                    {
+                        event.setCancelled(true);
+                    }
+                }
+
                 event.setCancelled(true);
             }
             else {

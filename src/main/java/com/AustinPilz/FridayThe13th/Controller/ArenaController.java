@@ -1,6 +1,7 @@
 package com.AustinPilz.FridayThe13th.Controller;
 
 import com.AustinPilz.FridayThe13th.Components.Arena.Arena;
+import com.AustinPilz.FridayThe13th.Components.Arena.ArenaPhone;
 import com.AustinPilz.FridayThe13th.Components.F13Player;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaAlreadyExistsException;
 import com.AustinPilz.FridayThe13th.Exceptions.Arena.ArenaDoesNotExistException;
@@ -354,5 +355,30 @@ public class ArenaController
         }
 
         return null;
+    }
+
+    /**
+     * @return Random Arena
+     */
+    public Arena getRandomArena()
+    {
+        if (arenas.size() > 0) {
+            Arena[] pl = arenas.values().toArray(new Arena[arenas.size()]);
+
+            //Randomize possible phones
+            Random rnd = ThreadLocalRandom.current();
+            for (int i = pl.length - 1; i > 0; i--) {
+                int index = rnd.nextInt(i + 1);
+
+                // Simple swap
+                Arena a = pl[index];
+                pl[index] = pl[i];
+                pl[i] = a;
+            }
+
+            return pl[0];
+        } else {
+            return null;
+        }
     }
 }

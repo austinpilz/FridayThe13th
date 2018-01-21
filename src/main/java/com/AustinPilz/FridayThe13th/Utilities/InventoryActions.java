@@ -81,4 +81,25 @@ public class InventoryActions
         return searchAmount - amount;
     }
 
+    /**
+     * Takes in a number of slots and returns a valid multiple of 9 for menu sizes
+     * @param count Number of slots required
+     * @return inventory size to create
+     */
+    public static int calculateMenuSize(int count)
+    {
+        int size = 9;
+
+        if (count > 9  && count <= 18)
+        {
+            size = 18;
+        }
+        else if (count > 18  && count <= 27)
+        {
+            size = 27;
+        }
+
+        return size;
+    }
+
 }

@@ -225,6 +225,38 @@ public class Arena
     }
 
     /**
+     * @return If Tommy Jarvis is enabled in this arena
+     */
+    public boolean isTommyJarvisEnabled()
+    {
+        return getObjectManager().getPhoneManager().getNumberOfPhones() > 0;
+    }
+
+    /**
+     * @return If police escape is enabled in this arena
+     */
+    public boolean arePoliceEnabled()
+    {
+         return (getObjectManager().getPhoneManager().getNumberOfPhones() > 1 && getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0);
+    }
+
+    /**
+     * @return If car escape is enabled
+     */
+    public boolean isCarEscapeEnabled()
+    {
+        return (getLocationManager().getEscapePointManager().getNumberOfLandEscapePoints() > 0 && getObjectManager().getVehicleManager().getNumCars() > 0 && getObjectManager().getNumChestsItems() >= getObjectManager().getVehicleManager().getMinRequiredChests());
+    }
+
+    /**
+     * @return If boat escape is enabled
+     */
+    public boolean isBoatEscapeEnabled()
+    {
+        return (getLocationManager().getEscapePointManager().getNumberOfWaterEscapePoints() > 0 && getObjectManager().getVehicleManager().getNumBoats() > 0 && getObjectManager().getNumChestsItems() >= getObjectManager().getVehicleManager().getMinRequiredChests());
+    }
+
+    /**
      * Updates the arena values in the database
      */
     private void updateInDB() {
