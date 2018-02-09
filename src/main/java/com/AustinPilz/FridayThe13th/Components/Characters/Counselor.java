@@ -125,7 +125,7 @@ public class Counselor extends F13Character
 
         //Display game-wide scoreboard
         getF13Player().getWaitingPlayerStatsDisplayManager().removeStatsScoreboard();
-        arena.getGameManager().getGameCountdownManager().hideFromPlayer(getF13Player().getBukkitPlayer()); //Incase they're coming from spectators
+        arena.getGameManager().getGameCountdownManager().hideFromPlayer(getF13Player().getBukkitPlayer()); //In case they're coming from spectators
         arena.getGameManager().getGameScoreboardManager().displayForPlayer(getF13Player().getBukkitPlayer());
 
         //Start All Counselor Tasks
@@ -140,6 +140,10 @@ public class Counselor extends F13Character
 
         //Stop all previous sounds and play game start music
         PlayerSoundAPI.getPlayerSoundManager(getF13Player().getBukkitPlayer()).stopAllSounds();
+
+        //Make them visible, in case that invisibility bug is hitting usfile
+
+        makePlayerVisibleToEveryone(true);
     }
 
     /**

@@ -64,19 +64,15 @@ public class XPManager {
             XPAward award = (XPAward) entry.getKey();
             Long count = (Long) entry.getValue();
 
-            if (award.getXPAward() >= 0) {
-                xp += award.getXPAward() * count.intValue(); //Max # of uses checking is done before they're added to the ArrayList, so we can just use the count value here
-            } else {
-                xp -= award.getXPAward() * count.intValue(); //Account for XP deductions
-            }
+            xp += award.getXPAward() * count.intValue(); //Max # of uses checking is done before they're added to the ArrayList, so we can just use the count value here
         }
 
         //Double XP when it's actually a Friday the 13th
-        if (FridayThe13th.isItFridayThe13th()) {
+        if (FridayThe13th.isItFridayThe13th() && xp > 0) {
             xp *= 2;
         }
 
-        return xp;
+        return Math.max(0, xp);
     }
 
     /**

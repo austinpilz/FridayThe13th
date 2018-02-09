@@ -654,10 +654,13 @@ public class PlayerManager {
                     if (isAlive(player) && getNumberOfPlayersAlive() <= 1) {
                         //They were the last one
                         getCounselor(player).getXpManager().registerXPAward(XPAward.Counselor_Quitter);
+                        getCounselor(player).leaveGame();
                         arena.getGameManager().endGame();
                     }
-
-                    getCounselor(player).leaveGame();
+                    else
+                    {
+                        getCounselor(player).leaveGame();
+                    }
                 }
             } else {
                 //Before the game, everyone is considered a counselor

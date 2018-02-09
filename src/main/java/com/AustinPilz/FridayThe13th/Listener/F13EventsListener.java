@@ -146,17 +146,17 @@ public class F13EventsListener implements Listener {
                     try
                     {
                         try
-                    {
-                        FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().playerJoinGame(FridayThe13th.playerController.getPlayer(event.getPlayer()));
-                    }
-                    catch (GameFullException exception)
-                    {
-                        //
-                    }
-                    catch (GameInProgressException exception)
-                    {
-                        FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().becomeSpectator(FridayThe13th.playerController.getPlayer(event.getPlayer()));
-                    }
+                        {
+                            FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().playerJoinGame(FridayThe13th.playerController.getPlayer(event.getPlayer()));
+                        }
+                        catch (GameFullException exception)
+                        {
+                            //
+                        }
+                        catch (GameInProgressException exception)
+                        {
+                            FridayThe13th.arenaController.getArena(arenaName).getGameManager().getPlayerManager().becomeSpectator(FridayThe13th.playerController.getPlayer(event.getPlayer()));
+                        }
                     }
                     catch (ArenaDoesNotExistException exception)
                     {

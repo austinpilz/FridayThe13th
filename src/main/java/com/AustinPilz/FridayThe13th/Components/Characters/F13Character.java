@@ -19,6 +19,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class F13Character {
     private F13Player f13Player;
@@ -116,6 +117,8 @@ public class F13Character {
         teleportToWaitingRoom();
         setDefaultSurvivalTraits();
         giveWaitingRoomItems();
+       //getF13Player().getWaitingPlayerStatsDisplayManager().displayStatsScoreboard();
+        makePlayerVisibleToEveryone(true); //In case of invisibility bug
 
         //Begin waiting room music
         PlayerSoundAPI.getPlayerSoundManager(getF13Player().getBukkitPlayer()).playCustomSound(getF13Player().getBukkitPlayer().getLocation(), F13SoundEffect.LobbyMusic.getResourcePackValue(), F13SoundEffect.LobbyMusic.getLengthInSeconds(), 10, true, true);
@@ -284,5 +287,7 @@ public class F13Character {
 
             }
         }
+
+        getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
     }
 }

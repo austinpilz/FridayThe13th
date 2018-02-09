@@ -67,6 +67,18 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+
+        Iterator arenaIterator = FridayThe13th.arenaController.getArenas().entrySet().iterator();
+        while (arenaIterator.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) arenaIterator.next();
+            Arena arena = (Arena) entry.getValue();
+
+            if (arena.isLocationWithinArenaBoundaries(event.getPlayer().getLocation()))
+            {
+                event.getPlayer().teleport(arena.getReturnLocation());
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -102,6 +114,7 @@ public class PlayerListener implements Listener {
                 //In waiting, only teleporting can be to the waiting or return location
                 if (!event.getTo().equals(arena.getWaitingLocation()) && !event.getTo().equals(arena.getReturnLocation())) {
                     event.setCancelled(true);
+                    event.getPlayer().teleport(arena.getWaitingLocation());
                     event.getPlayer().sendMessage(FridayThe13th.pluginPrefix + FridayThe13th.language.get(event.getPlayer(), "game.error.teleportWaiting", "You cannot be teleported while waiting."));
                 }
             } else if (arena.getGameManager().isGameInProgress()) {
@@ -607,7 +620,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
         try
         {

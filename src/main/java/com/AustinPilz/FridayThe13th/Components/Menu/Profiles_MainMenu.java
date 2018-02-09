@@ -27,7 +27,6 @@ public class Profiles_MainMenu {
 
         List<String> jasonItemLore = new ArrayList<String>();
         jasonItemLore.add(HiddenStringsUtil.encodeString("{\"Menu\": \"JasonProfiles\"}"));
-        //TODO - Change preview skull to be retro jason IF they've unlocked that
         inventory.setItem(1, new SkullPreview(F13Skin.JASON_Part1, ChatColor.RED + FridayThe13th.language.get(player, "game.menu.JasonProfile", "Jason Profiles"), jasonItemLore));
 
         player.openInventory(inventory);
