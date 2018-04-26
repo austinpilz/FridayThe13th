@@ -180,7 +180,7 @@ public class F13Player {
      * @param value
      */
     public void addXP(int value) {
-        experiencePoints += Math.max(value, 0);
+        experiencePoints += Math.min(Math.max(value, 0), Integer.MAX_VALUE);
         updateDB();
 
         F13PlayerLevel prevLevel = getLevel();
@@ -322,7 +322,7 @@ public class F13Player {
      */
     public void addCP(int value)
     {
-        customizationPoints += value;
+        customizationPoints += Math.min(Math.max(value, 0), Integer.MAX_VALUE);
         updateDB();
     }
 
